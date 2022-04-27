@@ -1,0 +1,16 @@
+.Rproj.user
+.DS_Store
+.Rhistory
+.RData
+.Ruserdata
+.html
+.snakemake/
+dag.svg
+workflow/notebooks/*.html
+#https://stackoverflow.com/questions/40460216/how-do-i-make-git-ignore-symlink
+resources
+resources/
+results/
+species_genomes/
+references/notes.txt
+test_data/

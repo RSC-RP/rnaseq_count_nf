@@ -1,0 +1,120 @@
+---
+title: "STAR aligner and counts using Nextflow"
+author: "Jenny L Smith"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+# Set-up 
+
+```{r echo=FALSE}
+styler::style_file("rnaseq_star_counts_nextflow.Rmd")
+```
+
+```{r set-up}
+knitr::opts_knit$set(root.dir = PROJHOME)
+knitr::opts_chunk$set(
+  tidy.opts = list(width.cutoff = 50),
+  tidy = TRUE,
+  fig.align = "center",
+  fig.width = 10, fig.height = 10
+)
+
+options(stringsAsFactors = FALSE, max.print = 100)
+table <- function(..., useNA = "ifany") base::table(..., useNA = useNA)
+```
+
+```{r}
+library(groundhog)
+pkgs <- c("stringr", "magrittr", "ggplot2", "dplyr", "tidyr", "tibble")
+groundhog::groundhog.library(pkgs, "2022-04-18")
+```
+
+# Define Functions 
+
+# Set-up Environment 
+
+```{bash}
+conda env create -f env/nextflow_env.yaml
+conda activate nextflow_env
+```
+
+# Find the appropriate Modules 
+
+The information on modules can be found on github [here](https://github.com/nf-core/modules). Once you have the module installed, nf-core will also create a 'module.json' file this is required. 
+
+```{bash}
+mkdir modules
+```
+
+```{bash}
+nf-core modules list
+```
+
+```{bash}
+nf-core modules install fastqc
+nf-core modules update fastqc
+cat modules.json
+```
+
+The module file looks like this:
+
+> {
+    "name": "",
+    "homePage": "",
+    "repos": {
+        "nf-core/modules": {
+            "fastqc": {
+                "git_sha": "49b18b1639f4f7104187058866a8fab33332bdfe"
+            }
+        }
+    }
+}
+
+It's recommended to check the linting of the module as well. 
+
+```{bash}
+nf-core modules lint fastqc
+```
+
+Then get the usage information to defince the input channels to run the 
+
+```{bash}
+nf-core modules info fastqc
+```
+
+> 📥 Inputs   │Description                                                                                                              │Pattern ━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━╸
+  meta  (map) │Groovy Map containing sample information e.g. [ id:'test', single_end:false ]                                            │        
+──────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────╴
+  reads (file)│List of input FastQ files of size 1 and 2 for single-end and paired-end data, respectively.                              │        
+
+
+# Create the initial nexflow script
+
+```{bash}
+printf "nextflow.enable.dsl = 2\n\ninclude { FASTQC } from './modules/nf-core/modules/fastqc/main'" >  main.nf
+```
+
+Create the Sample sheet for the input fastq files, and a metadate file with single-end or paired-end information. 
+
+```{r}
+meta <- tibble(files=dir("test_data", full.names = T, recursive = T)) %>% 
+  mutate(id=gsub("^(.+)_[Rr][12].(fastq|fq).gz","\\1", basename(files)), 
+         single_end="false")
+
+meta
+```
+
+Then edit the nexflow workflow `main.nf` in the text editor to include the workflow components. 
+
+
+
+
+# Session Information
+
+```{r}
+sessionInfo()
+```
+
+
+
