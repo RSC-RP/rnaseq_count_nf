@@ -5,6 +5,9 @@
         "nf-core/modules": {
             "fastqc": {
                 "git_sha": "49b18b1639f4f7104187058866a8fab33332bdfe"
+            },
+            "star/align": {
+                "git_sha": "1dddf1ce9443e3d93853d86e7a7aab52e5b4d614"
             }
         }
     }

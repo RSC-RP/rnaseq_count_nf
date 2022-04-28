@@ -77,37 +77,124 @@ It's recommended to check the linting of the module as well.
 nf-core modules lint fastqc
 ```
 
-Then get the usage information to defince the input channels to run the 
+Then get the usage information to define the input channels to run the module.
 
 ```{bash}
 nf-core modules info fastqc
 ```
 
-> 📥 Inputs   │Description                                                                                                              │Pattern ━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━╸
-  meta  (map) │Groovy Map containing sample information e.g. [ id:'test', single_end:false ]                                            │        
-──────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────╴
-  reads (file)│List of input FastQ files of size 1 and 2 for single-end and paired-end data, respectively.                              │        
+> 📥 Inputs  
+  meta  (map) : Groovy Map containing sample information e.g. [ id:'test', single_end:false ]                     
+  reads (file): List of input FastQ files of size 1 and 2 for single-end and paired-end data, respectively.     
 
+The nextflow language has a `map` type and `map` operator (built-in function). The `meta (map)` input is an associative array, described in the [documentation](https://www.nextflow.io/docs/latest/script.html) on scripting under the section "Maps". 
+
+A copy of the nextflow documentation shows a named dictionary with a key and value. 
+> Maps are used to store associative arrays or dictionaries. They are unordered collections of heterogeneous, named data:
+> scores = [ "Brett":100, "Pete":"Did not finish", "Andrew":86.87934 ]
+Note that each of the values stored in the map can be of a different type. Brett is an integer, Pete is a string, and Andrew is a floating-point number.
+> We can access the values in a map in two main ways:
+println scores["Pete"]
+println scores.Pete
+
+Notably, this out put of `nf-core modules info fastqc` is not quite informative in regards to how to format the input channel and will need to be updated. However, an [example](https://github.com/nf-core/modules/blob/master/tests/modules/fastqc/main.nf) of the input channels for official modules can be found on github. 
 
 # Create the initial nexflow script
 
-```{bash}
-printf "nextflow.enable.dsl = 2\n\ninclude { FASTQC } from './modules/nf-core/modules/fastqc/main'" >  main.nf
-```
-
-Create the Sample sheet for the input fastq files, and a metadate file with single-end or paired-end information. 
+Initialize a nextflow workflow file called `main.nf` that uses DSL2 syntax and the fastqc module that was installed. Then edit the nexflow workflow `main.nf` in the text editor to include the workflow components.
 
 ```{r}
-meta <- tibble(files=dir("test_data", full.names = T, recursive = T)) %>% 
-  mutate(id=gsub("^(.+)_[Rr][12].(fastq|fq).gz","\\1", basename(files)), 
-         single_end="false")
-
-meta
+nf_set_up <- "nextflow.enable.dsl = 2\n\ninclude { FASTQC } from './modules/nf-core/modules/fastqc/main'"
+cat(nf_set_up, file = "main.nf")
 ```
 
-Then edit the nexflow workflow `main.nf` in the text editor to include the workflow components. 
+
+# Define the Inputs
+
+Create the Sample sheet for the input fastq files, and a metadate file with single-end or paired-end information.
+
+```{r}
+files <- tibble(files = dir("test_data", full.names = T, recursive = T, pattern = "*.gz")) %>%
+  mutate(Read = ifelse(grepl("_[Rr]1.(fastq|fq).gz", files), "r1", "r2")) %>%
+  pivot_wider(names_from = Read, values_from = files) %>%
+  mutate(
+    id = gsub("^(.+)_[Rr][12].(fastq|fq).gz", "\\1", basename(r1)),
+    single_end = "false"
+  )
+
+files
+# write.table(files, file = "test_data/sample_sheet.txt", sep="\t", row.names = FALSE, quote = FALSE)
+```
 
 
+The `map` operator is a function that transforms a channel, or in other words, it applies a function onto each item in the channel. Its found in detail [here](https://www.nextflow.io/docs/latest/operator.html#map). 
+
+In this case, we will use `map` operator on a channel to create our desired `meta` input to run the fastqc module using the "sample_sheet.txt" just created. 
+
+```
+meta_ch = Channel.fromPath(file(params.sample_sheet))
+    .splitCsv(header: true, sep: '\t')
+    .map { meta -> [ [ "id":meta["id"], "single_end":meta["single_end" ]], //meta
+                     [ file(meta["r1"], checkIfExists: true), file(meta["r2"], checkIfExists: true) ] //reads
+                   ]}
+```
+
+# Define the configurations for FASTQC
+
+Nextflow is platform agnostic and can run locally, on an HPC, or on the cloud platform. It also supports both conda and docker/singularity containers for extra reproducibility. 
+
+Here we'll create a `nextflow.config` file for the FASTQC module to run using the biocontainer, and using docker or singularity as the engine. 
+
+There is a built-in `workflow` object, that contains revelant information about the workflow configurations, usch as the `projectDir`, `workDir`,`publishDir`, and the `containerEngine` used for the pipeline. This is described in the [workflow introspection section](https://www.nextflow.io/docs/latest/metadata.html).
+
+Its also important to set the resources that a process will use with `directives`, such as `cpus`, and `errorStrategy`. The directives are described in detail [here]. The directives can be specified in the [configuration file](https://www.nextflow.io/docs/latest/config.html#scope-process) under Scope *process*, which allows for the config file to be easily edited, while the processes in the `./modules` directory can stay unmodified. 
+
+[Implicit variables](https://www.nextflow.io/docs/latest/script.html#implicit-variables) can be set for the important aspects, like the where the `workDir` is located, or  other runtime information on the workflow being executed, as mentioned above under `workflow introspection`. 
+
+In the nextflow.config file you will need to include a specific variable which will contain the user specific command line parameters for the module being executed, called `ext.args` (extra arguments). This is described in the [documention](https://nf-co.re/developers/modules#writing-a-new-module-reference) on how to build a new module based on nf-core standards.
+
+
+```
+// Run the analysis locally with minimal compute resources
+process {
+    
+    publishDir = [
+        path: { "${params.outdir}/${task.process.tokenize(':')[-1].tokenize('_')[0].toLowerCase()}" },
+        mode: "${params.publish_dir_mode}", //not working currently -- 
+        saveAs: { filename -> filename.equals('versions.yml') ? null : filename }
+    ]
+    workDir = "/Users/jsmi26/Downloads/temp"
+    errorStrategy = "retry"
+    maxRetries = 1
+    
+    //process specific parameters
+    withName: FASTQC {
+        executor = 'local'
+        cpus = 1
+        memory = 4.GB
+        ext.args = '--quiet' //specific to nf-core modules
+    }
+}
+
+//Use docker engine for now
+docker {
+    enabled = true
+    temp = 'auto'
+    runOptions = "--platform linux/amd64"
+}
+```
+
+# STAR-Aligner
+
+```{bash}
+nf-core modules install star/align
+nf-core modules info star/align
+```
+
+>  📥 Inputs        │Description 
+  meta  (map)       │Groovy Map containing sample information e.g. [ id:'test', single_end:false ]                 
+  reads  (file)     │List of input FastQ files of size 1 and 2 for single-end and paired-end data, respectively.   
+  index  (directory)│STAR genome index                                                                            
 
 
 # Session Information
