@@ -8,6 +8,7 @@
 .nextflow/
 .nextflow.log*
 *.html
+*.html.*
 workflow/notebooks/*.html
 #https://stackoverflow.com/questions/40460216/how-do-i-make-git-ignore-symlink
 resources
@@ -17,3 +18,5 @@ species_genomes/
 references/notes.txt
 test_data/
 fastqc/
+work/
+results/

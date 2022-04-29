@@ -39,6 +39,18 @@ conda env create -f env/nextflow_env.yaml
 conda activate nextflow_env
 ```
 
+
+```{r}
+sampler <- ShortRead::FastqSampler("test_data/Day0.Naive_L1Pf7_R1.fastq.gz", 10000)
+set.seed(123); R1 <- ShortRead::yield(sampler)
+sampler <- ShortRead::FastqSampler("test_data/Day0.Naive_L1Pf7_R2.fastq.gz", 10000)
+set.seed(123); R2 <- ShortRead::yield(sampler)
+
+writeFastq(R1,file="test_data/Sample_ID_001_R1.fastq.gz")
+writeFastq(R2,file="test_data/Sample_ID_001_R2.fastq.gz")
+```
+
+
 # Find the appropriate Modules 
 
 The information on modules can be found on github [here](https://github.com/nf-core/modules). Once you have the module installed, nf-core will also create a 'module.json' file this is required. 
@@ -151,7 +163,7 @@ Its also important to set the resources that a process will use with `directives
 
 [Implicit variables](https://www.nextflow.io/docs/latest/script.html#implicit-variables) can be set for the important aspects, like the where the `workDir` is located, or  other runtime information on the workflow being executed, as mentioned above under `workflow introspection`. 
 
-In the nextflow.config file you will need to include a specific variable which will contain the user specific command line parameters for the module being executed, called `ext.args` (extra arguments). This is described in the [documention](https://nf-co.re/developers/modules#writing-a-new-module-reference) on how to build a new module based on nf-core standards.
+In the nextflow.config file you will need to include a specific variable which will contain the user specific command line parameters for the module being executed, called `ext.args` (extra arguments). This is described in the [documention](https://nf-co.re/developers/modules#writing-a-new-module-reference) on how to build a new module based on nf-core standards. There is also a brief example in the Nextflow documention on [processes](https://www.nextflow.io/docs/latest/process.html#ext).
 
 
 ```
@@ -183,6 +195,12 @@ docker {
     runOptions = "--platform linux/amd64"
 }
 ```
+
+[Docker](https://www.nextflow.io/docs/latest/config.html#scope-docker) and [singularty](https://www.nextflow.io/docs/latest/config.html#scope-singularity) configuration options are found on the nextflow docs. 
+
+The settings for Docker (local execution only, since it won't be on the HPC) or singularity can be defined in the configuration file as well. Docker run options, like memory, CPUs, etc are desribed [here](https://docs.docker.com/engine/reference/run/).
+
+
 
 # STAR-Aligner
 
