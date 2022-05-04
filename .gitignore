@@ -9,6 +9,8 @@
 .nextflow.log*
 *.html
 *.html.*
+*.sif
+star:*
 workflow/notebooks/*.html
 #https://stackoverflow.com/questions/40460216/how-do-i-make-git-ignore-symlink
 resources

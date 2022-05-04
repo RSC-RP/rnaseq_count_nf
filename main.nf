@@ -2,7 +2,7 @@ nextflow.enable.dsl = 2
 
 include { FASTQC } from './modules/nf-core/modules/fastqc/main.nf'
 include { STAR_ALIGN } from './modules/nf-core/modules/star/align/main.nf'
-include { TEST } from './modules/nf-core/modules/custom/test_module.nf'
+include { STAR_ALIGN } from './modules/nf-core/modules/star/align/main.nf'
 
 meta_ch = Channel.fromPath(file(params.sample_sheet, checkIfExists: true))
     .splitCsv(header: true, sep: '\t')
@@ -17,6 +17,21 @@ println "Project workDir: $workflow.workDir"
 println "Cmd line: $workflow.commandLine"
 println "Container Engine: $workflow.containerEngine"
 //println "Containers Used: $workflow.container" //not working?
+
+//Generate the index file 
+workflow star_index {
+    //Stage the gtf file
+    Channel.fromPath(params.gtf_file)
+        .ifEmpty { error  "No file found ${params.gtf_url}" }
+        .set{gtf}  
+    
+    //Stage the genome fasta files for the index building step
+    Channel.fromPath(params.fasta_file)
+        .ifEmpty { error "No files found ${params.fasta_file}." }
+        .set{fasta}
+    
+    STAR_GENOMEGENERATE(fasta, gtf)
+}
 
 //run the workflow 
 workflow rnaseq_count {
