@@ -233,6 +233,15 @@ There is a built-in `workflow` object, that contains revelant information about 
 
 The user parameters, such as the file paths to the appropiate genomes, should be included in the `nextflow.config` file as well. This would allow the user to simply fill in the necessary parameters in the config file and then use the same run script (.sh) and the same `main.nf` workflow each time, without having the modify them. 
 
+The HPC requires both a queue and a project code in order to use PBS scheduler. These must be defined in the user params and input into the configs. 
+
+```{bash}
+#on cybertron to identify the project codes
+voucher
+voucher info
+voucher project RSC_adhoc
+```
+
 **To Do**: Create a function that could create the config file given the appropriate filepaths. Maybe make into a interactive shiny-app to have user input and save the file. 
 
 ```
@@ -241,6 +250,7 @@ params {
     //validate_params           = true // will add in the sample sheet validation
     outdir                      = "./results/"
     queue                       = 'sceaq'
+    project                     = 'RSC_adhoc'
     publish_dir_mode            = 'copy'
     enable_conda                = false
 
@@ -315,7 +325,9 @@ singularity shell --bind test_data/:/mnt_data lolcow_latest.sif
 
 Nextflow allows for [profiles](https://www.nextflow.io/docs/latest/config.html#config-profiles) to be created in the configuration file. This can provide an effecient mechanism for switching between the different processes executors, such as running locally with docker for testing vs running localling on cybertron with singularity for testing.
 
-The final profile, like `PBS_Singularity`, would the final profile to execute the fully developed workflow on the HPC. 
+The final profile, like `PBS_Singularity`, would the final profile to execute the fully developed workflow on the HPC. The HPC requires both a queue and a project code in order to use PBS scheduler. These must be defined in the user params and input into the configs. 
+
+
 
 ```
 //Create profiles to easily switch between the different process executors (platforms)
@@ -340,6 +352,15 @@ profiles {
 }
 ```
 
+# Cleaning up Cached Data
+
+Nextflow has an utility to [clean](https://www.nextflow.io/docs/latest/cli.html#clean) up old work directories and logs that are no longer needed. This can be run after x amount of time to keep your workdir from getting too large or if you're running out of disk space. 
+
+This requires the session ID or session name, which can found in the following file 
+
+```{bash}
+cat .nextflow/history
+```
 
 # Session Information
 

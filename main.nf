@@ -9,27 +9,24 @@ meta_ch = Channel.fromPath(file(params.sample_sheet, checkIfExists: true))
     .map { meta -> [ [ "id":meta["id"], "single_end":meta["single_end"].toBoolean() ], //meta
                      [ file(meta["r1"], checkIfExists: true), file(meta["r2"], checkIfExists: true) ] //reads
                    ]}
-//meta_ch.view()
 
 //Print statements for some basic information on process execution. 
 println "Project : $workflow.projectDir"
 println "Project workDir: $workflow.workDir"
-println "Cmd line: $workflow.commandLine"
 println "Container Engine: $workflow.containerEngine"
 
 //run the workflow for star-aligner to generate counts
 workflow rnaseq_count {
     // QC on the sequenced reads
-    //FASTQC(meta_ch)
-    //Stage the gtf file
+    FASTQC(meta_ch)
+    //Stage the gtf file. 
     Channel.fromPath(params.gtf)
         .ifEmpty { error  "No file found ${params.gtf_url}." }
         .set{gtf}  
-    //Stage the genome fasta files for the index building step
+    //Stage the genome index directory.
     Channel.fromPath(params.index)
         .ifEmpty { error "No directory found ${params.index}." }
         .set{index}
-
    //align reads to genome 
     STAR_ALIGN(meta_ch, index, gtf, 
               params.star_ignore_sjdbgtf, 
