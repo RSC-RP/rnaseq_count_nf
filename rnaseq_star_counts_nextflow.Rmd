@@ -80,7 +80,7 @@ nf-core modules update fastqc
 cat modules.json
 ```
 
-The module file looks like this:
+The module file (`modules.json`) looks like this:
 
 > {
     "name": "",
@@ -132,7 +132,9 @@ nf-core modules info star/align
 >  📥 Inputs        │Description 
   meta  (map)       │Groovy Map containing sample information e.g. [ id:'test', single_end:false ]                 
   reads  (file)     │List of input FastQ files of size 1 and 2 for single-end and paired-end data, respectively.   
-  index  (directory)│STAR genome index                                                                            
+  index  (directory)│STAR genome index
+  
+Each installed module will update the `modules.json` file to include new module name and its git SHA hash for the commit that corresponds to it. This allows for greatest reproducibility when using external modules from the nf-core github repo. 
 
 Again, this does not adequetly describe the actual inputs to the `STAR_ALIGNER()` module. It also requires the `gtf`, `star_ignore_sjdbgtf`, `seq_platform`, and `seq_center`. This will need to be updated for better documentation later. 
 
@@ -141,6 +143,14 @@ The final desired command line parameters will be:
 
 `--twopassMode Basic --twopass1readsN -1 --readFilesCommand "gunzip -c" --outSAMattributes NH HI NM MD AS nM jM jI XS --quantMode GeneCounts`
 
+## STAR Index 
+
+```{bash}
+nf-core modules install star/genomegenerate
+nf-core modules info star/genomegenerate
+```
+
+Again this follows the same process where we can take a look at the inputs listed from `nf-core modules info` command, and then structure our nextflow channels in the `main.nf` script (below) to match it. This process continues for all the 
 
 # Create the nexflow script
 
@@ -151,20 +161,14 @@ nf_set_up <- "nextflow.enable.dsl = 2\n\ninclude { FASTQC } from './modules/nf-c
 cat(nf_set_up, file = "main.nf")
 ```
 
-Next include `STAR_ALIGN`  in the same format as `FASTQC` to the nextflow `main.nf` file. And we will define the basic workflow. And example in psuedo-code is below:
+Next include `STAR_ALIGN`  in the same format as `FASTQC` to the nextflow `main.nf` file. 
 
-```
-workflow {
-
-  FASTQC(input_channel)
-  STAR_ALIGN(input_channel, params.one, parms.two, param.three)
-  
-}
-```
 
 ## Define the Input Channels
 
-Create the Sample sheet for the input fastq files, and a metadate file with single-end or paired-end information.
+The `main.nf` script is also the location of the [channels](https://www.nextflow.io/docs/latest/channel.html#channel-factory) that need to be defined as inputs to the processes from the module files. 
+
+Create the Sample sheet for the input fastq files, and a metadate file with single-end or paired-end information using R, and this file will be read into the `main.nf` script as a parameter. 
 
 ```{r}
 files <- tibble(files = dir("test_data", full.names = T, recursive = T, pattern = "Sample.+.gz")) %>%
@@ -190,6 +194,19 @@ meta_ch = Channel.fromPath(file(params.sample_sheet))
     .map { meta -> [ [ "id":meta["id"], "single_end":meta["single_end" ]], //meta
                      [ file(meta["r1"], checkIfExists: true), file(meta["r2"], checkIfExists: true) ] //reads
                    ]}
+```
+
+## Workflow 
+
+And we will finally define the basic workflow. And example in psuedo-code is below. Each module is a nextflow process, and stored in the `./modules` directory in the project. An example of the DSL2 concepts are described [here](https://www.nextflow.io/docs/latest/dsl2.html#process), *except* that the processes `foo` and `bar` would be saved in indivdual files and saved in the `./modules` directory in your project. Templates are available [here](https://www.nextflow.io/docs/latest/dsl2.html#module-templates). 
+
+```
+workflow {
+
+  FASTQC(input_channel)
+  STAR_ALIGN(input_channel, params.one, parms.two, param.three)
+  
+}
 ```
 
 # Nextflow Run 
@@ -231,9 +248,9 @@ There is a built-in `workflow` object, that contains revelant information about 
 
 ## User Parameters
 
-The user parameters, such as the file paths to the appropiate genomes, should be included in the `nextflow.config` file as well. This would allow the user to simply fill in the necessary parameters in the config file and then use the same run script (.sh) and the same `main.nf` workflow each time, without having the modify them. 
+The user parameters, such as the file paths to the appropiate genomes, should be included in the `nextflow.config` file as well. This would allow the user to simply fill in the necessary parameters in the config file and then use the same run script (`main_run.sh`) and the same `main.nf` workflow each time, without having the modify them. 
 
-The HPC requires both a queue and a project code in order to use PBS scheduler. These must be defined in the user params and input into the configs. 
+The Cybertron HPC requires both a queue and a project code in order to use the PBS scheduler. These must be defined in the user params and input into the configuration file. 
 
 ```{bash}
 #on cybertron to identify the project codes
@@ -250,7 +267,7 @@ params {
     //validate_params           = true // will add in the sample sheet validation
     outdir                      = "./results/"
     queue                       = 'sceaq'
-    project                     = 'RSC_adhoc'
+    project                     = '207f23bf-acb6-4835-8bfe-142436acb58c'
     publish_dir_mode            = 'copy'
     enable_conda                = false
 
@@ -310,9 +327,16 @@ docker {
     temp = 'auto'
     runOptions = "--platform linux/amd64"
 }
+
+//Configs for singularity containers on cybertron
+singularity {
+    autoMounts = true
+    cacheDir = '/home/jsmi26/singularity'
+    runOptions = '--containall --no-home'
+}
 ```
 
-Also, singularity containers on cybertron can be used interactively. Load the singularity module first.  Then, singularity image will need to be pulled.
+Also, singularity containers on cybertron can be used interactively. Load the singularity module first.  Then, singularity image will need to be pulled. This can be helpful for troubleshooting a error that is arising from the software in your pipeline. 
 
 ```{bash}
 #Example run a container interactively on cybertron
@@ -325,30 +349,30 @@ singularity shell --bind test_data/:/mnt_data lolcow_latest.sif
 
 Nextflow allows for [profiles](https://www.nextflow.io/docs/latest/config.html#config-profiles) to be created in the configuration file. This can provide an effecient mechanism for switching between the different processes executors, such as running locally with docker for testing vs running localling on cybertron with singularity for testing.
 
-The final profile, like `PBS_Singularity`, would the final profile to execute the fully developed workflow on the HPC. The HPC requires both a queue and a project code in order to use PBS scheduler. These must be defined in the user params and input into the configs. 
-
-
+The final profile, `PBS_Singularity`, would be the final profile to execute the fully developed workflow on the HPC. The HPC requires both a queue and a project code in order to use PBS scheduler. The [cluster options](https://www.nextflow.io/docs/latest/config.html#scope-process) must be configured to include the required `-P <project_code>` flag and `process.queue` is a process directive that can be defined directly. 
 
 ```
-//Create profiles to easily switch between the different process executors (platforms)
+//Create profiles to easily switch between the different process executors and platforms.
 profiles {
-
+    //For running on an interactive session with singularity module loaded
+    cybertron_singularity {
+        process.executor = 'local'
+        singularity.enabled = true 
+    }
+    //For executing the jobs on the HPC cluster.
+    PBS_singularity {
+        process.executor = 'pbspro' 
+        process.queue = "${params.queue}"
+        process.clusterOptions = "-P ${params.project}"
+        //process.clusterOptions = "-P \$(voucher project ${params.project})" //renders correctly in command.run script but schedule won't accept it.
+        process.beforeScript = 'module load singularity/3.9.9'
+        singularity.enabled = true //need some logic here to switch to false if conda used
+    }
+    //For running interactively on local macbook with docker installed. 
     local_docker {
         process.executor = 'local'
         docker.enabled = true
     }
-    
-    cybertron_singularity {
-        process.executor = 'local' 
-        singularity.enabled = true 
-    }
-
-    PBS_singularity {
-        process.executor = 'pbs' 
-        process.queue = "${params.queue}"
-        singularity.enabled = true 
-    }
-    
 }
 ```
 

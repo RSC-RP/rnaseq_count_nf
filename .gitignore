@@ -7,5 +7,6 @@
 .nextflow.log*
 *.html
 *.html.*
+.pytest_cache/
 results/
 test_data/

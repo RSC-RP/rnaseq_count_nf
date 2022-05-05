@@ -3,12 +3,11 @@
 set -e
 DATE=$(date +%F)
 NFX_CONFIG=./nextflow.config
-NFX_PROFILE="cybertron_singularity"
-REPORT="cybertron_singularity_interactive"
+NFX_PROFILE="PBS_singularity"
+REPORT="cybertron_PBS_singularity"
 
 # Load the modules 
 module load singularity/3.9.9
-#export PATH=/depot/apps/singularity-ce/3.9.9/bin/:$PATH
 
 # Nextflow run to execute the workflow 
 nextflow -c ${NFX_CONFIG} -log ${REPORT}_nextflow.log run main.nf \
