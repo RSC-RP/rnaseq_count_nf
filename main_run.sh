@@ -3,13 +3,19 @@
 set -e
 DATE=$(date +%F)
 NFX_CONFIG=./nextflow.config
+NFX_PROFILE="cybertron_singularity"
+REPORT="cybertron_singularity_interactive"
 
-#Load the modules 
-ml singularity/3.5.0
-#export PATH=/depot/apps/singularity/3.5.0/bin/:$PATH
+# Load the modules 
+module load singularity/3.9.9
+#export PATH=/depot/apps/singularity-ce/3.9.9/bin/:$PATH
 
+# Nextflow run to execute the workflow 
 nextflow -c ${NFX_CONFIG} run main.nf \
     -entry rnaseq_count \
-    -with-report testing_${DATE}_local.html \
+    -profile ${NFX_PROFILE} \
+    -with-report ${REPORT}_${DATE}.html \
+    -with-dag ${REPORT}_${DATE}_dag.pdf \
+    -log ${REPORT}_nextflow.log \
     -cache TRUE \
     -resume

@@ -39,16 +39,24 @@ conda env create -f env/nextflow_env.yaml
 conda activate nextflow_env
 ```
 
+If testing interactively on cybertron, you will need to request the following resources:
+
+```{bash}
+qsub -I -q <queue_name> -P $(voucher info <project_name>) -l select=1:mem=32gb:ncpus=4
+```
+
 # Create Demo Dataset
 
 ```{r eval=FALSE}
 sampler <- ShortRead::FastqSampler("test_data/Day0.Naive_L1Pf7_R1.fastq.gz", 10000)
-set.seed(123); R1 <- ShortRead::yield(sampler)
+set.seed(123)
+R1 <- ShortRead::yield(sampler)
 sampler <- ShortRead::FastqSampler("test_data/Day0.Naive_L1Pf7_R2.fastq.gz", 10000)
-set.seed(123); R2 <- ShortRead::yield(sampler)
+set.seed(123)
+R2 <- ShortRead::yield(sampler)
 
-ShortRead::writeFastq(R1,file="test_data/Sample_ID_001_R1.fastq.gz")
-ShortRead::writeFastq(R2,file="test_data/Sample_ID_001_R2.fastq.gz")
+ShortRead::writeFastq(R1, file = "test_data/Sample_ID_001_R1.fastq.gz")
+ShortRead::writeFastq(R2, file = "test_data/Sample_ID_001_R2.fastq.gz")
 ```
 
 
@@ -63,6 +71,8 @@ mkdir modules
 ```{bash}
 nf-core modules list
 ```
+
+## FASTQC 
 
 ```{bash}
 nf-core modules install fastqc
@@ -112,7 +122,27 @@ println scores.Pete
 
 Notably, this out put of `nf-core modules info fastqc` is not quite informative in regards to how to format the input channel and will need to be updated. However, an [example](https://github.com/nf-core/modules/blob/master/tests/modules/fastqc/main.nf) of the input channels for official modules can be found on github. 
 
-# Create the initial nexflow script
+## STAR-Aligner
+
+```{bash}
+nf-core modules install star/align
+nf-core modules info star/align
+```
+
+>  📥 Inputs        │Description 
+  meta  (map)       │Groovy Map containing sample information e.g. [ id:'test', single_end:false ]                 
+  reads  (file)     │List of input FastQ files of size 1 and 2 for single-end and paired-end data, respectively.   
+  index  (directory)│STAR genome index                                                                            
+
+Again, this does not adequetly describe the actual inputs to the `STAR_ALIGNER()` module. It also requires the `gtf`, `star_ignore_sjdbgtf`, `seq_platform`, and `seq_center`. This will need to be updated for better documentation later. 
+
+STAR-aligner will need to be fairly customizable - so using the `ext.args` parameter will be essential. 
+The final desired command line parameters will be: 
+
+`--twopassMode Basic --twopass1readsN -1 --readFilesCommand "gunzip -c" --outSAMattributes NH HI NM MD AS nM jM jI XS --quantMode GeneCounts`
+
+
+# Create the nexflow script
 
 Initialize a nextflow workflow file called `main.nf` that uses DSL2 syntax and the fastqc module that was installed. Then edit the nexflow workflow `main.nf` in the text editor to include the workflow components.
 
@@ -121,14 +151,24 @@ nf_set_up <- "nextflow.enable.dsl = 2\n\ninclude { FASTQC } from './modules/nf-c
 cat(nf_set_up, file = "main.nf")
 ```
 
+Next include `STAR_ALIGN`  in the same format as `FASTQC` to the nextflow `main.nf` file. And we will define the basic workflow. And example in psuedo-code is below:
 
-# Define the Inputs
+```
+workflow {
+
+  FASTQC(input_channel)
+  STAR_ALIGN(input_channel, params.one, parms.two, param.three)
+  
+}
+```
+
+## Define the Input Channels
 
 Create the Sample sheet for the input fastq files, and a metadate file with single-end or paired-end information.
 
 ```{r}
 files <- tibble(files = dir("test_data", full.names = T, recursive = T, pattern = "Sample.+.gz")) %>%
-  mutate(Read = ifelse(grepl("_[Rr]1.(fastq|fq).gz", files), "r1", "r2")) %>% 
+  mutate(Read = ifelse(grepl("_[Rr]1.(fastq|fq).gz", files), "r1", "r2")) %>%
   pivot_wider(names_from = Read, values_from = files) %>%
   mutate(
     id = gsub("^(.+)_[Rr][12].(fastq|fq).gz", "\\1", basename(r1)),
@@ -152,7 +192,36 @@ meta_ch = Channel.fromPath(file(params.sample_sheet))
                    ]}
 ```
 
-# Define the configurations for FASTQC
+# Nextflow Run 
+
+The nextflow workflow contained in the `main.nf` file is executed on the command line. To make this as reproducible as possible, as bash script can created and will need some minimal changes to run the workflow each time (such as using different nextflow profiles, described in detail below).
+
+Here is an example of basic run script, with a profile and configuration file defined at the top. The configuration file in `nextflow.config` is the key to customizing each workflow execution. For example, processing PI_lastnameA one day and then the next processing PI_lastnameB's data, will be reflected in the config file. 
+
+```
+#!/bin/bash
+
+set -e
+DATE=$(date +%F)
+NFX_CONFIG=./nextflow.config
+NFX_PROFILE="cybertron_singularity"
+
+
+# Nextflow run to execute the workflow 
+nextflow -c ${NFX_CONFIG} run main.nf \
+    -profile ${NFX_PROFILE} \
+    -with-report testing_${DATE}.html \
+    -with-dag testing_${DATE}.png \
+    -cache TRUE \
+    -resume
+```
+
+## Workflow DAG
+
+A DAG image can be generated for each workflow by using the flag `with-dag` in the nextflow run script. More information on output file types are found [here](https://www.nextflow.io/docs/latest/tracing.html#dag-visualisation).
+
+
+# Define the Nextflow Configurations
 
 Nextflow is platform agnostic and can run locally, on an HPC, or on the cloud platform. It also supports both conda and docker/singularity containers for extra reproducibility. 
 
@@ -171,6 +240,7 @@ params {
     // general options
     //validate_params           = true // will add in the sample sheet validation
     outdir                      = "./results/"
+    queue                       = 'sceaq'
     publish_dir_mode            = 'copy'
     enable_conda                = false
 
@@ -198,7 +268,7 @@ In the nextflow.config file you will need to include a specific variable which w
 
 The config file will look similar to this example:
 ```
-// Run the analysis locally with minimal compute resources
+// Define output directory and computation resources for the FASTQC command line program 
 process {
     
     publishDir = [
@@ -212,7 +282,6 @@ process {
     
     //process specific parameters
     withName: FASTQC {
-        executor = 'local'
         cpus = 1
         memory = 4.GB
         ext.args = '--quiet' //specific to nf-core modules
@@ -226,35 +295,51 @@ process {
 The settings for Docker (local execution only, since it won't be on the HPC) or singularity can be defined in the configuration file as well. Docker run options, like memory, CPUs, etc are desribed [here](https://docs.docker.com/engine/reference/run/).
 
 ```
-//Use docker engine for now
+//Docker container engine configs 
 docker {
-    enabled = true
     temp = 'auto'
     runOptions = "--platform linux/amd64"
 }
 ```
 
-
-# STAR-Aligner
+Also, singularity containers on cybertron can be used interactively. Load the singularity module first.  Then, singularity image will need to be pulled.
 
 ```{bash}
-nf-core modules install star/align
-nf-core modules info star/align
+#Example run a container interactively on cybertron
+module load singularity/3.9.9
+singularity pull library://sylabsed/examples/lolcow
+singularity shell --bind test_data/:/mnt_data lolcow_latest.sif
 ```
 
->  📥 Inputs        │Description 
-  meta  (map)       │Groovy Map containing sample information e.g. [ id:'test', single_end:false ]                 
-  reads  (file)     │List of input FastQ files of size 1 and 2 for single-end and paired-end data, respectively.   
-  index  (directory)│STAR genome index                                                                            
+# Config Profiles 
 
-Again, this does not adequetly describe the actual inputs to the `STAR_ALIGNER()` module. It also requires the `gtf`, `star_ignore_sjdbgtf`, `seq_platform`, and `seq_center`. This will need to be updated for better documentation later. 
+Nextflow allows for [profiles](https://www.nextflow.io/docs/latest/config.html#config-profiles) to be created in the configuration file. This can provide an effecient mechanism for switching between the different processes executors, such as running locally with docker for testing vs running localling on cybertron with singularity for testing.
 
-STAR-aligner will need to be fairly customizable - so using the `ext.args` parameter will be essential. 
-The final desired parameters will be: 
+The final profile, like `PBS_Singularity`, would the final profile to execute the fully developed workflow on the HPC. 
 
-`--twopassMode Basic --twopass1readsN -1 --readFilesCommand "gunzip -c" --outSAMattributes NH HI NM MD AS nM jM jI XS --quantMode GeneCounts`
+```
+//Create profiles to easily switch between the different process executors (platforms)
+profiles {
 
-However, running locally with 32Gb of memory, even with the subset fastqs, is running out of memory.
+    local_docker {
+        process.executor = 'local'
+        docker.enabled = true
+    }
+    
+    cybertron_singularity {
+        process.executor = 'local' 
+        singularity.enabled = true 
+    }
+
+    PBS_singularity {
+        process.executor = 'pbs' 
+        process.queue = "${params.queue}"
+        singularity.enabled = true 
+    }
+    
+}
+```
+
 
 # Session Information
 
