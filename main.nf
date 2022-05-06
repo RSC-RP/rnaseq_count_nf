@@ -10,10 +10,18 @@ meta_ch = Channel.fromPath(file(params.sample_sheet, checkIfExists: true))
                      [ file(meta["r1"], checkIfExists: true), file(meta["r2"], checkIfExists: true) ] //reads
                    ]}
 
-//Print statements for some basic information on process execution. 
-println "Project : $workflow.projectDir"
-println "Project workDir: $workflow.workDir"
-println "Container Engine: $workflow.containerEngine"
+//Define stdout message for the command line use
+idx_or_fasta = (params.index == '' ? params.fasta : params.index)
+log.info """\
+         R N A S E Q -  P I P E L I N E
+         ===================================
+         Project           : $workflow.projectDir
+         Project workDir   : $workflow.workDir
+         Container Engine  : $workflow.containerEngine
+         Genome            : ${idx_or_fasta}
+         Samples           : ${params.sample_sheet}
+         """
+         .stripIndent()
 
 //run the workflow for star-aligner to generate counts
 workflow rnaseq_count {
@@ -38,11 +46,11 @@ workflow rnaseq_count {
 workflow star_index {
     //Stage the gtf file
     Channel.fromPath(params.gtf)
-        .ifEmpty { error  "No file found ${params.gtf_url}" }
+        .ifEmpty { error  "No file found ${params.gtf}" }
         .set{gtf}  
     //Stage the genome fasta files for the index building step
     Channel.fromPath(params.fasta)
-        .ifEmpty { error "No files found ${params.fasta_file}." }
+        .ifEmpty { error "No files found ${params.fasta}." }
         .set{fasta}
     //execute the STAR genome index process
     STAR_GENOMEGENERATE(fasta, gtf)

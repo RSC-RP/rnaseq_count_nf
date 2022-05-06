@@ -124,6 +124,8 @@ Notably, this out put of `nf-core modules info fastqc` is not quite informative 
 
 ## STAR-Aligner
 
+The reference manual for extra arguments to be passed to STAR aligner can be found [here](https://physiology.med.cornell.edu/faculty/skrabanek/lab/angsd/lecture_notes/STARmanual.pdf).
+
 ```{bash}
 nf-core modules install star/align
 nf-core modules info star/align
