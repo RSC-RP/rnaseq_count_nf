@@ -8,7 +8,7 @@ output: html_document
 # Set-up 
 
 ```{r echo=FALSE}
-styler::style_file("rnaseq_star_counts_nextflow.Rmd")
+styler::style_file("workflow_run.Rmd")
 ```
 
 ```{r set-up}

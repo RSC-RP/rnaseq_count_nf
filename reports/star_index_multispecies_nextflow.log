@@ -1,0 +1,162 @@
+May-06 12:24:39.695 [main] DEBUG nextflow.cli.Launcher - $> nextflow -c ./nextflow.config -log star_index_multispecies_nextflow.log run main.nf -entry star_index -profile PBS_singularity -with-report star_index_multispecies_2022-05-06.html -with-dag star_index_multispecies_2022-05-06_dag.pdf -cache TRUE -resume
+May-06 12:24:39.798 [main] INFO  nextflow.cli.CmdRun - N E X T F L O W  ~  version 22.04.0
+May-06 12:24:39.818 [main] DEBUG nextflow.config.ConfigBuilder - Found config local: /active/taylor_s/people/jsmi26/RPDEV/rnaseq_count_nf/nextflow.config
+May-06 12:24:39.821 [main] DEBUG nextflow.config.ConfigBuilder - User config file: /active/taylor_s/people/jsmi26/RPDEV/rnaseq_count_nf/./nextflow.config
+May-06 12:24:39.821 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /active/taylor_s/people/jsmi26/RPDEV/rnaseq_count_nf/nextflow.config
+May-06 12:24:39.822 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /active/taylor_s/people/jsmi26/RPDEV/rnaseq_count_nf/nextflow.config
+May-06 12:24:39.843 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `PBS_singularity`
+May-06 12:24:40.731 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `PBS_singularity`
+May-06 12:24:40.761 [main] DEBUG nextflow.config.ConfigBuilder - Available config profiles: [PBS_singularity, local_docker, cybertron_singularity]
+May-06 12:24:40.823 [main] INFO  nextflow.cli.CmdRun - Launching `main.nf` [adoring_tuckerman] DSL2 - revision: 6afe635b65
+May-06 12:24:40.839 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; plugins-dir=/home/jsmi26/.nextflow/plugins; core-plugins: nf-amazon@1.7.1,nf-azure@0.13.1,nf-console@1.0.3,nf-ga4gh@1.0.3,nf-google@1.1.4,nf-sqldb@0.4.0,nf-tower@1.4.0
+May-06 12:24:40.840 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+May-06 12:24:40.859 [main] INFO  org.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+May-06 12:24:40.860 [main] INFO  org.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+May-06 12:24:40.866 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.4.1 in 'deployment' mode
+May-06 12:24:40.877 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+May-06 12:24:40.936 [main] DEBUG nextflow.Session - Session uuid: 38e60696-c602-4a26-8acd-f93c1fd1c991
+May-06 12:24:40.937 [main] DEBUG nextflow.Session - Run name: adoring_tuckerman
+May-06 12:24:40.937 [main] DEBUG nextflow.Session - Executor pool size: 28
+May-06 12:24:40.976 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 22.04.0 build 5697
+  Created: 23-04-2022 18:00 UTC (11:00 PDT)
+  System: Linux 3.10.0-1160.62.1.el7.x86_64
+  Runtime: Groovy 3.0.10 on OpenJDK 64-Bit Server VM 11.0.9.1-internal+0-adhoc..src
+  Encoding: UTF-8 (UTF-8)
+  Process: 11287@pplhpc1ln1.childrens.sea.kids [172.31.192.33]
+  CPUs: 28 - Mem: 125.5 GB (13.4 GB) - Swap: 4 GB (4 GB)
+May-06 12:24:41.020 [main] DEBUG nextflow.Session - Work-dir: /home/jsmi26/temp [gpfs]
+May-06 12:24:41.040 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+May-06 12:24:41.052 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+May-06 12:24:41.089 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
+May-06 12:24:41.101 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 29; maxThreads: 1000
+May-06 12:24:41.242 [main] DEBUG nextflow.Session - Session start invoked
+May-06 12:24:41.521 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+May-06 12:24:42.057 [main] INFO  nextflow.Nextflow - R N A S E Q -  P I P E L I N E
+===================================
+"Project           : /active/taylor_s/people/jsmi26/RPDEV/rnaseq_count_nf"
+"Project workDir   : /home/jsmi26/temp"
+"Container Engine  : singularity"
+"Genome            : /active/taylor_s/people/jsmi26/RSC/kappe_s_2022.04_PF_LiverStage/species_genomes/PfHsMmu_genomicDNA.fasta"
+"Samples           : test_data/sample_sheet.txt" 
+
+May-06 12:24:42.124 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:STAR_GENOMEGENERATE` matches process star_index:STAR_GENOMEGENERATE
+May-06 12:24:42.129 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: pbspro
+May-06 12:24:42.129 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'pbspro'
+May-06 12:24:42.138 [main] DEBUG nextflow.executor.Executor - [warm up] executor > pbspro
+May-06 12:24:42.144 [main] DEBUG n.processor.TaskPollingMonitor - Creating task monitor for executor 'pbspro' > capacity: 100; pollInterval: 5s; dumpInterval: 5m 
+May-06 12:24:42.148 [main] DEBUG n.executor.AbstractGridExecutor - Creating executor 'pbspro' > queue-stat-interval: 1m
+May-06 12:24:42.213 [main] DEBUG nextflow.Session - Workflow process names [dsl2]: FASTQC, star_index:STAR_GENOMEGENERATE, STAR_GENOMEGENERATE, STAR_ALIGN
+May-06 12:24:42.215 [main] DEBUG nextflow.Session - Ignite dataflow network (4)
+May-06 12:24:42.237 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > star_index:STAR_GENOMEGENERATE
+May-06 12:24:42.270 [main] DEBUG nextflow.script.ScriptRunner - > Await termination 
+May-06 12:24:42.270 [main] DEBUG nextflow.Session - Session await
+May-06 12:24:42.364 [Actor Thread 13] DEBUG nextflow.container.SingularityCache - Singularity found local store for image=https://depot.galaxyproject.org/singularity/mulled-v2-1fa26d1ce03c295fe2fdcf85831a92fbcbd7e8c2:1c4c32d87798d425c970ececfbadd155e7560277-0; path=/home/jsmi26/singularity/depot.galaxyproject.org-singularity-mulled-v2-1fa26d1ce03c295fe2fdcf85831a92fbcbd7e8c2-1c4c32d87798d425c970ececfbadd155e7560277-0.img
+May-06 12:24:42.377 [Actor Thread 11] DEBUG nextflow.util.CacheHelper - [WARN] Unknown hashing type: class nextflow.util.MemoryUnit
+May-06 12:24:42.775 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process star_index:STAR_GENOMEGENERATE (PfHsMmu_genomicDNA.fasta) > jobId: 98438.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/99/b13d162aaf462e2a8dfee6405ef0aa
+May-06 12:24:42.776 [Task submitter] INFO  nextflow.Session - [99/b13d16] Submitted process > star_index:STAR_GENOMEGENERATE (PfHsMmu_genomicDNA.fasta)
+May-06 12:29:47.168 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor pbspro > tasks to be completed: 1 -- submitted tasks are shown below
+~> TaskHandler[jobId: 98438.pplhpc1hn2.childrens.sea.kids; id: 1; name: star_index:STAR_GENOMEGENERATE (PfHsMmu_genomicDNA.fasta); status: RUNNING; exit: -; error: -; workDir: /home/jsmi26/temp/99/b13d162aaf462e2a8dfee6405ef0aa started: 1651865087167; exited: -; ]
+May-06 12:34:47.184 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor pbspro > tasks to be completed: 1 -- submitted tasks are shown below
+~> TaskHandler[jobId: 98438.pplhpc1hn2.childrens.sea.kids; id: 1; name: star_index:STAR_GENOMEGENERATE (PfHsMmu_genomicDNA.fasta); status: RUNNING; exit: -; error: -; workDir: /home/jsmi26/temp/99/b13d162aaf462e2a8dfee6405ef0aa started: 1651865087167; exited: -; ]
+May-06 12:39:47.199 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor pbspro > tasks to be completed: 1 -- submitted tasks are shown below
+~> TaskHandler[jobId: 98438.pplhpc1hn2.childrens.sea.kids; id: 1; name: star_index:STAR_GENOMEGENERATE (PfHsMmu_genomicDNA.fasta); status: RUNNING; exit: -; error: -; workDir: /home/jsmi26/temp/99/b13d162aaf462e2a8dfee6405ef0aa started: 1651865087167; exited: -; ]
+May-06 12:44:47.211 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor pbspro > tasks to be completed: 1 -- submitted tasks are shown below
+~> TaskHandler[jobId: 98438.pplhpc1hn2.childrens.sea.kids; id: 1; name: star_index:STAR_GENOMEGENERATE (PfHsMmu_genomicDNA.fasta); status: RUNNING; exit: -; error: -; workDir: /home/jsmi26/temp/99/b13d162aaf462e2a8dfee6405ef0aa started: 1651865087167; exited: -; ]
+May-06 12:49:47.223 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor pbspro > tasks to be completed: 1 -- submitted tasks are shown below
+~> TaskHandler[jobId: 98438.pplhpc1hn2.childrens.sea.kids; id: 1; name: star_index:STAR_GENOMEGENERATE (PfHsMmu_genomicDNA.fasta); status: RUNNING; exit: -; error: -; workDir: /home/jsmi26/temp/99/b13d162aaf462e2a8dfee6405ef0aa started: 1651865087167; exited: -; ]
+May-06 12:54:47.242 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor pbspro > tasks to be completed: 1 -- submitted tasks are shown below
+~> TaskHandler[jobId: 98438.pplhpc1hn2.childrens.sea.kids; id: 1; name: star_index:STAR_GENOMEGENERATE (PfHsMmu_genomicDNA.fasta); status: RUNNING; exit: -; error: -; workDir: /home/jsmi26/temp/99/b13d162aaf462e2a8dfee6405ef0aa started: 1651865087167; exited: -; ]
+May-06 12:59:47.255 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor pbspro > tasks to be completed: 1 -- submitted tasks are shown below
+~> TaskHandler[jobId: 98438.pplhpc1hn2.childrens.sea.kids; id: 1; name: star_index:STAR_GENOMEGENERATE (PfHsMmu_genomicDNA.fasta); status: RUNNING; exit: -; error: -; workDir: /home/jsmi26/temp/99/b13d162aaf462e2a8dfee6405ef0aa started: 1651865087167; exited: -; ]
+May-06 13:04:47.267 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor pbspro > tasks to be completed: 1 -- submitted tasks are shown below
+~> TaskHandler[jobId: 98438.pplhpc1hn2.childrens.sea.kids; id: 1; name: star_index:STAR_GENOMEGENERATE (PfHsMmu_genomicDNA.fasta); status: RUNNING; exit: -; error: -; workDir: /home/jsmi26/temp/99/b13d162aaf462e2a8dfee6405ef0aa started: 1651865087167; exited: -; ]
+May-06 13:09:47.280 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor pbspro > tasks to be completed: 1 -- submitted tasks are shown below
+~> TaskHandler[jobId: 98438.pplhpc1hn2.childrens.sea.kids; id: 1; name: star_index:STAR_GENOMEGENERATE (PfHsMmu_genomicDNA.fasta); status: RUNNING; exit: -; error: -; workDir: /home/jsmi26/temp/99/b13d162aaf462e2a8dfee6405ef0aa started: 1651865087167; exited: -; ]
+May-06 13:14:47.295 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor pbspro > tasks to be completed: 1 -- submitted tasks are shown below
+~> TaskHandler[jobId: 98438.pplhpc1hn2.childrens.sea.kids; id: 1; name: star_index:STAR_GENOMEGENERATE (PfHsMmu_genomicDNA.fasta); status: RUNNING; exit: -; error: -; workDir: /home/jsmi26/temp/99/b13d162aaf462e2a8dfee6405ef0aa started: 1651865087167; exited: -; ]
+May-06 13:19:47.307 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor pbspro > tasks to be completed: 1 -- submitted tasks are shown below
+~> TaskHandler[jobId: 98438.pplhpc1hn2.childrens.sea.kids; id: 1; name: star_index:STAR_GENOMEGENERATE (PfHsMmu_genomicDNA.fasta); status: RUNNING; exit: -; error: -; workDir: /home/jsmi26/temp/99/b13d162aaf462e2a8dfee6405ef0aa started: 1651865087167; exited: -; ]
+May-06 13:24:47.319 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor pbspro > tasks to be completed: 1 -- submitted tasks are shown below
+~> TaskHandler[jobId: 98438.pplhpc1hn2.childrens.sea.kids; id: 1; name: star_index:STAR_GENOMEGENERATE (PfHsMmu_genomicDNA.fasta); status: RUNNING; exit: -; error: -; workDir: /home/jsmi26/temp/99/b13d162aaf462e2a8dfee6405ef0aa started: 1651865087167; exited: -; ]
+May-06 13:29:47.337 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor pbspro > tasks to be completed: 1 -- submitted tasks are shown below
+~> TaskHandler[jobId: 98438.pplhpc1hn2.childrens.sea.kids; id: 1; name: star_index:STAR_GENOMEGENERATE (PfHsMmu_genomicDNA.fasta); status: RUNNING; exit: -; error: -; workDir: /home/jsmi26/temp/99/b13d162aaf462e2a8dfee6405ef0aa started: 1651865087167; exited: -; ]
+May-06 13:34:47.350 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor pbspro > tasks to be completed: 1 -- submitted tasks are shown below
+~> TaskHandler[jobId: 98438.pplhpc1hn2.childrens.sea.kids; id: 1; name: star_index:STAR_GENOMEGENERATE (PfHsMmu_genomicDNA.fasta); status: RUNNING; exit: -; error: -; workDir: /home/jsmi26/temp/99/b13d162aaf462e2a8dfee6405ef0aa started: 1651865087167; exited: -; ]
+May-06 13:39:47.361 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor pbspro > tasks to be completed: 1 -- submitted tasks are shown below
+~> TaskHandler[jobId: 98438.pplhpc1hn2.childrens.sea.kids; id: 1; name: star_index:STAR_GENOMEGENERATE (PfHsMmu_genomicDNA.fasta); status: RUNNING; exit: -; error: -; workDir: /home/jsmi26/temp/99/b13d162aaf462e2a8dfee6405ef0aa started: 1651865087167; exited: -; ]
+May-06 13:44:47.380 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor pbspro > tasks to be completed: 1 -- submitted tasks are shown below
+~> TaskHandler[jobId: 98438.pplhpc1hn2.childrens.sea.kids; id: 1; name: star_index:STAR_GENOMEGENERATE (PfHsMmu_genomicDNA.fasta); status: RUNNING; exit: -; error: -; workDir: /home/jsmi26/temp/99/b13d162aaf462e2a8dfee6405ef0aa started: 1651865087167; exited: -; ]
+May-06 13:49:37.397 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 98438.pplhpc1hn2.childrens.sea.kids; id: 1; name: star_index:STAR_GENOMEGENERATE (PfHsMmu_genomicDNA.fasta); status: COMPLETED; exit: 0; error: -; workDir: /home/jsmi26/temp/99/b13d162aaf462e2a8dfee6405ef0aa started: 1651865087167; exited: 2022-05-06T20:49:35.111088Z; ]
+May-06 13:49:37.448 [Task monitor] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'FileTransfer' minSize=4; maxSize=4; workQueue=LinkedBlockingQueue[10000]; allowCoreThreadTimeout=false
+May-06 13:49:37.457 [main] DEBUG nextflow.Session - Session await > all process finished
+May-06 13:49:37.469 [main] DEBUG nextflow.Session - Session await > all barriers passed
+May-06 13:49:37.475 [main] INFO  nextflow.script.BaseScript - Pipeline completed at: 2022-05-06T13:49:37.470519-07:00
+May-06 13:49:37.477 [main] INFO  nextflow.script.BaseScript - Execution status: OK
+May-06 13:49:42.485 [main] INFO  nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 13:50:42.490 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 13:51:42.495 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 13:52:42.500 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 13:53:42.503 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 13:54:42.507 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 13:55:42.511 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 13:56:42.515 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 13:57:42.519 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 13:58:42.523 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 13:59:42.528 [main] INFO  nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:00:42.531 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:01:42.534 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:02:42.537 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:03:42.540 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:04:42.543 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:05:42.547 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:06:42.550 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:07:42.553 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:08:42.556 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:09:42.560 [main] INFO  nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:10:42.564 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:11:42.566 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:12:42.569 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:13:42.572 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:14:42.574 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:15:42.577 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:16:42.578 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:17:42.580 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:18:42.582 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:19:42.585 [main] INFO  nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:20:42.587 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:21:42.589 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:22:42.591 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:23:42.594 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:24:42.596 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:25:42.598 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:26:42.599 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:27:42.601 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:28:42.603 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:29:42.606 [main] INFO  nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:30:42.609 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:31:42.611 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:32:42.613 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:33:42.614 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:34:42.616 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:35:42.618 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:36:42.620 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:37:42.622 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:38:42.624 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:39:42.627 [main] INFO  nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:40:42.631 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:41:42.633 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:42:42.635 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:43:42.637 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:44:42.639 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:45:42.640 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:45:51.620 [SIGINT handler] DEBUG nextflow.Session - Session aborted -- Cause: SIGINT
+May-06 14:45:52.864 [SIGINT handler] INFO  nextflow.Session - Adieu
+May-06 14:45:58.085 [SIGINT handler] INFO  nextflow.Session - Adieu
+May-06 14:46:18.253 [SIGINT handler] INFO  nextflow.Session - Adieu
+May-06 14:46:18.517 [SIGINT handler] INFO  nextflow.Session - Adieu
+May-06 14:46:19.109 [SIGINT handler] INFO  nextflow.Session - Adieu
+May-06 14:46:19.513 [SIGINT handler] INFO  nextflow.Session - Adieu
+May-06 14:46:20.036 [SIGINT handler] INFO  nextflow.Session - Adieu
+May-06 14:46:42.645 [main] DEBUG nextflow.Session - Waiting files transfer to complete (1 files)
+May-06 14:46:51.765 [SIGINT handler] INFO  nextflow.Session - Adieu

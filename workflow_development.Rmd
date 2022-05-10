@@ -8,7 +8,7 @@ output: html_document
 # Set-up 
 
 ```{r echo=FALSE}
-styler::style_file("rnaseq_star_counts_nextflow.Rmd")
+styler::style_file("workflow_development.Rmd")
 ```
 
 ```{r set-up}
@@ -39,7 +39,7 @@ conda env create -f env/nextflow_env.yaml
 conda activate nextflow_env
 ```
 
-If testing interactively on cybertron, you will need to request the following resources:
+If testing interactively on cybertron, you will need to request the following resources to run STAR-aligner. 
 
 ```{bash}
 qsub -I -q <queue_name> -P $(voucher info <project_name>) -l select=1:mem=32gb:ncpus=4

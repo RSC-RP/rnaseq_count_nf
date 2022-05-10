@@ -8,6 +8,7 @@ process MULTIQC {
 
     input:
     path multiqc_files
+    val sample_sheet
 
     output:
     path "*multiqc_report.html", emit: report
@@ -21,7 +22,7 @@ process MULTIQC {
     script:
     def args = task.ext.args ?: ''
     """
-    multiqc -f $args .
+    multiqc -v --filename "${sample_sheet}_multiqc_report.html" -f $args ${multiqc_files}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

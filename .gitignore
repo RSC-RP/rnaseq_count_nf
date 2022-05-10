@@ -5,7 +5,9 @@
 .Ruserdata
 .nextflow/
 .nextflow.log*
+*.{1..100}
 *.run
 .pytest_cache/
+resources/
 results/
 test_data/

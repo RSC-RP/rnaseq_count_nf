@@ -1,9 +1,14 @@
 nextflow.enable.dsl = 2
 
 include { FASTQC } from './modules/nf-core/modules/fastqc/main.nf'
+include { MULTIQC } from './modules/nf-core/modules/multiqc/main.nf'
 include { STAR_ALIGN } from './modules/nf-core/modules/star/align/main.nf'
 include { STAR_GENOMEGENERATE } from './modules/nf-core/modules/star/genomegenerate/main.nf'
 
+//Sample manifest (params.sample_sheet) validation step to ensure appropriate formatting. 
+//See bin/check_samplesheet.py from NF-CORE 
+
+//Create the input channel which contains the SAMPLE_ID, whether its single-end, and the file paths for the fastqs. 
 meta_ch = Channel.fromPath(file(params.sample_sheet, checkIfExists: true))
     .splitCsv(header: true, sep: '\t')
     .map { meta -> [ [ "id":meta["id"], "single_end":meta["single_end"].toBoolean() ], //meta
@@ -27,11 +32,11 @@ log.info """\
 workflow rnaseq_count {
     // QC on the sequenced reads
     FASTQC(meta_ch)
-    //Stage the gtf file. 
+    //Stage the gtf file for STAR aligner
     Channel.fromPath(params.gtf)
-        .ifEmpty { error  "No file found ${params.gtf_url}." }
-        .set{gtf}  
-    //Stage the genome index directory.
+        .ifEmpty { error  "No file found ${params.gtf}." }
+        .set{gtf}
+    //Stage the genome index directory
     Channel.fromPath(params.index)
         .ifEmpty { error "No directory found ${params.index}." }
         .set{index}
@@ -40,6 +45,12 @@ workflow rnaseq_count {
               params.star_ignore_sjdbgtf, 
               params.seq_platform,
               params.seq_center)
+    //Concatenate the fastqc and star-aligner QC results using MultiQC for a single report
+    sample_sheet=file(params.sample_sheet)
+    multiqc_ch = FASTQC.out.fastqc.collect()
+        .combine(STAR_ALIGN.out.log_final.collect())
+        .combine(STAR_ALIGN.out.read_counts.collect())
+    MULTIQC(multiqc_ch, sample_sheet.simpleName)
 }
 
 //Generate the index file 
