@@ -42,6 +42,7 @@ process STAR_ALIGN {
     def seq_platform    = seq_platform ? "'PL:$seq_platform'" : ""
     def seq_center      = seq_center ? "--outSAMattrRGline ID:$prefix 'CN:$seq_center' 'SM:$prefix' $seq_platform " : "--outSAMattrRGline ID:$prefix 'SM:$prefix' $seq_platform "
     def out_sam_type    = (args.contains('--outSAMtype')) ? '' : '--outSAMtype BAM Unsorted'
+    def memory   = task.memory ? "--limitBAMsortRAM ${task.memory.toBytes() - 100000000}" : ''
     def mv_unsorted_bam = (args.contains('--outSAMtype BAM Unsorted SortedByCoordinate')) ? "mv ${prefix}.Aligned.out.bam ${prefix}.Aligned.unsort.out.bam" : ''
     """
     STAR \\
@@ -50,6 +51,7 @@ process STAR_ALIGN {
         --runThreadN $task.cpus \\
         --outFileNamePrefix $prefix. \\
         $out_sam_type \\
+        $memory \\
         $ignore_gtf \\
         $seq_center \\
         $args

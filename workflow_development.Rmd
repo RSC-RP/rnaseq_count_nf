@@ -145,6 +145,22 @@ The final desired command line parameters will be:
 
 `--twopassMode Basic --twopass1readsN -1 --readFilesCommand "gunzip -c" --outSAMattributes NH HI NM MD AS nM jM jI XS --quantMode GeneCounts`
 
+**The quant mode description:**
+
+> Counting number of reads per gene. With --quantMode GeneCounts option STAR will count number reads per gene while mapping. A read is counted if *it overlaps (1nt or more) one and only one gene*. Both ends of the pairedend read are checked for overlaps.
+
+https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf
+
+> N_multimapping is the total number of multimapping reads, which are not counted at all, so the number is the same for each column.
+N_noFeature: if a read overlaps a gene on the opposite strand, it will be counted as noFeature for one of the stranded columns, but will be counted towards the gene (and not as noFeature) in the unstranded column. Hence N_noFeature(unstranded) can be < N_noFeature(+) + N_noFeature(-).
+
+https://github.com/alexdobin/STAR/issues/703
+
+To trick STAR into counting how many read map to entire genes (including both introns and exons), you can use --sjdbGTFfile gencode.vM8.annotation.gtf --sjdbGTFfeatureExon gene --sjdbGTFtagExonParentTranscript gene_id --sjdbGTFtagExonParentGene gene_name .
+This resulted in only 100k "no feature" reads (<10%).
+http://seqanswers.com/forums/showthread.php?t=65066
+
+
 ## STAR Index 
 
 ```{bash}
@@ -163,10 +179,20 @@ nf_set_up <- "nextflow.enable.dsl = 2\n\ninclude { FASTQC } from './modules/nf-c
 cat(nf_set_up, file = "main.nf")
 ```
 
-Next include `STAR_ALIGN`  in the same format as `FASTQC` to the nextflow `main.nf` file. 
+
+## Processes
+
+Next include `STAR_ALIGN`  in the same format as `FASTQC` to the nextflow `main.nf` file, such that the `main.nf` will contains the following lines:
+
+```
+include { FASTQC } from './modules/nf-core/modules/fastqc/main.nf'
+include { MULTIQC } from './modules/nf-core/modules/multiqc/main.nf'
+include { STAR_ALIGN } from './modules/nf-core/modules/star/align/main.nf'
+include { STAR_GENOMEGENERATE } from './modules/nf-core/modules/star/genomegenerate/main.nf'
+```
 
 
-## Define the Input Channels
+## Input Channels
 
 The `main.nf` script is also the location of the [channels](https://www.nextflow.io/docs/latest/channel.html#channel-factory) that need to be defined as inputs to the processes from the module files. 
 

@@ -5,7 +5,8 @@
 .Ruserdata
 .nextflow/
 .nextflow.log*
-*.{1..100}
+*.log.*
+*.pdf.*
 *.run
 .pytest_cache/
 resources/

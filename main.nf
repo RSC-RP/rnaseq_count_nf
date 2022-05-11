@@ -8,13 +8,6 @@ include { STAR_GENOMEGENERATE } from './modules/nf-core/modules/star/genomegener
 //Sample manifest (params.sample_sheet) validation step to ensure appropriate formatting. 
 //See bin/check_samplesheet.py from NF-CORE 
 
-//Create the input channel which contains the SAMPLE_ID, whether its single-end, and the file paths for the fastqs. 
-meta_ch = Channel.fromPath(file(params.sample_sheet, checkIfExists: true))
-    .splitCsv(header: true, sep: '\t')
-    .map { meta -> [ [ "id":meta["id"], "single_end":meta["single_end"].toBoolean() ], //meta
-                     [ file(meta["r1"], checkIfExists: true), file(meta["r2"], checkIfExists: true) ] //reads
-                   ]}
-
 //Define stdout message for the command line use
 idx_or_fasta = (params.index == '' ? params.fasta : params.index)
 log.info """\
@@ -30,26 +23,37 @@ log.info """\
 
 //run the workflow for star-aligner to generate counts
 workflow rnaseq_count {
-    // QC on the sequenced reads
-    FASTQC(meta_ch)
+    //Create the input channel which contains the SAMPLE_ID, whether its single-end, and the file paths for the fastqs. 
+     Channel.fromPath(file(params.sample_sheet))
+        .ifEmpty { error  "No file found ${params.sample_sheet}." }
+        .splitCsv(header: true, sep: '\t')
+        .map { meta -> [ [ "id":meta["id"], "single_end":meta["single_end"].toBoolean() ], //meta
+                        [ file(meta["r1"], checkIfExists: true), file(meta["r2"], checkIfExists: true) ] //reads
+                    ]}
+        .set{ meta_ch }
     //Stage the gtf file for STAR aligner
     Channel.fromPath(params.gtf)
         .ifEmpty { error  "No file found ${params.gtf}." }
-        .set{gtf}
+        .collect() //collect converts this to a value channel and used multiple times
+        .set{ gtf }
     //Stage the genome index directory
     Channel.fromPath(params.index)
         .ifEmpty { error "No directory found ${params.index}." }
-        .set{index}
-   //align reads to genome 
-    STAR_ALIGN(meta_ch, index, gtf, 
+        .collect() //collect converts this to a value channel and used multiple times
+        .set{ index }
+    //align reads to genome 
+    STAR_ALIGN(meta_ch, index, gtf,
               params.star_ignore_sjdbgtf, 
               params.seq_platform,
               params.seq_center)
-    //Concatenate the fastqc and star-aligner QC results using MultiQC for a single report
+    // QC on the sequenced reads
+    FASTQC(meta_ch)
+    //Combine the fastqc and star-aligner QC output into a single channel
     sample_sheet=file(params.sample_sheet)
     multiqc_ch = FASTQC.out.fastqc.collect()
         .combine(STAR_ALIGN.out.log_final.collect())
         .combine(STAR_ALIGN.out.read_counts.collect())
+    //Using MultiQC for a single QC report
     MULTIQC(multiqc_ch, sample_sheet.simpleName)
 }
 

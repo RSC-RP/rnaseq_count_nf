@@ -35,6 +35,9 @@ groundhog::groundhog.library(pkgs, "2022-04-18")
 # Set-up Environment 
 
 ```{bash}
+git clone 
 conda env create -f env/nextflow_env.yaml
 conda activate nextflow_env
 ```
+
+
