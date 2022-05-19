@@ -170,6 +170,20 @@ nf-core modules info star/genomegenerate
 
 Again this follows the same process where we can take a look at the inputs listed from `nf-core modules info` command, and then structure our nextflow channels in the `main.nf` script (below) to match it. This process continues for all the 
 
+## Custom Modules 
+
+Creating a custom module is described for the [`split_bam.py`](http://rseqc.sourceforge.net/#spilt-bam-py) command line tool, which will help with quantifying the rRNA reads (contamination) in  RNAseq samples. 
+
+```{bash}
+conda activate nextflow 
+nf-core modules create 
+```
+
+Follow the prompts provided on the command line. The first one will be for the name of the `tool/subtool`, so for this pipeline I entered `rseqc/splitbam` and noted that it need the standard `meta` input shown above where the channel includes the sample ID (`id`) and (`single_end`) information. 
+
+This created a template module directory called `splitbam.nf` (rather than main.nf above), and it lacks a `meta.yml` file, but this can be created later [**TO DO**]. Open the `splitbam.nf` and modify the shell script content under `script:` and add the appropriate commands for the `split_bam.py`, and add any additional inputs or outputs.  
+
+
 # Create the nexflow script
 
 Initialize a nextflow workflow file called `main.nf` that uses DSL2 syntax and the fastqc module that was installed. Then edit the nexflow workflow `main.nf` in the text editor to include the workflow components.
@@ -178,7 +192,6 @@ Initialize a nextflow workflow file called `main.nf` that uses DSL2 syntax and t
 nf_set_up <- "nextflow.enable.dsl = 2\n\ninclude { FASTQC } from './modules/nf-core/modules/fastqc/main'"
 cat(nf_set_up, file = "main.nf")
 ```
-
 
 ## Processes
 
@@ -376,7 +389,7 @@ singularity shell --bind test_data/:/mnt_data lolcow_latest.sif
 Or run docker container locally
 ```{bash}
 docker pull quay.io/biocontainers/rseqc:4.0.0--py38h4a8c8d9_1
-docker run -it --rm -v $PWD/test_data:/test_data quay.io/biocontainers/star
+docker run -it --rm -v $PWD/test_data:/test_data quay.io/biocontainers/rseqc:4.0.0--py38h4a8c8d9_1
 ```
 
 # Config Profiles 
