@@ -3,6 +3,17 @@ title: "STAR aligner and counts using Nextflow"
 author: "Jenny L Smith"
 date: "`r Sys.Date()`"
 output: html_document
+always_allow_html: true
+output:
+  html_document:
+    theme: yeti
+    highlight: breezedark
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    number_sections: true
+    fig_caption: true
+    df_print: paged
 ---
 
 # Set-up 
@@ -14,6 +25,7 @@ styler::style_file("workflow_development.Rmd")
 ```{r set-up}
 knitr::opts_knit$set(root.dir = PROJHOME)
 knitr::opts_chunk$set(
+  eval = FALSE,
   tidy.opts = list(width.cutoff = 50),
   tidy = TRUE,
   fig.align = "center",
@@ -30,7 +42,10 @@ pkgs <- c("stringr", "magrittr", "ggplot2", "dplyr", "tidyr", "tibble")
 groundhog::groundhog.library(pkgs, "2022-04-18")
 ```
 
-# Define Functions 
+
+# Nextflow Overview 
+
+this should be a 1000ft overview of the general DSL2 
 
 # Set-up Environment 
 
