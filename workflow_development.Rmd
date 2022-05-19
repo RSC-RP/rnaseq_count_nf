@@ -373,6 +373,12 @@ singularity pull library://sylabsed/examples/lolcow
 singularity shell --bind test_data/:/mnt_data lolcow_latest.sif
 ```
 
+Or run docker container locally
+```{bash}
+docker pull quay.io/biocontainers/rseqc:4.0.0--py38h4a8c8d9_1
+docker run -it --rm -v $PWD/test_data:/test_data quay.io/biocontainers/star
+```
+
 # Config Profiles 
 
 Nextflow allows for [profiles](https://www.nextflow.io/docs/latest/config.html#config-profiles) to be created in the configuration file. This can provide an effecient mechanism for switching between the different processes executors, such as running locally with docker for testing vs running localling on cybertron with singularity for testing.
