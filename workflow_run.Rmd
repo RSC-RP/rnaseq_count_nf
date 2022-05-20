@@ -1,5 +1,5 @@
 ---
-title: "Nextflow Pipeline Run Instructions"
+title: "Nextflow 'rnaseq_count_nf' Pipeline Run Instructions"
 author: "Jenny L Smith"
 date: "`r Sys.Date()`"
 output: html_document
@@ -24,20 +24,23 @@ options(stringsAsFactors = FALSE, max.print = 100)
 table <- function(..., useNA = "ifany") base::table(..., useNA = useNA)
 ```
 
-```{r}
-library(groundhog)
-pkgs <- c("stringr", "magrittr", "ggplot2", "dplyr", "tidyr", "tibble")
-groundhog::groundhog.library(pkgs, "2022-04-18")
-```
-
-# Define Functions 
-
 # Set-up Environment 
 
 ```{bash}
-git clone 
-conda env create -f env/nextflow_env.yaml
-conda activate nextflow_env
+git clone XXXX
+conda env create -f env/nextflow.yaml
+conda activate nextflow
 ```
+
+# Define Input Files 
+
+Edit the `nextflow.config` file to include the appropriate filepaths for the samples to be included in the pipeline, and the appropriate genome references.
+
+# Share the Data
+
+```{bash}
+rsync -av results /active/kappe_s/kappe/Gigliola/2022.04_jsmi26_PF_LiverStage/rnaseq_alignment_quant
+```
+
 
 

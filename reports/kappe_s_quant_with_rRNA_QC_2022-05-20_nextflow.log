@@ -1,0 +1,361 @@
+May-20 13:59:58.591 [main] DEBUG nextflow.cli.Launcher - $> nextflow -c ./nextflow.config -log reports/kappe_s_quant_with_rRNA_QC_2022-05-20_nextflow.log run main.nf -entry rnaseq_count -profile PBS_singularity -with-report reports/kappe_s_quant_with_rRNA_QC_2022-05-20.html -with-dag dag/kappe_s_quant_with_rRNA_QC_2022-05-20_dag.pdf -cache TRUE -resume
+May-20 13:59:58.700 [main] INFO  nextflow.cli.CmdRun - N E X T F L O W  ~  version 22.04.0
+May-20 13:59:58.726 [main] DEBUG nextflow.config.ConfigBuilder - Found config local: /active/taylor_s/people/jsmi26/RPDEV/rnaseq_count_nf/nextflow.config
+May-20 13:59:58.729 [main] DEBUG nextflow.config.ConfigBuilder - User config file: /active/taylor_s/people/jsmi26/RPDEV/rnaseq_count_nf/./nextflow.config
+May-20 13:59:58.729 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /active/taylor_s/people/jsmi26/RPDEV/rnaseq_count_nf/nextflow.config
+May-20 13:59:58.730 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /active/taylor_s/people/jsmi26/RPDEV/rnaseq_count_nf/nextflow.config
+May-20 13:59:58.758 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `PBS_singularity`
+May-20 13:59:59.647 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `PBS_singularity`
+May-20 13:59:59.662 [main] DEBUG nextflow.config.ConfigBuilder - Available config profiles: [PBS_conda, PBS_singularity, local_docker, local_singularity]
+May-20 13:59:59.720 [main] INFO  nextflow.cli.CmdRun - Launching `main.nf` [voluminous_mccarthy] DSL2 - revision: b8d6995ca8
+May-20 13:59:59.735 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; plugins-dir=/home/jsmi26/.nextflow/plugins; core-plugins: nf-amazon@1.7.1,nf-azure@0.13.1,nf-console@1.0.3,nf-ga4gh@1.0.3,nf-google@1.1.4,nf-sqldb@0.4.0,nf-tower@1.4.0
+May-20 13:59:59.738 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+May-20 13:59:59.753 [main] INFO  org.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+May-20 13:59:59.754 [main] INFO  org.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+May-20 13:59:59.762 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.4.1 in 'deployment' mode
+May-20 13:59:59.780 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+May-20 13:59:59.864 [main] DEBUG nextflow.Session - Session uuid: 2319c559-e18b-4829-b836-559f0c972c87
+May-20 13:59:59.864 [main] DEBUG nextflow.Session - Run name: voluminous_mccarthy
+May-20 13:59:59.865 [main] DEBUG nextflow.Session - Executor pool size: 28
+May-20 13:59:59.907 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 22.04.0 build 5697
+  Created: 23-04-2022 18:00 UTC (11:00 PDT)
+  System: Linux 3.10.0-1160.62.1.el7.x86_64
+  Runtime: Groovy 3.0.10 on OpenJDK 64-Bit Server VM 11.0.9.1-internal+0-adhoc..src
+  Encoding: UTF-8 (UTF-8)
+  Process: 11798@pplhpc1cn020.childrens.sea.kids [172.31.192.70]
+  CPUs: 28 - Mem: 503.6 GB (17.5 GB) - Swap: 4 GB (1.8 MB)
+May-20 13:59:59.966 [main] DEBUG nextflow.Session - Work-dir: /home/jsmi26/temp [gpfs]
+May-20 13:59:59.993 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+May-20 14:00:00.009 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+May-20 14:00:00.059 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
+May-20 14:00:00.074 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 29; maxThreads: 1000
+May-20 14:00:00.277 [main] DEBUG nextflow.Session - Session start invoked
+May-20 14:00:00.712 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+May-20 14:00:01.528 [main] INFO  nextflow.Nextflow - R N A S E Q -  P I P E L I N E
+===================================
+Project           : /active/taylor_s/people/jsmi26/RPDEV/rnaseq_count_nf
+Project workDir   : /home/jsmi26/temp
+Container Engine  : singularity
+Genome            : /active/taylor_s/people/jsmi26/RPDEV/rnaseq_count_nf/resources/STAR_2.7.9a/PfHsMmu
+Samples           : sample_sheets/kappe_s_PfHsMmu_sample_sheet.txt
+
+May-20 14:00:01.748 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:FASTQC` matches process rnaseq_count:FASTQC
+May-20 14:00:01.761 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: pbspro
+May-20 14:00:01.762 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'pbspro'
+May-20 14:00:01.779 [main] DEBUG nextflow.executor.Executor - [warm up] executor > pbspro
+May-20 14:00:01.789 [main] DEBUG n.processor.TaskPollingMonitor - Creating task monitor for executor 'pbspro' > capacity: 100; pollInterval: 5s; dumpInterval: 5m 
+May-20 14:00:01.796 [main] DEBUG n.executor.AbstractGridExecutor - Creating executor 'pbspro' > queue-stat-interval: 1m
+May-20 14:00:01.898 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:STAR_ALIGN` matches process rnaseq_count:STAR_ALIGN
+May-20 14:00:01.902 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: pbspro
+May-20 14:00:01.902 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'pbspro'
+May-20 14:00:01.917 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:RSEQC_SPLITBAM` matches process rnaseq_count:RSEQC_SPLITBAM
+May-20 14:00:01.918 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: pbspro
+May-20 14:00:01.919 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'pbspro'
+May-20 14:00:01.942 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:MULTIQC` matches process rnaseq_count:MULTIQC
+May-20 14:00:01.943 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: pbspro
+May-20 14:00:01.944 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'pbspro'
+May-20 14:00:01.947 [main] DEBUG nextflow.Session - Workflow process names [dsl2]: FASTQC, rnaseq_count:FASTQC, STAR_GENOMEGENERATE, MULTIQC, rnaseq_count:RSEQC_SPLITBAM, STAR_ALIGN, rnaseq_count:MULTIQC, RSEQC_SPLITBAM, rnaseq_count:STAR_ALIGN
+May-20 14:00:01.948 [main] DEBUG nextflow.Session - Ignite dataflow network (8)
+May-20 14:00:01.954 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > rnaseq_count:FASTQC
+May-20 14:00:01.956 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > rnaseq_count:STAR_ALIGN
+May-20 14:00:01.958 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > rnaseq_count:RSEQC_SPLITBAM
+May-20 14:00:01.958 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > rnaseq_count:MULTIQC
+May-20 14:00:01.961 [main] DEBUG nextflow.script.ScriptRunner - > Await termination 
+May-20 14:00:01.961 [main] DEBUG nextflow.Session - Session await
+May-20 14:00:02.178 [Actor Thread 25] DEBUG nextflow.container.SingularityCache - Singularity found local store for image=https://depot.galaxyproject.org/singularity/star:2.7.9a--h9ee0642_0; path=/home/jsmi26/singularity/depot.galaxyproject.org-singularity-star-2.7.9a--h9ee0642_0.img
+May-20 14:00:02.180 [Actor Thread 51] DEBUG nextflow.container.SingularityCache - Singularity found local store for image=https://depot.galaxyproject.org/singularity/fastqc:0.11.9--0; path=/home/jsmi26/singularity/depot.galaxyproject.org-singularity-fastqc-0.11.9--0.img
+May-20 14:00:02.238 [Actor Thread 35] DEBUG nextflow.util.CacheHelper - [WARN] Unknown hashing type: class nextflow.util.MemoryUnit
+May-20 14:00:02.399 [Actor Thread 59] INFO  nextflow.processor.TaskProcessor - [b9/4aaab6] Cached process > rnaseq_count:FASTQC (L3Pf3_S4)
+May-20 14:00:02.399 [Actor Thread 28] INFO  nextflow.processor.TaskProcessor - [37/6f6d69] Cached process > rnaseq_count:FASTQC (Day0.Naive_L1Pf7)
+May-20 14:00:02.399 [Actor Thread 15] INFO  nextflow.processor.TaskProcessor - [10/85e65a] Cached process > rnaseq_count:FASTQC (L3Pf2_S8)
+May-20 14:00:02.399 [Actor Thread 11] INFO  nextflow.processor.TaskProcessor - [a7/0f9f38] Cached process > rnaseq_count:FASTQC (L3Pf2_S2)
+May-20 14:00:02.399 [Actor Thread 21] INFO  nextflow.processor.TaskProcessor - [8b/60b5d8] Cached process > rnaseq_count:FASTQC (Day2.GFP_L1Pf2)
+May-20 14:00:02.399 [Actor Thread 10] INFO  nextflow.processor.TaskProcessor - [89/e1fb10] Cached process > rnaseq_count:FASTQC (L3Pf1_S1)
+May-20 14:00:02.399 [Actor Thread 8] INFO  nextflow.processor.TaskProcessor - [76/ff5445] Cached process > rnaseq_count:FASTQC (L1PfM1_S13)
+May-20 14:00:02.399 [Actor Thread 3] INFO  nextflow.processor.TaskProcessor - [2b/d119fe] Cached process > rnaseq_count:FASTQC (Day2.NoGFP_L1Pf1)
+May-20 14:00:02.399 [Actor Thread 38] INFO  nextflow.processor.TaskProcessor - [99/a92e9e] Cached process > rnaseq_count:FASTQC (Day4.GFP_L1Pf4)
+May-20 14:00:02.399 [Actor Thread 16] INFO  nextflow.processor.TaskProcessor - [be/1f4a6d] Cached process > rnaseq_count:FASTQC (L2Pf2_S2)
+May-20 14:00:02.399 [Actor Thread 31] INFO  nextflow.processor.TaskProcessor - [04/30fa43] Cached process > rnaseq_count:FASTQC (L3Pf1_S7)
+May-20 14:00:02.399 [Actor Thread 23] INFO  nextflow.processor.TaskProcessor - [01/fcb2b9] Cached process > rnaseq_count:FASTQC (TR2_L1Pf2_S1)
+May-20 14:00:02.399 [Actor Thread 53] INFO  nextflow.processor.TaskProcessor - [57/758aa6] Cached process > rnaseq_count:FASTQC (L2Pf3_S3)
+May-20 14:00:02.399 [Actor Thread 29] INFO  nextflow.processor.TaskProcessor - [7c/a129ae] Cached process > rnaseq_count:FASTQC (TR2_L2Pf2_S7)
+May-20 14:00:02.400 [Actor Thread 39] INFO  nextflow.processor.TaskProcessor - [3a/97ca30] Cached process > rnaseq_count:FASTQC (L3Pf4_S10)
+May-20 14:00:02.400 [Actor Thread 32] INFO  nextflow.processor.TaskProcessor - [fc/f17d34] Cached process > rnaseq_count:FASTQC (TR2_L1Pf3_S2)
+May-20 14:00:02.400 [Actor Thread 40] INFO  nextflow.processor.TaskProcessor - [68/932bcb] Cached process > rnaseq_count:FASTQC (L2Pf4_S4)
+May-20 14:00:02.401 [Actor Thread 50] INFO  nextflow.processor.TaskProcessor - [58/4e123b] Cached process > rnaseq_count:FASTQC (L1Pf9_S13)
+May-20 14:00:02.401 [Actor Thread 6] INFO  nextflow.processor.TaskProcessor - [0d/ae9732] Cached process > rnaseq_count:FASTQC (TR2_L2Pf1_S6)
+May-20 14:00:02.401 [Actor Thread 48] INFO  nextflow.processor.TaskProcessor - [45/bc6ade] Cached process > rnaseq_count:FASTQC (TR2_L2Pf3_S8)
+May-20 14:00:02.401 [Actor Thread 36] INFO  nextflow.processor.TaskProcessor - [06/21ac9a] Cached process > rnaseq_count:FASTQC (TR2_L2Pf4_S9)
+May-20 14:00:02.401 [Actor Thread 33] INFO  nextflow.processor.TaskProcessor - [00/792061] Cached process > rnaseq_count:FASTQC (TR2_L1Pf4_S3)
+May-20 14:00:02.401 [Actor Thread 22] INFO  nextflow.processor.TaskProcessor - [e9/750b62] Cached process > rnaseq_count:FASTQC (L3Pf2Mix_S3)
+May-20 14:00:02.401 [Actor Thread 43] INFO  nextflow.processor.TaskProcessor - [13/e696c3] Cached process > rnaseq_count:FASTQC (L3Pf4Mix_S6)
+May-20 14:00:02.401 [Actor Thread 2] INFO  nextflow.processor.TaskProcessor - [a7/cb2536] Cached process > rnaseq_count:FASTQC (L2Pf1_S1)
+May-20 14:00:02.401 [Actor Thread 47] INFO  nextflow.processor.TaskProcessor - [ae/5c6c54] Cached process > rnaseq_count:FASTQC (L3Pf4_S5)
+May-20 14:00:02.400 [Actor Thread 56] INFO  nextflow.processor.TaskProcessor - [6f/163d4f] Cached process > rnaseq_count:FASTQC (L3Pf3_S9)
+May-20 14:00:02.401 [Actor Thread 37] INFO  nextflow.processor.TaskProcessor - [2a/2409de] Cached process > rnaseq_count:FASTQC (Day4.NoGFP_L1Pf3)
+May-20 14:00:02.453 [Actor Thread 40] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'FileTransfer' minSize=4; maxSize=4; workQueue=LinkedBlockingQueue[10000]; allowCoreThreadTimeout=false
+May-20 14:00:02.464 [Actor Thread 39] INFO  nextflow.processor.TaskProcessor - [df/720912] Cached process > rnaseq_count:FASTQC (TR2_L2Pf6_S11)
+May-20 14:00:02.465 [Actor Thread 43] INFO  nextflow.processor.TaskProcessor - [ab/2cece9] Cached process > rnaseq_count:FASTQC (Day6.GFP_L1Pf6)
+May-20 14:00:02.466 [Actor Thread 53] INFO  nextflow.processor.TaskProcessor - [e5/db18ff] Cached process > rnaseq_count:FASTQC (L3Pf6_S10)
+May-20 14:00:02.466 [Actor Thread 10] INFO  nextflow.processor.TaskProcessor - [70/55752d] Cached process > rnaseq_count:FASTQC (L2Pf5_S7)
+May-20 14:00:02.466 [Actor Thread 47] INFO  nextflow.processor.TaskProcessor - [a8/64e875] Cached process > rnaseq_count:FASTQC (L3Pf5_S9)
+May-20 14:00:02.467 [Actor Thread 15] INFO  nextflow.processor.TaskProcessor - [af/382e40] Cached process > rnaseq_count:FASTQC (Day6.NoGFP_L1Pf5)
+May-20 14:00:02.467 [Actor Thread 31] INFO  nextflow.processor.TaskProcessor - [b9/f939c9] Cached process > rnaseq_count:FASTQC (L2Pf6_S8)
+May-20 14:00:02.468 [Actor Thread 37] INFO  nextflow.processor.TaskProcessor - [a9/8aa695] Cached process > rnaseq_count:FASTQC (L2Pf6_S6)
+May-20 14:00:02.468 [Actor Thread 3] INFO  nextflow.processor.TaskProcessor - [1b/201278] Cached process > rnaseq_count:FASTQC (L3Pf8_S12)
+May-20 14:00:02.468 [Actor Thread 48] INFO  nextflow.processor.TaskProcessor - [0d/286669] Cached process > rnaseq_count:FASTQC (L1PfM2_S14)
+May-20 14:00:02.469 [Actor Thread 36] INFO  nextflow.processor.TaskProcessor - [43/7f92dd] Cached process > rnaseq_count:FASTQC (L3Pf7_S11)
+May-20 14:00:02.469 [Actor Thread 38] INFO  nextflow.processor.TaskProcessor - [3f/a06237] Cached process > rnaseq_count:FASTQC (TR2_L1Pf6_S5)
+May-20 14:00:02.469 [Actor Thread 21] INFO  nextflow.processor.TaskProcessor - [d8/56b10e] Cached process > rnaseq_count:FASTQC (TR2_L2Pf5_S10)
+May-20 14:00:02.470 [Actor Thread 8] INFO  nextflow.processor.TaskProcessor - [0f/261f9d] Cached process > rnaseq_count:FASTQC (L3Pf5_S11)
+May-20 14:00:02.470 [Actor Thread 23] INFO  nextflow.processor.TaskProcessor - [1e/deca79] Cached process > rnaseq_count:FASTQC (L2Pf5_S5)
+May-20 14:00:02.472 [Actor Thread 40] INFO  nextflow.processor.TaskProcessor - [ea/cff1a1] Cached process > rnaseq_count:FASTQC (L3Pf6_S12)
+May-20 14:00:02.473 [Actor Thread 32] INFO  nextflow.processor.TaskProcessor - [b7/e3523d] Cached process > rnaseq_count:FASTQC (SPZ_L1Pf8)
+May-20 14:00:02.473 [Actor Thread 11] INFO  nextflow.processor.TaskProcessor - [71/d927dd] Cached process > rnaseq_count:FASTQC (TR2_L1Pf5_S4)
+May-20 14:00:02.748 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L3Pf4_S10) > jobId: 99690.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/de/bea245651f827e6d413ed1c3402b97
+May-20 14:00:02.748 [Task submitter] INFO  nextflow.Session - [de/bea245] Submitted process > rnaseq_count:STAR_ALIGN (L3Pf4_S10)
+May-20 14:00:02.991 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L2Pf4_S4) > jobId: 99691.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/21/33257270caf61a67a6918e0efd1f12
+May-20 14:00:02.991 [Task submitter] INFO  nextflow.Session - [21/332572] Submitted process > rnaseq_count:STAR_ALIGN (L2Pf4_S4)
+May-20 14:00:03.215 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L1Pf9_S13) > jobId: 99692.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/1b/fad96349570a9bbc26b7098b1a2808
+May-20 14:00:03.215 [Task submitter] INFO  nextflow.Session - [1b/fad963] Submitted process > rnaseq_count:STAR_ALIGN (L1Pf9_S13)
+May-20 14:00:03.399 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L3Pf4_S5) > jobId: 99693.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/f7/195dd7dd24399775c9294752dd7384
+May-20 14:00:03.399 [Task submitter] INFO  nextflow.Session - [f7/195dd7] Submitted process > rnaseq_count:STAR_ALIGN (L3Pf4_S5)
+May-20 14:00:03.591 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (Day0.Naive_L1Pf7) > jobId: 99694.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/4f/2887cfd049058570ff1fe38ad4c6dd
+May-20 14:00:03.592 [Task submitter] INFO  nextflow.Session - [4f/2887cf] Submitted process > rnaseq_count:STAR_ALIGN (Day0.Naive_L1Pf7)
+May-20 14:00:03.809 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (TR2_L2Pf1_S6) > jobId: 99695.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/63/6d918f93e4786f5caca428b9a7ef1d
+May-20 14:00:03.809 [Task submitter] INFO  nextflow.Session - [63/6d918f] Submitted process > rnaseq_count:STAR_ALIGN (TR2_L2Pf1_S6)
+May-20 14:00:03.999 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (Day4.GFP_L1Pf4) > jobId: 99696.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/39/41a4a853233ef71abd764b70912217
+May-20 14:00:04.000 [Task submitter] INFO  nextflow.Session - [39/41a4a8] Submitted process > rnaseq_count:STAR_ALIGN (Day4.GFP_L1Pf4)
+May-20 14:00:04.200 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L3Pf2_S8) > jobId: 99697.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/3d/7d690d809c6e6362da90f703bb349e
+May-20 14:00:04.201 [Task submitter] INFO  nextflow.Session - [3d/7d690d] Submitted process > rnaseq_count:STAR_ALIGN (L3Pf2_S8)
+May-20 14:00:04.404 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (TR2_L1Pf4_S3) > jobId: 99698.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/2c/fb9aa839e043acde27787d950d808c
+May-20 14:00:04.404 [Task submitter] INFO  nextflow.Session - [2c/fb9aa8] Submitted process > rnaseq_count:STAR_ALIGN (TR2_L1Pf4_S3)
+May-20 14:00:04.767 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L3Pf3_S4) > jobId: 99699.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/35/5d10d4659c0ddf7356e4eebaf2625c
+May-20 14:00:04.768 [Task submitter] INFO  nextflow.Session - [35/5d10d4] Submitted process > rnaseq_count:STAR_ALIGN (L3Pf3_S4)
+May-20 14:00:04.975 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L3Pf4Mix_S6) > jobId: 99700.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/87/00b746a1389069df01f8b29bb0c3e9
+May-20 14:00:04.976 [Task submitter] INFO  nextflow.Session - [87/00b746] Submitted process > rnaseq_count:STAR_ALIGN (L3Pf4Mix_S6)
+May-20 14:00:05.167 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L2Pf2_S2) > jobId: 99701.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/02/a3d195e4a6cee2594434e53279bada
+May-20 14:00:05.167 [Task submitter] INFO  nextflow.Session - [02/a3d195] Submitted process > rnaseq_count:STAR_ALIGN (L2Pf2_S2)
+May-20 14:00:05.366 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (Day4.NoGFP_L1Pf3) > jobId: 99702.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/5d/d71648fe632d823ca95988940f0ce0
+May-20 14:00:05.367 [Task submitter] INFO  nextflow.Session - [5d/d71648] Submitted process > rnaseq_count:STAR_ALIGN (Day4.NoGFP_L1Pf3)
+May-20 14:00:05.563 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (Day2.NoGFP_L1Pf1) > jobId: 99703.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/12/487a7a1487dc9b59d527f6f83a3df4
+May-20 14:00:05.564 [Task submitter] INFO  nextflow.Session - [12/487a7a] Submitted process > rnaseq_count:STAR_ALIGN (Day2.NoGFP_L1Pf1)
+May-20 14:00:05.824 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L3Pf2_S2) > jobId: 99704.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/26/f073f1b82b06f0f9442f4f7c544cab
+May-20 14:00:05.825 [Task submitter] INFO  nextflow.Session - [26/f073f1] Submitted process > rnaseq_count:STAR_ALIGN (L3Pf2_S2)
+May-20 14:00:06.084 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L3Pf1_S7) > jobId: 99705.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/5e/acb460e07129b41e9c3ecb220af768
+May-20 14:00:06.084 [Task submitter] INFO  nextflow.Session - [5e/acb460] Submitted process > rnaseq_count:STAR_ALIGN (L3Pf1_S7)
+May-20 14:00:06.338 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L3Pf2Mix_S3) > jobId: 99706.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/36/61713698137a4f13ebbd6eb12e47b9
+May-20 14:00:06.338 [Task submitter] INFO  nextflow.Session - [36/617136] Submitted process > rnaseq_count:STAR_ALIGN (L3Pf2Mix_S3)
+May-20 14:00:06.591 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (TR2_L2Pf2_S7) > jobId: 99707.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/91/d502e8e5cbf166739e73a605af0929
+May-20 14:00:06.592 [Task submitter] INFO  nextflow.Session - [91/d502e8] Submitted process > rnaseq_count:STAR_ALIGN (TR2_L2Pf2_S7)
+May-20 14:00:06.775 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (TR2_L2Pf3_S8) > jobId: 99708.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/3d/8edab5ec70a8827ab5f2b7a0bcb756
+May-20 14:00:06.775 [Task submitter] INFO  nextflow.Session - [3d/8edab5] Submitted process > rnaseq_count:STAR_ALIGN (TR2_L2Pf3_S8)
+May-20 14:00:06.805 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 99690.pplhpc1hn2.childrens.sea.kids; id: 37; name: rnaseq_count:STAR_ALIGN (L3Pf4_S10); status: COMPLETED; exit: 108; error: -; workDir: /home/jsmi26/temp/de/bea245651f827e6d413ed1c3402b97 started: 1653080406802; exited: 2022-05-20T21:00:05.569848Z; ]
+May-20 14:00:06.813 [Task monitor] INFO  nextflow.processor.TaskProcessor - [de/bea245] NOTE: Process `rnaseq_count:STAR_ALIGN (L3Pf4_S10)` terminated with an error exit status (108) -- Execution is retried (1)
+May-20 14:00:06.820 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 99691.pplhpc1hn2.childrens.sea.kids; id: 36; name: rnaseq_count:STAR_ALIGN (L2Pf4_S4); status: COMPLETED; exit: 108; error: -; workDir: /home/jsmi26/temp/21/33257270caf61a67a6918e0efd1f12 started: 1653080406818; exited: 2022-05-20T21:00:05.790327Z; ]
+May-20 14:00:06.822 [Task monitor] INFO  nextflow.processor.TaskProcessor - [21/332572] NOTE: Process `rnaseq_count:STAR_ALIGN (L2Pf4_S4)` terminated with an error exit status (108) -- Execution is retried (1)
+May-20 14:00:06.826 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 99692.pplhpc1hn2.childrens.sea.kids; id: 56; name: rnaseq_count:STAR_ALIGN (L1Pf9_S13); status: COMPLETED; exit: 108; error: -; workDir: /home/jsmi26/temp/1b/fad96349570a9bbc26b7098b1a2808 started: 1653080406823; exited: 2022-05-20T21:00:06.041041Z; ]
+May-20 14:00:06.826 [Task monitor] INFO  nextflow.processor.TaskProcessor - [1b/fad963] NOTE: Process `rnaseq_count:STAR_ALIGN (L1Pf9_S13)` terminated with an error exit status (108) -- Execution is retried (1)
+May-20 14:00:06.966 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L3Pf3_S9) > jobId: 99709.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/ca/4f251b76a39352762ee466539ecfd8
+May-20 14:00:06.966 [Task submitter] INFO  nextflow.Session - [ca/4f251b] Submitted process > rnaseq_count:STAR_ALIGN (L3Pf3_S9)
+May-20 14:00:07.166 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (Day2.GFP_L1Pf2) > jobId: 99710.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/35/86d0bd573c9c967788280e073e15b4
+May-20 14:00:07.166 [Task submitter] INFO  nextflow.Session - [35/86d0bd] Submitted process > rnaseq_count:STAR_ALIGN (Day2.GFP_L1Pf2)
+May-20 14:00:07.358 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L1PfM1_S13) > jobId: 99711.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/fb/8d82980b0a0fcf8dbd3fc8dd2e98bc
+May-20 14:00:07.358 [Task submitter] INFO  nextflow.Session - [fb/8d8298] Submitted process > rnaseq_count:STAR_ALIGN (L1PfM1_S13)
+May-20 14:00:07.576 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L3Pf1_S1) > jobId: 99712.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/45/ea98656b63df9a88d4e38ff144ff87
+May-20 14:00:07.576 [Task submitter] INFO  nextflow.Session - [45/ea9865] Submitted process > rnaseq_count:STAR_ALIGN (L3Pf1_S1)
+May-20 14:00:07.798 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L2Pf1_S1) > jobId: 99713.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/89/23a47acd1a84813564c40f584d8dd5
+May-20 14:00:07.799 [Task submitter] INFO  nextflow.Session - [89/23a47a] Submitted process > rnaseq_count:STAR_ALIGN (L2Pf1_S1)
+May-20 14:00:08.008 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (TR2_L1Pf3_S2) > jobId: 99714.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/4e/fccf955b9fbcf9130889da6f5863e7
+May-20 14:00:08.008 [Task submitter] INFO  nextflow.Session - [4e/fccf95] Submitted process > rnaseq_count:STAR_ALIGN (TR2_L1Pf3_S2)
+May-20 14:00:08.223 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (TR2_L2Pf4_S9) > jobId: 99715.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/fc/7872edcfa6059f817c2652cbdc871c
+May-20 14:00:08.224 [Task submitter] INFO  nextflow.Session - [fc/7872ed] Submitted process > rnaseq_count:STAR_ALIGN (TR2_L2Pf4_S9)
+May-20 14:00:08.424 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L2Pf3_S3) > jobId: 99716.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/b3/4e45063c1e70a04286b8d999ca771a
+May-20 14:00:08.425 [Task submitter] INFO  nextflow.Session - [b3/4e4506] Submitted process > rnaseq_count:STAR_ALIGN (L2Pf3_S3)
+May-20 14:00:08.649 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (TR2_L1Pf2_S1) > jobId: 99717.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/b0/b61c461cb6ae30e4c73478865c725a
+May-20 14:00:08.649 [Task submitter] INFO  nextflow.Session - [b0/b61c46] Submitted process > rnaseq_count:STAR_ALIGN (TR2_L1Pf2_S1)
+May-20 14:00:08.858 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L2Pf6_S8) > jobId: 99718.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/4d/0fc653391b4a7a3670195414280aac
+May-20 14:00:08.858 [Task submitter] INFO  nextflow.Session - [4d/0fc653] Submitted process > rnaseq_count:STAR_ALIGN (L2Pf6_S8)
+May-20 14:00:09.082 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L3Pf6_S10) > jobId: 99719.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/9b/6d9fbacd841982e5eece2cf725a8c7
+May-20 14:00:09.082 [Task submitter] INFO  nextflow.Session - [9b/6d9fba] Submitted process > rnaseq_count:STAR_ALIGN (L3Pf6_S10)
+May-20 14:00:09.366 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L2Pf5_S7) > jobId: 99720.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/72/60a80e530f0b22f8e92296e16faf88
+May-20 14:00:09.367 [Task submitter] INFO  nextflow.Session - [72/60a80e] Submitted process > rnaseq_count:STAR_ALIGN (L2Pf5_S7)
+May-20 14:00:09.603 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L3Pf5_S9) > jobId: 99721.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/cb/53f0bf9364763504a1598f86406a9d
+May-20 14:00:09.603 [Task submitter] INFO  nextflow.Session - [cb/53f0bf] Submitted process > rnaseq_count:STAR_ALIGN (L3Pf5_S9)
+May-20 14:00:10.134 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (TR2_L2Pf6_S11) > jobId: 99722.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/df/da8ec5289e07f8e1ac43e6d85aa389
+May-20 14:00:10.136 [Task submitter] INFO  nextflow.Session - [df/da8ec5] Submitted process > rnaseq_count:STAR_ALIGN (TR2_L2Pf6_S11)
+May-20 14:00:10.501 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (TR2_L1Pf6_S5) > jobId: 99723.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/d9/a48e724f97273c62628d8418a6d8f1
+May-20 14:00:10.502 [Task submitter] INFO  nextflow.Session - [d9/a48e72] Submitted process > rnaseq_count:STAR_ALIGN (TR2_L1Pf6_S5)
+May-20 14:00:10.687 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (Day6.GFP_L1Pf6) > jobId: 99724.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/03/c5a7150e031edb2f57fcbde0ee905a
+May-20 14:00:10.687 [Task submitter] INFO  nextflow.Session - [03/c5a715] Submitted process > rnaseq_count:STAR_ALIGN (Day6.GFP_L1Pf6)
+May-20 14:00:10.901 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L2Pf6_S6) > jobId: 99725.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/19/1fdccb7d8ef3dcc0e04444a84ea47f
+May-20 14:00:10.901 [Task submitter] INFO  nextflow.Session - [19/1fdccb] Submitted process > rnaseq_count:STAR_ALIGN (L2Pf6_S6)
+May-20 14:00:11.143 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L3Pf6_S12) > jobId: 99726.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/a8/3a3f4316c68ff975b58094ef301ab2
+May-20 14:00:11.143 [Task submitter] INFO  nextflow.Session - [a8/3a3f43] Submitted process > rnaseq_count:STAR_ALIGN (L3Pf6_S12)
+May-20 14:00:11.334 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L3Pf8_S12) > jobId: 99727.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/b8/6721b3664b0361492687fc1aec1972
+May-20 14:00:11.334 [Task submitter] INFO  nextflow.Session - [b8/6721b3] Submitted process > rnaseq_count:STAR_ALIGN (L3Pf8_S12)
+May-20 14:00:11.532 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L1PfM2_S14) > jobId: 99728.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/3e/65a7f73b4dfb6b9e2127cffe19d542
+May-20 14:00:11.533 [Task submitter] INFO  nextflow.Session - [3e/65a7f7] Submitted process > rnaseq_count:STAR_ALIGN (L1PfM2_S14)
+May-20 14:00:11.734 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (TR2_L1Pf5_S4) > jobId: 99729.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/7a/60b0311dadc90745e9f75fab7071dc
+May-20 14:00:11.735 [Task submitter] INFO  nextflow.Session - [7a/60b031] Submitted process > rnaseq_count:STAR_ALIGN (TR2_L1Pf5_S4)
+May-20 14:00:11.820 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 99704.pplhpc1hn2.childrens.sea.kids; id: 13; name: rnaseq_count:STAR_ALIGN (L3Pf2_S2); status: COMPLETED; exit: 108; error: -; workDir: /home/jsmi26/temp/26/f073f1b82b06f0f9442f4f7c544cab started: 1653080407045; exited: 2022-05-20T21:00:08.919855Z; ]
+May-20 14:00:11.822 [Task monitor] INFO  nextflow.processor.TaskProcessor - [26/f073f1] NOTE: Process `rnaseq_count:STAR_ALIGN (L3Pf2_S2)` terminated with an error exit status (108) -- Execution is retried (1)
+May-20 14:00:11.824 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 99705.pplhpc1hn2.childrens.sea.kids; id: 25; name: rnaseq_count:STAR_ALIGN (L3Pf1_S7); status: COMPLETED; exit: 108; error: -; workDir: /home/jsmi26/temp/5e/acb460e07129b41e9c3ecb220af768 started: 1653080407047; exited: 2022-05-20T21:00:09.167532Z; ]
+May-20 14:00:11.824 [Task monitor] INFO  nextflow.processor.TaskProcessor - [5e/acb460] NOTE: Process `rnaseq_count:STAR_ALIGN (L3Pf1_S7)` terminated with an error exit status (108) -- Execution is retried (1)
+May-20 14:00:11.826 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 99706.pplhpc1hn2.childrens.sea.kids; id: 15; name: rnaseq_count:STAR_ALIGN (L3Pf2Mix_S3); status: COMPLETED; exit: 108; error: -; workDir: /home/jsmi26/temp/36/61713698137a4f13ebbd6eb12e47b9 started: 1653080407048; exited: 2022-05-20T21:00:09.13029Z; ]
+May-20 14:00:11.828 [Task monitor] INFO  nextflow.processor.TaskProcessor - [36/617136] NOTE: Process `rnaseq_count:STAR_ALIGN (L3Pf2Mix_S3)` terminated with an error exit status (108) -- Execution is retried (1)
+May-20 14:00:11.907 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (TR2_L2Pf5_S10) > jobId: 99730.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/e0/b8c780c83138d066cf074278cf7a97
+May-20 14:00:11.907 [Task submitter] INFO  nextflow.Session - [e0/b8c780] Submitted process > rnaseq_count:STAR_ALIGN (TR2_L2Pf5_S10)
+May-20 14:00:12.099 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (Day6.NoGFP_L1Pf5) > jobId: 99731.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/1b/7c2ce02db35b99c5a2d2567c377e32
+May-20 14:00:12.099 [Task submitter] INFO  nextflow.Session - [1b/7c2ce0] Submitted process > rnaseq_count:STAR_ALIGN (Day6.NoGFP_L1Pf5)
+May-20 14:00:12.296 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L2Pf5_S5) > jobId: 99732.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/bc/e6bf346d38d182b9cdbea27c0c3e37
+May-20 14:00:12.296 [Task submitter] INFO  nextflow.Session - [bc/e6bf34] Submitted process > rnaseq_count:STAR_ALIGN (L2Pf5_S5)
+May-20 14:00:12.533 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L3Pf5_S11) > jobId: 99733.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/da/354ac0c9f89655e3fc8d1a127fa5cf
+May-20 14:00:12.533 [Task submitter] INFO  nextflow.Session - [da/354ac0] Submitted process > rnaseq_count:STAR_ALIGN (L3Pf5_S11)
+May-20 14:00:12.767 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L3Pf7_S11) > jobId: 99734.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/c9/d712d4632b93bbae46af88431fb4d7
+May-20 14:00:12.767 [Task submitter] INFO  nextflow.Session - [c9/d712d4] Submitted process > rnaseq_count:STAR_ALIGN (L3Pf7_S11)
+May-20 14:00:13.059 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (SPZ_L1Pf8) > jobId: 99735.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/43/7515169b584cb95f774afa6429a80d
+May-20 14:00:13.059 [Task submitter] INFO  nextflow.Session - [43/751516] Submitted process > rnaseq_count:STAR_ALIGN (SPZ_L1Pf8)
+May-20 14:00:13.333 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L3Pf4_S10) > jobId: 99736.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/ee/c72ae1c5302362020269814d429f1c
+May-20 14:00:13.333 [Task submitter] INFO  nextflow.Session - [ee/c72ae1] Re-submitted process > rnaseq_count:STAR_ALIGN (L3Pf4_S10)
+May-20 14:00:13.573 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L2Pf4_S4) > jobId: 99737.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/e8/426c9c176c8495edd345181a62ab52
+May-20 14:00:13.574 [Task submitter] INFO  nextflow.Session - [e8/426c9c] Re-submitted process > rnaseq_count:STAR_ALIGN (L2Pf4_S4)
+May-20 14:00:13.782 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L1Pf9_S13) > jobId: 99738.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/2d/eb15120ed1e4347f8eae18f3412424
+May-20 14:00:13.782 [Task submitter] INFO  nextflow.Session - [2d/eb1512] Re-submitted process > rnaseq_count:STAR_ALIGN (L1Pf9_S13)
+May-20 14:00:14.000 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L3Pf2_S2) > jobId: 99739.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/74/f625259ab45f75165b6a4ec20ade69
+May-20 14:00:14.000 [Task submitter] INFO  nextflow.Session - [74/f62525] Re-submitted process > rnaseq_count:STAR_ALIGN (L3Pf2_S2)
+May-20 14:00:14.296 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L3Pf1_S7) > jobId: 99740.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/da/ca90528c749ea2f04c2f82d7950a2e
+May-20 14:00:14.296 [Task submitter] INFO  nextflow.Session - [da/ca9052] Re-submitted process > rnaseq_count:STAR_ALIGN (L3Pf1_S7)
+May-20 14:00:14.514 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L3Pf2Mix_S3) > jobId: 99741.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/fd/93e1c679a4c240acd7f97103533e3c
+May-20 14:00:14.514 [Task submitter] INFO  nextflow.Session - [fd/93e1c6] Re-submitted process > rnaseq_count:STAR_ALIGN (L3Pf2Mix_S3)
+May-20 14:00:16.826 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 99720.pplhpc1hn2.childrens.sea.kids; id: 60; name: rnaseq_count:STAR_ALIGN (L2Pf5_S7); status: COMPLETED; exit: 108; error: -; workDir: /home/jsmi26/temp/72/60a80e530f0b22f8e92296e16faf88 started: 1653080411914; exited: 2022-05-20T21:00:12.268628Z; ]
+May-20 14:00:16.828 [Task monitor] INFO  nextflow.processor.TaskProcessor - [72/60a80e] NOTE: Process `rnaseq_count:STAR_ALIGN (L2Pf5_S7)` terminated with an error exit status (108) -- Execution is retried (1)
+May-20 14:00:16.831 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 99721.pplhpc1hn2.childrens.sea.kids; id: 61; name: rnaseq_count:STAR_ALIGN (L3Pf5_S9); status: COMPLETED; exit: 108; error: -; workDir: /home/jsmi26/temp/cb/53f0bf9364763504a1598f86406a9d started: 1653080416829; exited: 2022-05-20T21:00:12.773499Z; ]
+May-20 14:00:16.834 [Task monitor] INFO  nextflow.processor.TaskProcessor - [cb/53f0bf] NOTE: Process `rnaseq_count:STAR_ALIGN (L3Pf5_S9)` terminated with an error exit status (108) -- Execution is retried (1)
+May-20 14:00:16.838 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 99722.pplhpc1hn2.childrens.sea.kids; id: 63; name: rnaseq_count:STAR_ALIGN (TR2_L2Pf6_S11); status: COMPLETED; exit: 108; error: -; workDir: /home/jsmi26/temp/df/da8ec5289e07f8e1ac43e6d85aa389 started: 1653080416835; exited: 2022-05-20T21:00:13.229088Z; ]
+May-20 14:00:16.840 [Task monitor] INFO  nextflow.processor.TaskProcessor - [df/da8ec5] NOTE: Process `rnaseq_count:STAR_ALIGN (TR2_L2Pf6_S11)` terminated with an error exit status (108) -- Execution is retried (1)
+May-20 14:00:16.875 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 99732.pplhpc1hn2.childrens.sea.kids; id: 89; name: rnaseq_count:STAR_ALIGN (L2Pf5_S5); status: COMPLETED; exit: 108; error: -; workDir: /home/jsmi26/temp/bc/e6bf346d38d182b9cdbea27c0c3e37 started: 1653080416873; exited: 2022-05-20T21:00:15.598123Z; ]
+May-20 14:00:16.876 [Task monitor] INFO  nextflow.processor.TaskProcessor - [bc/e6bf34] NOTE: Process `rnaseq_count:STAR_ALIGN (L2Pf5_S5)` terminated with an error exit status (108) -- Execution is retried (1)
+May-20 14:00:16.880 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 99736.pplhpc1hn2.childrens.sea.kids; id: 93; name: rnaseq_count:STAR_ALIGN (L3Pf4_S10); status: COMPLETED; exit: 108; error: -; workDir: /home/jsmi26/temp/ee/c72ae1c5302362020269814d429f1c started: 1653080416877; exited: 2022-05-20T21:00:16.601163Z; ]
+May-20 14:00:16.882 [Task monitor] INFO  nextflow.processor.TaskProcessor - [ee/c72ae1] NOTE: Process `rnaseq_count:STAR_ALIGN (L3Pf4_S10)` terminated with an error exit status (108) -- Execution is retried (2)
+May-20 14:00:17.046 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L2Pf5_S7) > jobId: 99742.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/a0/6d8f0edc15868ae542bf223d7b9242
+May-20 14:00:17.046 [Task submitter] INFO  nextflow.Session - [a0/6d8f0e] Re-submitted process > rnaseq_count:STAR_ALIGN (L2Pf5_S7)
+May-20 14:00:17.230 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L3Pf5_S9) > jobId: 99743.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/3d/8e59580fe0bbac795e22fe0cb1ca7b
+May-20 14:00:17.230 [Task submitter] INFO  nextflow.Session - [3d/8e5958] Re-submitted process > rnaseq_count:STAR_ALIGN (L3Pf5_S9)
+May-20 14:00:17.446 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (TR2_L2Pf6_S11) > jobId: 99744.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/53/f02d9d360f88d5ac65d536f15848b9
+May-20 14:00:17.447 [Task submitter] INFO  nextflow.Session - [53/f02d9d] Re-submitted process > rnaseq_count:STAR_ALIGN (TR2_L2Pf6_S11)
+May-20 14:00:17.655 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L2Pf5_S5) > jobId: 99745.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/0a/05eaf486f6e6a8482ce6fc469093f7
+May-20 14:00:17.655 [Task submitter] INFO  nextflow.Session - [0a/05eaf4] Re-submitted process > rnaseq_count:STAR_ALIGN (L2Pf5_S5)
+May-20 14:00:17.855 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L3Pf4_S10) > jobId: 99746.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/02/da27abdbfcc965384a73395478e10a
+May-20 14:00:17.855 [Task submitter] INFO  nextflow.Session - [02/da27ab] Re-submitted process > rnaseq_count:STAR_ALIGN (L3Pf4_S10)
+May-20 14:00:21.854 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 99740.pplhpc1hn2.childrens.sea.kids; id: 97; name: rnaseq_count:STAR_ALIGN (L3Pf1_S7); status: COMPLETED; exit: 108; error: -; workDir: /home/jsmi26/temp/da/ca90528c749ea2f04c2f82d7950a2e started: 1653080421852; exited: 2022-05-20T21:00:19.324056Z; ]
+May-20 14:00:21.855 [Task monitor] INFO  nextflow.processor.TaskProcessor - [da/ca9052] NOTE: Process `rnaseq_count:STAR_ALIGN (L3Pf1_S7)` terminated with an error exit status (108) -- Execution is retried (2)
+May-20 14:00:22.062 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L3Pf1_S7) > jobId: 99747.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/09/e29b26d0720c67bc3a9f6a29323c06
+May-20 14:00:22.063 [Task submitter] INFO  nextflow.Session - [09/e29b26] Re-submitted process > rnaseq_count:STAR_ALIGN (L3Pf1_S7)
+May-20 14:00:26.806 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 99741.pplhpc1hn2.childrens.sea.kids; id: 98; name: rnaseq_count:STAR_ALIGN (L3Pf2Mix_S3); status: COMPLETED; exit: 108; error: -; workDir: /home/jsmi26/temp/fd/93e1c679a4c240acd7f97103533e3c started: 1653080421856; exited: 2022-05-20T21:00:21.918118Z; ]
+May-20 14:00:26.808 [Task monitor] INFO  nextflow.processor.TaskProcessor - [fd/93e1c6] NOTE: Process `rnaseq_count:STAR_ALIGN (L3Pf2Mix_S3)` terminated with an error exit status (108) -- Execution is retried (2)
+May-20 14:00:26.812 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 99742.pplhpc1hn2.childrens.sea.kids; id: 99; name: rnaseq_count:STAR_ALIGN (L2Pf5_S7); status: COMPLETED; exit: 108; error: -; workDir: /home/jsmi26/temp/a0/6d8f0edc15868ae542bf223d7b9242 started: 1653080426810; exited: 2022-05-20T21:00:25.007931Z; ]
+May-20 14:00:26.813 [Task monitor] INFO  nextflow.processor.TaskProcessor - [a0/6d8f0e] NOTE: Process `rnaseq_count:STAR_ALIGN (L2Pf5_S7)` terminated with an error exit status (108) -- Execution is retried (2)
+May-20 14:00:26.975 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L3Pf2Mix_S3) > jobId: 99748.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/21/b8f480b627a74964e23e77a22701e9
+May-20 14:00:26.976 [Task submitter] INFO  nextflow.Session - [21/b8f480] Re-submitted process > rnaseq_count:STAR_ALIGN (L3Pf2Mix_S3)
+May-20 14:00:27.172 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L2Pf5_S7) > jobId: 99749.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/3a/38def09278b7255c42ea8078a165be
+May-20 14:00:27.172 [Task submitter] INFO  nextflow.Session - [3a/38def0] Re-submitted process > rnaseq_count:STAR_ALIGN (L2Pf5_S7)
+May-20 14:00:31.807 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 99743.pplhpc1hn2.childrens.sea.kids; id: 100; name: rnaseq_count:STAR_ALIGN (L3Pf5_S9); status: COMPLETED; exit: 108; error: -; workDir: /home/jsmi26/temp/3d/8e59580fe0bbac795e22fe0cb1ca7b started: 1653080431804; exited: 2022-05-20T21:00:27.849739Z; ]
+May-20 14:00:31.810 [Task monitor] INFO  nextflow.processor.TaskProcessor - [3d/8e5958] NOTE: Process `rnaseq_count:STAR_ALIGN (L3Pf5_S9)` terminated with an error exit status (108) -- Execution is retried (2)
+May-20 14:00:31.814 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 99744.pplhpc1hn2.childrens.sea.kids; id: 101; name: rnaseq_count:STAR_ALIGN (TR2_L2Pf6_S11); status: COMPLETED; exit: 108; error: -; workDir: /home/jsmi26/temp/53/f02d9d360f88d5ac65d536f15848b9 started: 1653080431811; exited: 2022-05-20T21:00:30.765806Z; ]
+May-20 14:00:31.820 [Task monitor] INFO  nextflow.processor.TaskProcessor - [53/f02d9d] NOTE: Process `rnaseq_count:STAR_ALIGN (TR2_L2Pf6_S11)` terminated with an error exit status (108) -- Execution is retried (2)
+May-20 14:00:31.976 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L3Pf5_S9) > jobId: 99750.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/74/f8cf2cd8ad6a5863745783925cdf90
+May-20 14:00:31.976 [Task submitter] INFO  nextflow.Session - [74/f8cf2c] Re-submitted process > rnaseq_count:STAR_ALIGN (L3Pf5_S9)
+May-20 14:00:32.251 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (TR2_L2Pf6_S11) > jobId: 99751.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/29/53c4b1defb4e5f617a62d01f86f4e7
+May-20 14:00:32.251 [Task submitter] INFO  nextflow.Session - [29/53c4b1] Re-submitted process > rnaseq_count:STAR_ALIGN (TR2_L2Pf6_S11)
+May-20 14:00:36.807 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 99745.pplhpc1hn2.childrens.sea.kids; id: 102; name: rnaseq_count:STAR_ALIGN (L2Pf5_S5); status: COMPLETED; exit: 108; error: -; workDir: /home/jsmi26/temp/0a/05eaf486f6e6a8482ce6fc469093f7 started: 1653080436804; exited: 2022-05-20T21:00:33.591306Z; ]
+May-20 14:00:36.809 [Task monitor] INFO  nextflow.processor.TaskProcessor - [0a/05eaf4] NOTE: Process `rnaseq_count:STAR_ALIGN (L2Pf5_S5)` terminated with an error exit status (108) -- Execution is retried (2)
+May-20 14:00:36.813 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 99746.pplhpc1hn2.childrens.sea.kids; id: 103; name: rnaseq_count:STAR_ALIGN (L3Pf4_S10); status: COMPLETED; exit: 108; error: -; workDir: /home/jsmi26/temp/02/da27abdbfcc965384a73395478e10a started: 1653080436810; exited: 2022-05-20T21:00:36.370872Z; ]
+May-20 14:00:36.849 [Task monitor] ERROR nextflow.processor.TaskProcessor - Error executing process > 'rnaseq_count:STAR_ALIGN (L3Pf4_S10)'
+
+Caused by:
+  Process `rnaseq_count:STAR_ALIGN (L3Pf4_S10)` terminated with an error exit status (108)
+
+Command executed:
+
+  STAR \
+      --genomeDir PfHsMmu \
+      --readFilesIn L3Pf4_S10_1.fq.gz L3Pf4_S10_2.fq.gz  \
+      --runThreadN 12 \
+      --outFileNamePrefix L3Pf4_S10. \
+      --quantMode GeneCounts \
+      --twopassMode Basic \
+      --twopass1readsN -1 \
+      --outSAMattributes NH HI NM MD AS nM jM jI XS \
+       \
+      --limitBAMsortRAM 102979215104 \
+      --sjdbGTFfile PfHsMmu_grc.gff \
+      --outSAMattrRGline ID:L3Pf4_S10 'SM:L3Pf4_S10'   \
+      --sjdbGTFtagExonParentTranscript Parent --sjdbGTFtagExonParentGene Parent --outSAMtype BAM SortedByCoordinate --readFilesCommand "gunzip -c"
+  
+  
+  
+  if [ -f L3Pf4_S10.Unmapped.out.mate1 ]; then
+      mv L3Pf4_S10.Unmapped.out.mate1 L3Pf4_S10.unmapped_1.fastq
+      gzip L3Pf4_S10.unmapped_1.fastq
+  fi
+  if [ -f L3Pf4_S10.Unmapped.out.mate2 ]; then
+      mv L3Pf4_S10.Unmapped.out.mate2 L3Pf4_S10.unmapped_2.fastq
+      gzip L3Pf4_S10.unmapped_2.fastq
+  fi
+  
+  cat <<-END_VERSIONS > versions.yml
+  "rnaseq_count:STAR_ALIGN":
+      star: $(STAR --version | sed -e "s/STAR_//g")
+  END_VERSIONS
+
+Command exit status:
+  108
+
+Command output:
+  	STAR --genomeDir PfHsMmu --readFilesIn L3Pf4_S10_1.fq.gz L3Pf4_S10_2.fq.gz --runThreadN 12 --outFileNamePrefix L3Pf4_S10. --quantMode GeneCounts --twopassMode Basic --twopass1readsN -1 --outSAMattributes NH HI NM MD AS nM jM jI XS --limitBAMsortRAM 102979215104 --sjdbGTFfile PfHsMmu_grc.gff --outSAMattrRGline ID:L3Pf4_S10 SM:L3Pf4_S10 --sjdbGTFtagExonParentTranscript Parent --sjdbGTFtagExonParentGene Parent --outSAMtype BAM SortedByCoordinate --readFilesCommand "gunzip -c"
+  	STAR version: 2.7.9a   compiled: 2021-05-04T09:43:56-0400 vega:/home/dobin/data/STAR/STARcode/STAR.master/source
+  May 20 14:00:36 ..... started STAR run
+  May 20 14:00:36 ..... loading genome
+
+Command error:
+  WARNING: While bind mounting '/home/jsmi26/temp/02/da27abdbfcc965384a73395478e10a:/home/jsmi26/temp/02/da27abdbfcc965384a73395478e10a': destination is already in the mount point list
+  
+  EXITING: fatal error trying to allocate genome arrays, exception thrown: std::bad_alloc
+  Possible cause 1: not enough RAM. Check if you have enough RAM 57983098932 bytes
+  Possible cause 2: not enough virtual memory allowed with ulimit. SOLUTION: run ulimit -v 57983098932
+  
+  May 20 14:00:36 ...... FATAL ERROR, exiting
+
+Work dir:
+  /home/jsmi26/temp/02/da27abdbfcc965384a73395478e10a
+
+Tip: you can try to figure out what's wrong by changing to the process work dir and showing the script file named `.command.sh`
+May-20 14:00:36.853 [Task monitor] DEBUG nextflow.Session - Session aborted -- Cause: Process `rnaseq_count:STAR_ALIGN (L3Pf4_S10)` terminated with an error exit status (108)
+May-20 14:00:36.874 [Task monitor] DEBUG nextflow.Session - The following nodes are still active:
+[process] rnaseq_count:RSEQC_SPLITBAM
+  status=ACTIVE
+  port 0: (queue) OPEN  ; channel: -
+  port 1: (value) bound ; channel: gene_list
+  port 2: (cntrl) -     ; channel: $
+
+[process] rnaseq_count:MULTIQC
+  status=ACTIVE
+  port 0: (queue) OPEN  ; channel: multiqc_files
+  port 1: (value) bound ; channel: sample_sheet
+  port 2: (cntrl) -     ; channel: $
+
+May-20 14:00:36.877 [main] DEBUG nextflow.Session - Session await > all process finished
+May-20 14:00:36.880 [main] DEBUG nextflow.Session - Session await > all barriers passed
+May-20 14:00:36.887 [main] INFO  nextflow.script.BaseScript - Pipeline completed at: 2022-05-20T14:00:36.881490-07:00
+May-20 14:00:36.888 [main] INFO  nextflow.script.BaseScript - Execution status: failed
+May-20 14:00:36.895 [main] WARN  n.processor.TaskPollingMonitor - Killing running tasks (44)
+May-20 14:00:37.172 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [PBSPRO] submitted process rnaseq_count:STAR_ALIGN (L2Pf5_S5) > jobId: 99752.pplhpc1hn2.childrens.sea.kids; workDir: /home/jsmi26/temp/ac/d189316993f19b6476b1fac4dd1f02
+May-20 14:00:37.172 [Task submitter] INFO  nextflow.Session - [ac/d18931] Re-submitted process > rnaseq_count:STAR_ALIGN (L2Pf5_S5)
+May-20 14:00:38.750 [main] DEBUG nextflow.trace.WorkflowStatsObserver - Workflow completed > WorkflowStats[succeededCount=0; failedCount=18; ignoredCount=0; cachedCount=46; pendingCount=0; submittedCount=6; runningCount=-5; retriesCount=17; abortedCount=44; succeedDuration=0ms; failedDuration=1m 57s; cachedDuration=4h 14m 12s;loadCpus=-60; loadMemory=0; peakRunning=40; peakCpus=180; peakMemory=1.4 TB; ]
+May-20 14:00:38.751 [main] DEBUG nextflow.trace.ReportObserver - Flow completing -- rendering html report
+May-20 14:00:38.863 [main] DEBUG nextflow.trace.ReportObserver - Execution report summary data:
+  [{"cpuUsage":{"mean":96.5,"min":64,"q1":91.1,"q2":100.65,"q3":102.7,"max":106.6,"minLabel":"rnaseq_count:FASTQC (L3Pf5_S11)","maxLabel":"rnaseq_count:FASTQC (L3Pf2_S2)","q1Label":"rnaseq_count:FASTQC (TR2_L2Pf2_S7)","q2Label":"rnaseq_count:FASTQC (TR2_L2Pf6_S11)","q3Label":"rnaseq_count:FASTQC (L2Pf6_S8)"},"process":"FASTQC","mem":{"mean":427418490.43,"min":357883904,"q1":384566272,"q2":401451008,"q3":464919552,"max":610209792,"minLabel":"rnaseq_count:FASTQC (L3Pf2_S8)","maxLabel":"rnaseq_count:FASTQC (TR2_L1Pf4_S3)","q1Label":"rnaseq_count:FASTQC (Day2.NoGFP_L1Pf1)","q2Label":"rnaseq_count:FASTQC (L3Pf3_S9)","q3Label":"rnaseq_count:FASTQC (L3Pf5_S11)"},"memUsage":{"mean":4.98,"min":4.17,"q1":4.48,"q2":4.67,"q3":5.41,"max":7.1,"minLabel":"rnaseq_count:FASTQC (L3Pf2_S8)","maxLabel":"rnaseq_count:FASTQC (TR2_L1Pf4_S3)","q1Label":"rnaseq_count:FASTQC (Day2.NoGFP_L1Pf1)","q2Label":"rnaseq_count:FASTQC (L3Pf3_S9)","q3Label":"rnaseq_count:FASTQC (L3Pf5_S11)"},"timeUsage":null,"vmem":{"mean":3659710107.83,"min":3540213760,"q1":3580043264,"q2":3684261888,"q3":3699142656,"max":3825836032,"minLabel":"rnaseq_count:FASTQC (TR2_L1Pf3_S2)","maxLabel":"rnaseq_count:FASTQC (L3Pf2_S2)","q1Label":"rnaseq_count:FASTQC (L2Pf2_S2)","q2Label":"rnaseq_count:FASTQC (L3Pf1_S7)","q3Label":"rnaseq_count:FASTQC (TR2_L1Pf4_S3)"},"reads":{"mean":3151591947.3,"min":899589144,"q1":1906905920.75,"q2":2783548418.5,"q3":4300096689,"max":7127942253,"minLabel":"rnaseq_count:FASTQC (L3Pf2_S2)","maxLabel":"rnaseq_count:FASTQC (L3Pf1_S7)","q1Label":"rnaseq_count:FASTQC (L3Pf6_S10)","q2Label":"rnaseq_count:FASTQC (TR2_L2Pf1_S6)","q3Label":"rnaseq_count:FASTQC (L2Pf1_S1)"},"cpu":{"mean":96.5,"min":64,"q1":91.1,"q2":100.65,"q3":102.7,"max":106.6,"minLabel":"rnaseq_count:FASTQC (L3Pf5_S11)","maxLabel":"rnaseq_count:FASTQC (L3Pf2_S2)","q1Label":"rnaseq_count:FASTQC (TR2_L2Pf2_S7)","q2Label":"rnaseq_count:FASTQC (TR2_L2Pf6_S11)","q3Label":"rnaseq_count:FASTQC (L2Pf6_S8)"},"time":{"mean":331565.22,"min":91000,"q1":205250,"q2":295000,"q3":444500,"max":733000,"minLabel":"rnaseq_count:FASTQC (L3Pf2_S2)","maxLabel":"rnaseq_count:FASTQC (L3Pf5_S11)","q1Label":"rnaseq_count:FASTQC (L3Pf4_S5)","q2Label":"rnaseq_count:FASTQC (L2Pf3_S3)","q3Label":"rnaseq_count:FASTQC (TR2_L1Pf5_S4)"},"writes":{"mean":5483391.35,"min":5425485,"q1":5459604,"q2":5484868.5,"q3":5504193,"max":5541829,"minLabel":"rnaseq_count:FASTQC (L2Pf5_S7)","maxLabel":"rnaseq_count:FASTQC (SPZ_L1Pf8)","q1Label":"rnaseq_count:FASTQC (L3Pf7_S11)","q2Label":"rnaseq_count:FASTQC (L3Pf4_S10)","q3Label":"rnaseq_count:FASTQC (Day2.GFP_L1Pf2)"}},{"cpuUsage":null,"process":"STAR_ALIGN","mem":null,"memUsage":null,"timeUsage":null,"vmem":null,"reads":null,"cpu":null,"time":{"mean":1345.72,"min":2,"q1":2,"q2":3,"q3":3582,"max":4949,"minLabel":"rnaseq_count:STAR_ALIGN (L3Pf4_S10)","maxLabel":"rnaseq_count:STAR_ALIGN (L3Pf2Mix_S3)","q1Label":"rnaseq_count:STAR_ALIGN (L2Pf5_S5)","q2Label":"rnaseq_count:STAR_ALIGN (L3Pf4_S10)","q3Label":"rnaseq_count:STAR_ALIGN (L3Pf4_S10)"},"writes":null}]
+May-20 14:00:40.073 [main] DEBUG nextflow.cache.CacheDB - Closing CacheDB done
+May-20 14:00:40.089 [main] DEBUG nextflow.script.ScriptRunner - > Execution complete -- Goodbye

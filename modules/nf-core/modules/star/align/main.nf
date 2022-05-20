@@ -50,6 +50,10 @@ process STAR_ALIGN {
         --readFilesIn $reads  \\
         --runThreadN $task.cpus \\
         --outFileNamePrefix $prefix. \\
+        --quantMode GeneCounts \\
+        --twopassMode Basic \\
+        --twopass1readsN -1 \\
+        --outSAMattributes NH HI NM MD AS nM jM jI XS \\
         $out_sam_type \\
         $memory \\
         $ignore_gtf \\

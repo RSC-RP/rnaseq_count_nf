@@ -13,6 +13,7 @@ process RSEQC_SPLITBAM {
 
     output:
     tuple val(meta), path("*.bam"), emit: splitbam
+    path "*${meta.id}*"
     path "versions.yml"           , emit: versions
 
     when:
@@ -23,9 +24,9 @@ process RSEQC_SPLITBAM {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     split_bam.py \\
-    -i $bam \\
-    -r $gene_list \\
-    -o $prefix
+        -i $bam \\
+        -r $gene_list \\
+        -o $prefix > ${prefix}_rRNA_stats.out
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
