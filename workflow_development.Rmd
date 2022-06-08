@@ -446,6 +446,7 @@ This requires the session ID or session name, which can found in the following f
 
 ```{bash}
 cat .nextflow/history
+nextflow clean -f high_sinoussi
 ```
 
 # Session Information

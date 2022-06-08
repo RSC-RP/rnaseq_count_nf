@@ -24,6 +24,17 @@ log.info """\
 
 //run the workflow for star-aligner to generate counts
 workflow rnaseq_count {
+    //Run the index workflow or stage the genome index directory
+    if ( param.index == '' ) {
+        star_index()
+        star_index.out.index 
+            .set { index }
+    } else {
+        Channel.fromPath(params.index)
+            .ifEmpty { error "No directory found ${params.index}." }
+            .collect() 
+            .set { index }
+    }
     //Create the input channel which contains the SAMPLE_ID, whether its single-end, and the file paths for the fastqs. 
      Channel.fromPath(file(params.sample_sheet))
         .ifEmpty { error  "No file found ${params.sample_sheet}." }
@@ -31,22 +42,17 @@ workflow rnaseq_count {
         .map { meta -> [ [ "id":meta["id"], "single_end":meta["single_end"].toBoolean() ], //meta
                         [ file(meta["r1"], checkIfExists: true), file(meta["r2"], checkIfExists: true) ] //reads
                     ]}
-        .set{ meta_ch }
-    //Stage the gtf file for STAR aligner
+        .set { meta_ch }
+    //Stage the gtf/gff file for STAR aligner
     Channel.fromPath(params.gtf)
         .ifEmpty { error  "No file found ${params.gtf}." }
         .collect() //collect converts this to a value channel and used multiple times
-        .set{ gtf }
+        .set { gtf }
     //Stage the genome chrom sizes file for RSEQC 
     Channel.fromPath(params.gene_list)
         .ifEmpty { error "No file found ${params.gene_list}" }
         .collect()
         .set { gene_list }
-    //Stage the genome index directory
-    Channel.fromPath(params.index)
-        .ifEmpty { error "No directory found ${params.index}." }
-        .collect() 
-        .set{ index }
     // QC on the sequenced reads
     FASTQC(meta_ch)
     //align reads to genome 
@@ -69,6 +75,7 @@ workflow rnaseq_count {
 
 //Generate the index file 
 workflow star_index {
+    main: 
     //Stage the gtf file
     Channel.fromPath(params.gtf)
         .ifEmpty { error  "No file found ${params.gtf}" }
@@ -79,6 +86,9 @@ workflow star_index {
         .set{fasta}
     //execute the STAR genome index process
     STAR_GENOMEGENERATE(fasta, gtf)
+
+    emit:
+    index = STAR_GENOMEGENERATE.out.index
 }
 
 //End with a message to print to standard out on workflow completion. 

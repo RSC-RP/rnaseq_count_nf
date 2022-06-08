@@ -41,7 +41,7 @@ process STAR_ALIGN {
     def ignore_gtf      = star_ignore_sjdbgtf ? '' : "--sjdbGTFfile $gtf"
     def seq_platform    = seq_platform ? "'PL:$seq_platform'" : ""
     def seq_center      = seq_center ? "--outSAMattrRGline ID:$prefix 'CN:$seq_center' 'SM:$prefix' $seq_platform " : "--outSAMattrRGline ID:$prefix 'SM:$prefix' $seq_platform "
-    def out_sam_type    = (args.contains('--outSAMtype')) ? '' : '--outSAMtype BAM Unsorted'
+    //def out_sam_type    = (args.contains('--outSAMtype')) ? '' : '--outSAMtype BAM Unsorted'
     def memory   = task.memory ? "--limitBAMsortRAM ${task.memory.toBytes() - 100000000}" : ''
     def mv_unsorted_bam = (args.contains('--outSAMtype BAM Unsorted SortedByCoordinate')) ? "mv ${prefix}.Aligned.out.bam ${prefix}.Aligned.unsort.out.bam" : ''
     """
@@ -54,7 +54,7 @@ process STAR_ALIGN {
         --twopassMode Basic \\
         --twopass1readsN -1 \\
         --outSAMattributes NH HI NM MD AS nM jM jI XS \\
-        $out_sam_type \\
+        --outSAMtype BAM SortedByCoordinate \\
         $memory \\
         $ignore_gtf \\
         $seq_center \\

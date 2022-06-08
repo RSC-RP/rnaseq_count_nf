@@ -8,7 +8,7 @@ NFX_PROFILE='PBS_singularity'
 #Options: star_index or rnaseq_count
 NFX_ENTRY='rnaseq_count'
 #The output prefix on filenames for reports/logs
-REPORT="kappe_s_quant_with_rRNA_QC"
+REPORT=${1:-"pipeline_report"}
 
 # Load the modules 
 module load singularity/3.9.9
