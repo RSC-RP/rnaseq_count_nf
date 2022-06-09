@@ -1,6 +1,6 @@
 process RSEQC_SPLITBAM {
     tag "$meta.id"
-    label 'process_low'
+    label 'RSEQC'
 
     conda (params.enable_conda ? "bioconda::rseqc=4.0.0" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?

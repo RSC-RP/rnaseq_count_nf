@@ -48,11 +48,15 @@ workflow rnaseq_count {
         .ifEmpty { error  "No file found ${params.gtf}." }
         .collect() //collect converts this to a value channel and used multiple times
         .set { gtf }
-    //Stage the genome chrom sizes file for RSEQC 
+    //Stage the genome files for RSEQC 
     Channel.fromPath(params.gene_list)
         .ifEmpty { error "No file found ${params.gene_list}" }
         .collect()
         .set { gene_list }
+    Channel.fromPath(params.ref_gene_model)
+        .ifEmpty { error "No file found ${params.ref_gene_model}" }
+        .collect()
+        .set { ref_gene_model }
     // QC on the sequenced reads
     FASTQC(meta_ch)
     //align reads to genome 
@@ -64,6 +68,8 @@ workflow rnaseq_count {
     //NEED TO INDEX BAM files, optionally sort? or just require STAR_ALIGN to sort bams?
     //RSEQC on the aligned reads 
     RSEQC_SPLITBAM(STAR_ALIGN.out.bam, gene_list)
+    RSEQC_READDISTRIBUTION(STAR_ALIGN.out.bam, ref_gene_model)
+    RSEQC_TIN(STAR_ALIGN.out.bam, ref_gene_model)
     //Combine the fastqc and star-aligner QC output into a single channel
     sample_sheet=file(params.sample_sheet)
     multiqc_ch = FASTQC.out.fastqc.collect()
