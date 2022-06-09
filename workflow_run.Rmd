@@ -18,6 +18,7 @@ knitr::opts_chunk$set(
   tidy = TRUE,
   fig.align = "center",
   fig.width = 10, fig.height = 10
+  eval=FALSE
 )
 
 options(stringsAsFactors = FALSE, max.print = 100)
@@ -27,19 +28,90 @@ table <- function(..., useNA = "ifany") base::table(..., useNA = useNA)
 # Set-up Environment 
 
 ```{bash}
-git clone XXXX
+git clone https://childrens-atlassian/bitbucket/projects/RPDEV/repos/rnaseq_count_nf/
 conda env create -f env/nextflow.yaml
 conda activate nextflow
 ```
 
+
 # Define Input Files 
 
-Edit the `nextflow.config` file to include the appropriate filepaths for the samples to be included in the pipeline, and the appropriate genome references.
+## Sample Sheet
+
+A tab delimited sample sheet is required for the input samples to be processed. Currently, the pipeline only supports paired-end RNA-seq data, and the creation of the sample sheet file is dependent on the user at this time. 
+
+It must have the column names (in any order):
+    * r1 - the filepath for the read 1 in paired end RNA-seq
+    * r2 - the filepath for the read 2 in paired end RNA-seq
+    * id - unique sample ID, no duplicates allowed in the sample sheet
+    * single_end - boolean [true/false] if the data is single-end or paired-end 
+
+
+TO DO: A function provided here, but it may not meet the needs of every experiment. 
+
+```{r eval=TRUE}
+example_sheet <- read.table("test_data/sample_sheet.txt", header=TRUE)
+example_sheet
+```
+
+## Nextflow Config
+
+Edit the `nextflow.config` file to include the appropriate filepaths for the samples to be included in the pipeline, and the appropriate genome references. The required files are listed here:
+
+```
+workDir = "PATH/TO/SCRATCH" 
+
+//global parameters
+params {
+    // general options
+    sample_sheet                = "PATH/TO/SAMPLE_SHEET"
+    queue                       = 'NAME OF QUEUE'
+    project                     = 'PROJECT CODE'
+    outdir                      = "PATH/TO/RESULTS"
+
+    //star specific params. Must be full filepaths for files outside the projectDir
+    index                       = 'PATH/TO/STAR_INDEX/ [optional if building the index]'
+    gtf                         = 'PATH/TO/GTF'
+    fasta                       = 'PATH/TO/FASTA [optional if **not** building the index]'
+    star_ignore_sjdbgtf         = false
+
+    //trimgalore module specific parameters
+    trim                        = [true/false]
+
+    //RSEQC specific parameters
+    gene_list                   = 'PATH/TO/RSEQC/rRNA.bed'
+    ref_gene_model              = 'PATH/TO/RSEQC/'
+}
+```
+
+# Run the workflow 
+
+```{bash}
+./main_run.sh "my_analysis"
+```
+
+# Expected Outputs 
+
+Under the path provided in the nextflow config for params "outdir", you will find directories named for each of the modules
+
+fastq 
+multiqc
+rseqc
+samtools
+star
+
+In addition, there will be an HTML report with information on where the temp data is stored in the `workDir` path, and general run statistics such as resource for the entire run versus what you had requested, which helps with optimization. It will also provide information on how much walltime was used per sample, total CPU hours, etc. 
+
+Its found in `reports` and will have the prefix defined on the command line when the `./main_run.sh "my_analysis"` was invoked, so in this example it would be named "my_analysis_{DATE}.html"
+
+There is also a `my_analysis_{DATE}_nextflow.log` text file which will allow you to perform in depth trouble shooting if necessary. 
+
 
 # Share the Data
 
 ```{bash}
-rsync -av results /active/kappe_s/kappe/Gigliola/2022.04_jsmi26_PF_LiverStage/rnaseq_alignment_quant
+OUTDIR="path/to/collabs/RSS"
+rsync -av results/ $OUTDIR 
 ```
 
 

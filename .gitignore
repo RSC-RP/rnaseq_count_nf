@@ -1,15 +1,23 @@
+# R files to ignore
 .Rproj.user
 .DS_Store
 .Rhistory
 .RData
 .Ruserdata
+
+# conda cache
+.pytest_cache/
+
+# Nextflow logs and caches 
 .nextflow/
 .nextflow.log*
 *.log.*
-*.pdf.*
 *.run
-.pytest_cache/
+
+# Pipeline specific files
 resources/
 results/
-test_data/
 test_output/
+reports/test*
+dag/test*
+*test_sample_sheet.txt

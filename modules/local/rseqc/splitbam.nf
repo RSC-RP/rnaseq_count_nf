@@ -8,7 +8,7 @@ process RSEQC_SPLITBAM {
         'quay.io/biocontainers/rseqc:4.0.0--py38h4a8c8d9_1' }"
 
     input:
-    tuple val(meta), path(bam)
+    tuple val(meta), path(bam), path(bai)
     path gene_list
 
     output:
