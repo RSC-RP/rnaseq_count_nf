@@ -11,13 +11,15 @@ NFX_ENTRY='rnaseq_count'
 REPORT=${1:-"pipeline_report"}
 
 # Load the modules 
-module load singularity/3.9.9
+# TO DO: make the module version a variable that the user can change 
+module load singularity
 
 # Nextflow run to execute the workflow 
 PREFIX="${REPORT}_${DATE}"
 nextflow -c ${NFX_CONFIG} \
     -log reports/${PREFIX}_nextflow.log \
     run main.nf \
+    # --singularity_module SINGULARITY #the in nextflow.config could access this as params.SINGULARITY
     -entry ${NFX_ENTRY} \
     -profile ${NFX_PROFILE} \
     -with-report reports/${PREFIX}.html \
