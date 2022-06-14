@@ -2,7 +2,6 @@
 title: "STAR aligner and counts using Nextflow"
 author: "Jenny L Smith"
 date: "`r Sys.Date()`"
-output: html_document
 always_allow_html: true
 output:
   html_document:

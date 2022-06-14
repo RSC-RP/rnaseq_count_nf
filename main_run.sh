@@ -11,7 +11,7 @@ NFX_ENTRY='rnaseq_count'
 REPORT=${1:-"pipeline_report"}
 
 # Load the modules 
-# TO DO: make the module version a variable that the user can change 
+# TO DO: make the module version a variable that the user can change eg SINGULARITY="singularity/3.9.9"; module load $SINGULARITY
 module load singularity
 
 # Nextflow run to execute the workflow 

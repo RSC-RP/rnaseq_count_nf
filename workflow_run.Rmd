@@ -2,7 +2,17 @@
 title: "Nextflow 'rnaseq_count_nf' Pipeline Run Instructions"
 author: "Jenny L Smith"
 date: "`r Sys.Date()`"
-output: html_document
+always_allow_html: true
+output:
+  html_document:
+    theme: yeti
+    highlight: breezedark
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    number_sections: true
+    fig_caption: true
+    df_print: paged
 ---
 
 # Set-up 
@@ -84,14 +94,23 @@ params {
 }
 ```
 
-The gene_list and ref_gene_model can be found at http://rseqc.sourceforge.net/#download-gene-models-update-on-12-14-2021 
-save these to the /gpfs
+The `gene_list` and `ref_gene_model` can be found at http://rseqc.sourceforge.net/#download-gene-models-update-on-12-14-2021 
+save these to the `/gpfs/shared_data` to share with the RSC team. It also is best practice to save the STAR indexes to `/gpfs/shared_data`. 
+
+TO DO: add "Advanced Options" section to describe the `ext.args` under the process scope. 
 
 # Run the workflow 
+
+Then execute a wrapper around the `nextflow run main.nf` command which is in the `main_run.sh` shell script. Provide a descriptive name (string) for your workflow run, in this example we will use "my_analysis". 
+
+The `main_run.sh` defines the profiles for difference executors in the variable `NFX_PROFILE`. The best choice is "PBS_singularity" which executes the jobs on the HPC using the PBS scheduler and then will run the job inside singularity containers with the appropriate software versions. 
 
 ```{bash}
 ./main_run.sh "my_analysis"
 ```
+
+Typically, you will not need to change the `.main_run.sh` often. However, if needed for testing or development, the `NFX_PROFILE` can be changed to run locally, or with docker, or with conda. You can also change the entry_point for the workflow to run only the index building step using `NFX_ENTRY` set to `star_index`. 
+
 
 # Expected Outputs 
 
@@ -122,7 +141,11 @@ results/
 
 In addition, there will be an HTML report with information on where the temp data is stored in the `workDir` path, and general run statistics such as resource utilized  versus requested, which helps with optimization. It will also provide information on how much walltime was used per sample, total CPU hours, etc. 
 
-The HTML file is found in `reports` directory and will have the prefix defined on the command line when the `./main_run.sh "my_analysis"` was invoked, so in this example it would be named "my_analysis_{DATE}.html". There will also be a detailed nextflow log file that is useful for de-bugging which will also be named in this example, "my_analysis_{DATE}_nextflow.log".Finally, the pipeline will produce a DAG - Directed acyclic graph which describes the workflow channels (inputs) and the modules. 
+The HTML file is found in `reports` directory and will have the prefix defined on the command line when the `./main_run.sh "my_analysis"` was invoked, so in this example it would be named "my_analysis_{DATE}.html". 
+
+There will also be a detailed nextflow log file that is useful for de-bugging which will also be named in this example, "my_analysis_{DATE}_nextflow.log".
+
+Finally, the pipeline will produce a DAG - Directed acyclic graph which describes the workflow channels (inputs) and the modules. The DAG image will be saved under `dag/` directory with the name "my_analysis_{DATE}_dag.pdf". 
 
 # Share the Data
 
@@ -131,6 +154,19 @@ RESULTS="PATH/TO/PIPELINE/RESULTS/"
 OUTDIR="path/to/collabs/RSS"
 rsync -av $RESULTS $OUTDIR 
 ```
+
+
+# Cleaning up Cached Data
+
+Nextflow has an utility to [clean](https://www.nextflow.io/docs/latest/cli.html#clean) up old work directories and logs that are no longer needed. This can be run after x amount of time to keep your workdir from getting too large or if you're running out of disk space. 
+
+This requires the session ID or session name, which can found in the `.nextflow/history` file. 
+
+```{bash}
+cat .nextflow/history
+nextflow clean -f high_sinoussi
+```
+
 
 
 # Session Information
