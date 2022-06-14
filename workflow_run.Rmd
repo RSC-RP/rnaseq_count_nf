@@ -7,18 +7,14 @@ output: html_document
 
 # Set-up 
 
-```{r echo=FALSE}
-styler::style_file("workflow_run.Rmd")
-```
-
 ```{r set-up}
 knitr::opts_knit$set(root.dir = PROJHOME)
 knitr::opts_chunk$set(
   tidy.opts = list(width.cutoff = 50),
   tidy = TRUE,
   fig.align = "center",
-  fig.width = 10, fig.height = 10
-  eval=FALSE
+  fig.width = 10, fig.height = 10,
+  eval = FALSE
 )
 
 options(stringsAsFactors = FALSE, max.print = 100)
@@ -41,16 +37,20 @@ conda activate nextflow
 A tab delimited sample sheet is required for the input samples to be processed. Currently, the pipeline only supports paired-end RNA-seq data, and the creation of the sample sheet file is dependent on the user at this time. 
 
 It must have the column names (in any order):
-    * r1 - the filepath for the read 1 in paired end RNA-seq
-    * r2 - the filepath for the read 2 in paired end RNA-seq
-    * id - unique sample ID, no duplicates allowed in the sample sheet
-    * single_end - boolean [true/false] if the data is single-end or paired-end 
+
+  * r1 - the filepath for the read 1 in paired end RNA-seq
+    
+  * r2 - the filepath for the read 2 in paired end RNA-seq
+    
+  * id - unique sample ID, no duplicates allowed in the sample sheet
+    
+  * single_end - boolean [true/false] if the data is single-end or paired-end 
 
 
 TO DO: A function provided here, but it may not meet the needs of every experiment. 
 
 ```{r eval=TRUE}
-example_sheet <- read.table("test_data/sample_sheet.txt", header=TRUE)
+example_sheet <- read.table("test_data/sample_sheet.txt", header = TRUE)
 example_sheet
 ```
 
@@ -84,6 +84,9 @@ params {
 }
 ```
 
+The gene_list and ref_gene_model can be found at http://rseqc.sourceforge.net/#download-gene-models-update-on-12-14-2021 
+save these to the /gpfs
+
 # Run the workflow 
 
 ```{bash}
@@ -92,27 +95,48 @@ params {
 
 # Expected Outputs 
 
-Under the path provided in the nextflow config for params "outdir", you will find directories named for each of the modules
+Under the path provided in the nextflow config for params "outdir", you will find directories named for each of the modules. Lets say "params.outdir = ./results". There will be the following file structure:
 
-fastq 
-multiqc
-rseqc
-samtools
-star
+results/
 
-In addition, there will be an HTML report with information on where the temp data is stored in the `workDir` path, and general run statistics such as resource for the entire run versus what you had requested, which helps with optimization. It will also provide information on how much walltime was used per sample, total CPU hours, etc. 
+  * fastqc/ 
+    * fastqc_{sample_id}_/
+    
+  * multiqc/
+    * {sample_sheet_basename}_multiqc_report_data/ 
+    * collects fastqc, star alignment, and star quantification stats 
+    
+  * rseqc/
+    * rRNA stats and reads aligned to the rRNA
+    
+  * samtools/
+    * bam index (.bai) file
+    
+  * star/
+    * {Sample_ID_001}.Aligned.out.bam
+    * {Sample_ID_001}.Log.final.out
+    * {Sample_ID_001}.Log.out
+    * {Sample_ID_001}.Log.progress.out
+    * {Sample_ID_001}.ReadsPerGene.out.tab
+    * {Sample_ID_001}.SJ.out.tab
 
-Its found in `reports` and will have the prefix defined on the command line when the `./main_run.sh "my_analysis"` was invoked, so in this example it would be named "my_analysis_{DATE}.html"
+In addition, there will be an HTML report with information on where the temp data is stored in the `workDir` path, and general run statistics such as resource utilized  versus requested, which helps with optimization. It will also provide information on how much walltime was used per sample, total CPU hours, etc. 
 
-There is also a `my_analysis_{DATE}_nextflow.log` text file which will allow you to perform in depth trouble shooting if necessary. 
-
+The HTML file is found in `reports` directory and will have the prefix defined on the command line when the `./main_run.sh "my_analysis"` was invoked, so in this example it would be named "my_analysis_{DATE}.html". There will also be a detailed nextflow log file that is useful for de-bugging which will also be named in this example, "my_analysis_{DATE}_nextflow.log".Finally, the pipeline will produce a DAG - Directed acyclic graph which describes the workflow channels (inputs) and the modules. 
 
 # Share the Data
 
 ```{bash}
+RESULTS="PATH/TO/PIPELINE/RESULTS/"
 OUTDIR="path/to/collabs/RSS"
-rsync -av results/ $OUTDIR 
+rsync -av $RESULTS $OUTDIR 
 ```
 
+
+# Session Information
+
+```{r}
+sessionInfo()
+```
 
 

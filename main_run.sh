@@ -3,7 +3,7 @@
 set -eu
 DATE=$(date +%F)
 NFX_CONFIG=./nextflow.config
-#Options: local_singularity, PBS_singularity, and local_docker
+#Options: local_singularity, PBS_singularity, PBS_conda, and local_docker
 NFX_PROFILE='PBS_singularity'
 #Options: star_index or rnaseq_count
 NFX_ENTRY='rnaseq_count'

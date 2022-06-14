@@ -8,6 +8,9 @@
 # conda cache
 .pytest_cache/
 
+#Microsoft temp files
+~$*
+
 # Nextflow logs and caches 
 .nextflow/
 .nextflow.log*

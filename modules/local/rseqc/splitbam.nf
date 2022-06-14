@@ -12,8 +12,8 @@ process RSEQC_SPLITBAM {
     path gene_list
 
     output:
-    tuple val(meta), path("*.bam"), emit: splitbam
-    path "*${meta.id}*"
+    tuple val(meta), path("*in.bam"), emit: splitbam
+    path "*_rRNA_stats.out"       , emit: rRNA
     path "versions.yml"           , emit: versions
 
     when:

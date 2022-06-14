@@ -1,10 +1,13 @@
 nextflow.enable.dsl = 2
 
+//QC modules
 include { FASTQC } from './modules/nf-core/modules/fastqc/main.nf'
 include { MULTIQC } from './modules/nf-core/modules/multiqc/main.nf'
 include { RSEQC_SPLITBAM } from './modules/local/rseqc/splitbam.nf'
 include { RSEQC_READDISTRIBUTION } from './modules/nf-core/modules/rseqc/readdistribution/main.nf'
 include { RSEQC_TIN } from './modules/nf-core/modules/rseqc/tin/main.nf'
+
+// Alignment and quantification modules
 include { TRIMGALORE } from './modules/nf-core/modules/trimgalore/main.nf'
 include { STAR_ALIGN } from './modules/nf-core/modules/star/align/main.nf'
 include { STAR_GENOMEGENERATE } from './modules/nf-core/modules/star/genomegenerate/main.nf'
@@ -46,7 +49,7 @@ workflow rnaseq_count {
         .map { meta -> [ [ "id":meta["id"], "single_end":meta["single_end"].toBoolean() ], //meta
                          [ file(meta["r1"], checkIfExists: true), file(meta["r2"], checkIfExists: true) ] //reads
                     ]}
-        .set { meta_ch }
+        .set { fastq_ch }
     //Stage the gtf/gff file for STAR aligner
     Channel.fromPath(params.gtf)
         .ifEmpty { error  "No file found ${params.gtf}." }
@@ -62,15 +65,15 @@ workflow rnaseq_count {
         .collect()
         .set { ref_gene_model }
     // QC on the sequenced reads
-    FASTQC(meta_ch)
+    FASTQC(fastq_ch)
     if ( params.trim ) {
         //Adapter and Quality trimming of the fastq files 
-        TRIMGALORE(meta_ch)
+        TRIMGALORE(fastq_ch)
         TRIMGALORE.out.reads
-            .set { meta_ch }
+            .set { fastq_ch }
     }
     //align reads to genome 
-    STAR_ALIGN(meta_ch, index, gtf,
+    STAR_ALIGN(fastq_ch, index, gtf,
               params.star_ignore_sjdbgtf, 
               params.seq_platform,
               params.seq_center)
