@@ -12,8 +12,8 @@ process RSEQC_TIN {
     path  bed
 
     output:
-    tuple val(meta), path("*.txt"), emit: txt
     tuple val(meta), path("*.xls"), emit: xls
+    path "*.txt"                  , emit: txt
     path "versions.yml"           , emit: versions
 
     when:

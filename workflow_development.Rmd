@@ -44,7 +44,9 @@ groundhog::groundhog.library(pkgs, "2022-04-18")
 
 # Nextflow Overview 
 
-this should be a 1000ft overview of the general DSL2 
+```{r}
+knitr::include_graphics("images/nextflow_dsl2.png")
+```
 
 # Set-up Environment 
 
@@ -56,7 +58,7 @@ conda activate nextflow_env
 If testing interactively on cybertron, you will need to request the following resources to run STAR-aligner. 
 
 ```{bash}
-qsub -I -q <queue_name> -P $(voucher info <project_name>) -l select=1:mem=32gb:ncpus=4
+qsub -I -q <queue_name> -P $(project code <project_name>) -l select=1:mem=32gb:ncpus=4
 ```
 
 # Create Demo Dataset
@@ -309,30 +311,30 @@ The Cybertron HPC requires both a queue and a project code in order to use the P
 
 ```{bash}
 #on cybertron to identify the project codes
-voucher
-voucher info
-voucher project RSC_adhoc
+project
+project info
+project code RSC_adhoc
 ```
 
-**To Do**: Create a function that could create the config file given the appropriate filepaths. Maybe make into a interactive shiny-app to have user input and save the file. 
+**To Do**: Create a function that could create the config file given the appropriate filepaths.
+Maybe make into a interactive shiny-app to have user input and save the file. 
 
 ```
+//global parameters
 params {
     // general options
-    //validate_params           = true // will add in the sample sheet validation
-    outdir                      = "./results/"
+    sample_sheet                = "test_data/sample_sheet.txt"
     queue                       = 'sceaq'
     project                     = '207f23bf-acb6-4835-8bfe-142436acb58c'
+    outdir                      = "./test_output/"
     publish_dir_mode            = 'copy'
-    enable_conda                = false
-
-    //global params
-    sample_sheet                = "test_data/sample_sheet.txt"
 
     //star specific params
-    //Must be full filepaths for files outside the projectDir
-    index                       = "/Users/jsmi26/Downloads/refs/STAR/human_v38/STAR_2.7"
-    gtf                         = "/Users/jsmi26/Downloads/refs/STAR/human_v38/STAR_2.7/genes.gtf"
+    // Must be full filepaths for files outside the projectDir
+    index                       = '/gpfs/shared_data/STAR/human_v38/STAR_2.7'
+    build_index                 = false
+    gtf                         = '/gpfs/shared_data/STAR/human_v38/STAR_2.7/genes.gtf'
+    fasta                       = ''
     star_ignore_sjdbgtf         = false
     seq_platform                = ''
     seq_center                  = ''
@@ -425,7 +427,7 @@ profiles {
         process.executor = 'pbspro' 
         process.queue = "${params.queue}"
         process.clusterOptions = "-P ${params.project}"
-        //process.clusterOptions = "-P \$(voucher project ${params.project})" //renders correctly in command.run script but schedule won't accept it.
+        //process.clusterOptions = "-P \$(project project ${params.project})" //renders correctly in command.run script but schedule won't accept it.
         process.beforeScript = 'module load singularity/3.9.9'
         singularity.enabled = true //need some logic here to switch to false if conda used
     }

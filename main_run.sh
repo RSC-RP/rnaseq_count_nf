@@ -15,11 +15,11 @@ REPORT=${1:-"pipeline_report"}
 module load singularity
 
 # Nextflow run to execute the workflow 
+# TO DO: --singularity_module $SINGULARITY #the in nextflow.config could access this as params.SINGULARITY
 PREFIX="${REPORT}_${DATE}"
 nextflow -c ${NFX_CONFIG} \
     -log reports/${PREFIX}_nextflow.log \
     run main.nf \
-    # --singularity_module SINGULARITY #the in nextflow.config could access this as params.SINGULARITY
     -entry ${NFX_ENTRY} \
     -profile ${NFX_PROFILE} \
     -with-report reports/${PREFIX}.html \

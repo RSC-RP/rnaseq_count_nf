@@ -80,9 +80,10 @@ params {
     outdir                      = "PATH/TO/RESULTS"
 
     //star specific params. Must be full filepaths for files outside the projectDir
-    index                       = 'PATH/TO/STAR_INDEX/ [optional if building the index]'
+    index                       = 'PATH/TO/STAR_INDEX/ [optional if build_index == true]'
+    build_index                 = false
     gtf                         = 'PATH/TO/GTF'
-    fasta                       = 'PATH/TO/FASTA [optional if **not** building the index]'
+    fasta                       = 'PATH/TO/FASTA [optional if build_index == false ]'
     star_ignore_sjdbgtf         = false
 
     //trimgalore module specific parameters
