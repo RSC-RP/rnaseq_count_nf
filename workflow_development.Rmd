@@ -44,7 +44,7 @@ groundhog::groundhog.library(pkgs, "2022-04-18")
 
 # Nextflow Overview 
 
-```{r}
+```{r eval=TRUE}
 knitr::include_graphics("images/nextflow_dsl2.png")
 ```
 
