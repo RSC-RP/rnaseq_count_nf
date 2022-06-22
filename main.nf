@@ -12,6 +12,7 @@ include { TRIMGALORE } from './modules/nf-core/modules/trimgalore/main.nf'
 include { STAR_ALIGN } from './modules/nf-core/modules/star/align/main.nf'
 include { STAR_GENOMEGENERATE } from './modules/nf-core/modules/star/genomegenerate/main.nf'
 include { SAMTOOLS_INDEX } from './modules/nf-core/modules/samtools/index/main.nf'
+include { SRATOOLS_FASTERQDUMP } from './modules/nf-core/modules/sratools/fasterqdump/main.nf'
 
 //Sample manifest (params.sample_sheet) validation step to ensure appropriate formatting. 
 //See bin/check_samplesheet.py from NF-CORE 
@@ -107,6 +108,19 @@ workflow star_index {
 
     emit:
     index = STAR_GENOMEGENERATE.out.index
+}
+
+workflow sra_fastqs {
+    Channel.fromPath(file(params.sample_sheet, checkIfExists: true))
+        .splitCsv(header: true, sep: '\t')
+        .map { meta -> [ [ "id":meta["id"], "single_end":meta["single_end"].toBoolean() ], //meta
+                         [ file(meta["r1"], checkIfExists: true), file(meta["r2"], checkIfExists: true) ] //reads
+                    ]}
+        .set { accessions_ch }
+
+
+    SRATOOLS_FASTERQDUMP(accessions_ch)
+
 }
 
 //End with a message to print to standard out on workflow completion. 
