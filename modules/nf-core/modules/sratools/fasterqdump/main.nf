@@ -8,7 +8,7 @@ process SRATOOLS_FASTERQDUMP {
         'quay.io/biocontainers/mulled-v2-5f89fe0cd045cb1d615630b9261a1d17943a9b6a:6a9ff0e76ec016c3d0d27e0c0d362339f2d787e6-0' }"
 
     input:
-    tuple val(meta), path(sra)
+    val meta
     path ncbi_settings
 
     output:
@@ -26,12 +26,15 @@ process SRATOOLS_FASTERQDUMP {
     // for unpaired reads which we ignore here.
     output = meta.single_end ? '*.fastq.gz' : '*_{1,2}.fastq.gz'
     """
-    export NCBI_SETTINGS="\$PWD/${ncbi_settings}"
+    #export NCBI_SETTINGS="\$PWD/${ncbi_settings}"
+    mkdir ~/.ncbi
+    printf '/LIBS/GUID = "%s"\n' `uuid` > ~/.ncbi/user-settings.mkfg
+    cat ${ncbi_settings} >> ~/.ncbi/user-settings.mkfg
 
     fasterq-dump \\
         $args \\
         --threads $task.cpus \\
-        ${sra.name}
+        ${meta.id}
 
     pigz \\
         $args2 \\

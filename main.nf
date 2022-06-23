@@ -44,7 +44,7 @@ workflow rnaseq_count {
     }
     //Create the input channel which contains the SAMPLE_ID, whether its single-end, and the file paths for the fastqs. 
      Channel.fromPath(file(params.sample_sheet, checkIfExists: true))
-        .splitCsv(header: true, sep: '\t')
+        .splitCsv(header: true, sep: ',')
         .map { meta -> [ [ "id":meta["id"], "single_end":meta["single_end"].toBoolean() ], //meta
                          [ file(meta["r1"], checkIfExists: true), file(meta["r2"], checkIfExists: true) ] //reads
                     ]}
@@ -112,14 +112,14 @@ workflow star_index {
 
 workflow sra_fastqs {
     Channel.fromPath(file(params.sample_sheet, checkIfExists: true))
-        .splitCsv(header: true, sep: '\t')
-        .map { meta -> [ [ "id":meta["id"], "single_end":meta["single_end"].toBoolean() ], //meta
-                         [ file(meta["r1"], checkIfExists: true), file(meta["r2"], checkIfExists: true) ] //reads
-                    ]}
+        .splitCsv(header: true, sep: ',')
+        .map { meta -> [ "id":meta["id"], "single_end":meta["single_end"].toBoolean() ] } //meta
         .set { accessions_ch }
-
-
-    SRATOOLS_FASTERQDUMP(accessions_ch)
+    Channel.fromPath(file(params.user_settings, checkIfExists: true))
+        .collect()
+        .set { user_settings }
+    // Run fastq dump 
+   SRATOOLS_FASTERQDUMP(accessions_ch, user_settings)
 
 }
 

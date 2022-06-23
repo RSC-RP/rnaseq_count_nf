@@ -16,6 +16,7 @@
 .nextflow.log*
 *.log.*
 *.run
+*dag.pdf.*
 
 # Pipeline specific files
 resources/
