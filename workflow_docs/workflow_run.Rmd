@@ -35,6 +35,10 @@ options(stringsAsFactors = FALSE, max.print = 100)
 table <- function(..., useNA = "ifany") base::table(..., useNA = useNA)
 ```
 
+```{r}
+library(dplyr)
+```
+
 # Set-up  Nextflow Environment 
 
 ```{bash}
@@ -113,6 +117,9 @@ params {
 
 The `gene_list` and `ref_gene_model` can be found at the RSEQC [documentation page](http://rseqc.sourceforge.net/#download-gene-models-update-on-12-14-2021)
 save these to the `/gpfs/shared_data` to share with the RSC team, if needed. It also is best practice to save the STAR indexes to `/gpfs/shared_data`. 
+
+
+## Advanced Options
 
 **TO DO:** add "Advanced Options" section to describe the `ext.args` under the process scope. 
 

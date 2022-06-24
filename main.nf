@@ -51,7 +51,7 @@ workflow rnaseq_count {
     }else{
      //Create the input channel which contains the sample id, whether its single-end, and the file paths for the fastqs. 
      Channel.fromPath(file(params.sample_sheet, checkIfExists: true))
-        .splitCsv(header: true, sep: ',')
+        .splitCsv(header: true, sep: ',',  skip: 4)
         .map { meta -> 
             if ( meta["single_end"].toBoolean() ){
                 //single end reads have only 1 fastq file
@@ -67,6 +67,17 @@ workflow rnaseq_count {
         }
         .set { fastq_ch }
     }
+    //Stage the gtf/gff file for STAR aligner
+    Channel.fromPath(file(params.gtf, checkIfExists: true))
+        .collect() //collect converts this to a value channel and used multiple times
+        .set { gtf }
+    //Stage the genome files for RSEQC 
+    Channel.fromPath(file(params.gene_list, checkIfExists: true))
+        .collect()
+        .set { gene_list }
+    Channel.fromPath(file(params.ref_gene_model, checkIfExists: true))
+        .collect()
+        .set { ref_gene_model }
     // QC on the sequenced reads
     FASTQC(fastq_ch)
     if ( params.trim ) {
@@ -121,7 +132,7 @@ workflow sra_fastqs {
     main: 
     // stage the sample sheet
     Channel.fromPath(file(params.sample_sheet, checkIfExists: true))
-        .splitCsv(header: true, sep: ',')
+        .splitCsv(header: true, sep: ',', skip: 2)
         .map { meta -> [ "id":meta["id"], "single_end":meta["single_end"].toBoolean() ] } //meta
         .set { accessions_ch }
     // stage the NCBI sratoolkit config file

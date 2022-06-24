@@ -57,10 +57,15 @@ create_example <- function(outfile, filepath, definitions, pattern="*", single_e
       mutate(id = case_when(
           single_end == "true" ~ gsub("^(.+)\\.(fastq|fq).gz", "\\1", basename(r1)),
           TRUE ~ gsub("^(.+)[_\\.][Rr][12]\\.(fastq|fq).gz", "\\1", basename(r1))))
-
+  
+  definitions <- list(
+    r1 = paste(": the absolute or relative filepath for the read 1 fastq in paired-end RNA-seq, or the single-end fastq file."),
+    r2 = paste(": the absolute or relative filepath for the read 2 fastq in paired-end RNA-seq."),
+    id = paste(": unique sample ID, no duplicates allowed in the sample sheet."),
+    single_end = paste(": boolean [true/false] if the data is single-end or paired-end."))
 
   if (single_end){
-    definitions <- definitions[-grep("r2", names(definitions))]
+    definitions[["r2"]] <- paste(": Not Included for single-end RNAseq")
   }
 
   con <- file(outfile, open="wt")
@@ -80,9 +85,9 @@ create_sra_example <- function(outfile, sra_run_table, definitions, pattern="*")
     select(id=Run,
            single_end)
   
-  if ( all(sra_sample_sheet$single_end == "true" )){
-    definitions <- definitions[-grep("r2|r2", names(definitions))]
-  }
+  definitions <- list(
+    id = paste(": unique sample ID, no duplicates allowed in the sample sheet."),
+    single_end = (": boolean [true/false] if the data is single-end or paired-end."))
   
   con <- file(outfile, open="wt")
   lapply(names(definitions), function(comment)   writeLines( paste("# column",comment, definitions[[comment]]), con))
@@ -276,27 +281,15 @@ meta_ch = Channel.fromPath(file(params.sample_sheet))
 ```
 
 ```{r}
-definitions <- list(
-  r1 = paste(": the absolute or relative filepath for the read 1 fastq in paired-end RNA-seq, or the single-end fastq file."),
-  r2 = paste(": the absolute or relative filepath for the read 2 fastq in paired-end RNA-seq."),
-  id = paste(": unique sample ID, no duplicates allowed in the sample sheet."),
-  single_end = (": boolean [true/false] if the data is single-end or paired-end.")
-)
-```
-
-```{r}
 create_sra_example(outfile= here::here("test_data/sra_sample_sheet.csv"),
-                    sra_run_table=here::here("test_data/sra_run_table.txt"),
-                    definitions)
+                    sra_run_table=here::here("test_data/sra_run_table.txt"))
 
 create_example(outfile = here::here("test_data/paired_end_sample_sheet.csv"),
                filepath = here::here("test_data"),
-               definitions = definitions,
                pattern = "Sample.+.gz")
 
 create_example(outfile = here::here("test_data/single_end_sample_sheet.csv"), 
                filepath = here::here("test_data"),
-               definitions = definitions, 
                pattern = "SRR.+", 
                single_end = TRUE)
 ```
