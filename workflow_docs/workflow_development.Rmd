@@ -17,12 +17,11 @@ output:
 
 # Set-up 
 
-```{r echo=FALSE}
-styler::style_file("workflow_development.Rmd")
+```{r set-up, eval=TRUE, echo=TRUE}
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 ```
 
-```{r set-up}
-knitr::opts_knit$set(root.dir = PROJHOME)
+```{r eval=TRUE, message=FALSE}
 knitr::opts_chunk$set(
   eval = FALSE,
   tidy.opts = list(width.cutoff = 50),
@@ -33,19 +32,70 @@ knitr::opts_chunk$set(
 
 options(stringsAsFactors = FALSE, max.print = 100)
 table <- function(..., useNA = "ifany") base::table(..., useNA = useNA)
+
+library(stringr)
+library(magrittr)
+library(dplyr)
+library(tidyr)
+library(tibble)
+```
+
+# Define Functions
+
+```{r}
+create_example <- function(outfile, filepath, definitions, pattern="*", single_end=FALSE){
+      
+  files <- tibble(files = dir(filepath, 
+                                full.names = T, recursive = T, 
+                              pattern = pattern)) %>%
+      mutate(single_end = tolower(single_end)) %>% 
+      mutate(Read = case_when(
+        single_end == "true" ~ "r1",
+        grepl("[_\\.]?[Rr]1.(fastq|fq).gz", files) ~  "r1",
+        TRUE ~ "r2" )) %>%
+      pivot_wider(names_from = Read, values_from = files) %>% 
+      mutate(id = case_when(
+          single_end == "true" ~ gsub("^(.+)\\.(fastq|fq).gz", "\\1", basename(r1)),
+          TRUE ~ gsub("^(.+)[_\\.][Rr][12]\\.(fastq|fq).gz", "\\1", basename(r1))))
+
+
+  if (single_end){
+    definitions <- definitions[-grep("r2", names(definitions))]
+  }
+
+  con <- file(outfile, open="wt")
+  lapply(names(definitions), function(comment)   writeLines( paste("# column",comment, definitions[[comment]]), con))
+  write.csv(files, con, row.names = FALSE, quote=FALSE)
+  close(con)
+}
 ```
 
 ```{r}
-library(groundhog)
-pkgs <- c("stringr", "magrittr", "ggplot2", "dplyr", "tidyr", "tibble")
-groundhog::groundhog.library(pkgs, "2022-04-18")
+create_sra_example <- function(outfile, sra_run_table, definitions, pattern="*"){
+  
+  sra_sample_sheet <- read.csv(sra_run_table) %>% 
+    mutate(single_end=case_when(
+      LibraryLayout== "SINGLE" ~ "true",
+      TRUE ~ "false")) %>%
+    select(id=Run,
+           single_end)
+  
+  if ( all(sra_sample_sheet$single_end == "true" )){
+    definitions <- definitions[-grep("r2|r2", names(definitions))]
+  }
+  
+  con <- file(outfile, open="wt")
+  lapply(names(definitions), function(comment)   writeLines( paste("# column",comment, definitions[[comment]]), con))
+  write.csv(sra_sample_sheet, con, row.names = FALSE, quote=FALSE)
+  close(con)
+}
 ```
 
 
 # Nextflow Overview 
 
 ```{r eval=TRUE}
-knitr::include_graphics("images/nextflow_dsl2.png")
+knitr::include_graphics(here::here("images/nextflow_dsl2.png"))
 ```
 
 # Set-up Environment 
@@ -59,20 +109,6 @@ If testing interactively on cybertron, you will need to request the following re
 
 ```{bash}
 qsub -I -q <queue_name> -P $(project code <project_name>) -l select=1:mem=32gb:ncpus=4
-```
-
-# Create Demo Dataset
-
-```{r eval=FALSE}
-sampler <- ShortRead::FastqSampler("test_data/Day0.Naive_L1Pf7_R1.fastq.gz", 10000)
-set.seed(123)
-R1 <- ShortRead::yield(sampler)
-sampler <- ShortRead::FastqSampler("test_data/Day0.Naive_L1Pf7_R2.fastq.gz", 10000)
-set.seed(123)
-R2 <- ShortRead::yield(sampler)
-
-ShortRead::writeFastq(R1, file = "test_data/Sample_ID_001_R1.fastq.gz")
-ShortRead::writeFastq(R2, file = "test_data/Sample_ID_001_R2.fastq.gz")
 ```
 
 
@@ -227,23 +263,9 @@ The `main.nf` script is also the location of the [channels](https://www.nextflow
 
 Create the Sample sheet for the input fastq files, and a metadate file with single-end or paired-end information using R, and this file will be read into the `main.nf` script as a parameter. 
 
-```{r}
-files <- tibble(files = dir("test_data", full.names = T, recursive = T, pattern = "Sample.+.gz")) %>%
-  mutate(Read = ifelse(grepl("_[Rr]1.(fastq|fq).gz", files), "r1", "r2")) %>%
-  pivot_wider(names_from = Read, values_from = files) %>%
-  mutate(
-    id = gsub("^(.+)_[Rr][12].(fastq|fq).gz", "\\1", basename(r1)),
-    single_end = "false"
-  )
-
-files
-# write.csv(files, file = "test_data/sample_sheet.txt", row.names = FALSE, quote = FALSE)
-```
-
-
 The `map` operator is a function that transforms a channel, or in other words, it applies a function onto each item in the channel. Its found in detail [here](https://www.nextflow.io/docs/latest/operator.html#map). 
 
-In this case, we will use `map` operator on a channel to create our desired `meta` input to run the fastqc module using the "sample_sheet.txt" just created. 
+In this case, we will use `map` operator on a channel to create our desired `meta` input to run the fastqc module using the "paired_sample_sheet.txt" created below. 
 
 ```
 meta_ch = Channel.fromPath(file(params.sample_sheet))
@@ -254,14 +276,29 @@ meta_ch = Channel.fromPath(file(params.sample_sheet))
 ```
 
 ```{r}
-sra_sample_sheet <- read.csv("test_data/SraRunTable.txt") %>% 
-  slice(1:2) %>% 
-  mutate(single_end="true") %>% 
-  select(id=Run, 
-         single_end)
+definitions <- list(
+  r1 = paste(": the absolute or relative filepath for the read 1 fastq in paired-end RNA-seq, or the single-end fastq file."),
+  r2 = paste(": the absolute or relative filepath for the read 2 fastq in paired-end RNA-seq."),
+  id = paste(": unique sample ID, no duplicates allowed in the sample sheet."),
+  single_end = (": boolean [true/false] if the data is single-end or paired-end.")
+)
+```
 
-sra_sample_sheet
-# write.csv(sra_sample_sheet,"test_data/sra_sample_sheet.txt", quote=FALSE, row.names = FALSE)
+```{r}
+create_sra_example(outfile= here::here("test_data/sra_sample_sheet.csv"),
+                    sra_run_table=here::here("test_data/sra_run_table.txt"),
+                    definitions)
+
+create_example(outfile = here::here("test_data/paired_end_sample_sheet.csv"),
+               filepath = here::here("test_data"),
+               definitions = definitions,
+               pattern = "Sample.+.gz")
+
+create_example(outfile = here::here("test_data/single_end_sample_sheet.csv"), 
+               filepath = here::here("test_data"),
+               definitions = definitions, 
+               pattern = "SRR.+", 
+               single_end = TRUE)
 ```
 
 
@@ -384,6 +421,7 @@ process {
     }
 }
 ```
+
 ## Docker and Singularity Configs
 
 [Docker](https://www.nextflow.io/docs/latest/config.html#scope-docker) and [singularty](https://www.nextflow.io/docs/latest/config.html#scope-singularity) configuration options are found on the nextflow docs. 

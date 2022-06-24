@@ -42,24 +42,31 @@ workflow rnaseq_count {
             .collect() 
             .set { index }
     }
-    //Create the input channel which contains the SAMPLE_ID, whether its single-end, and the file paths for the fastqs. 
+
+    if ( params.download_sra_fqs ){
+        //Download the fastqs directly from the SRA 
+        sra_fastqs()
+        sra_fastqs.out.reads
+            .set { fastq_ch }
+    }else{
+     //Create the input channel which contains the sample id, whether its single-end, and the file paths for the fastqs. 
      Channel.fromPath(file(params.sample_sheet, checkIfExists: true))
         .splitCsv(header: true, sep: ',')
-        .map { meta -> [ [ "id":meta["id"], "single_end":meta["single_end"].toBoolean() ], //meta
-                         [ file(meta["r1"], checkIfExists: true), file(meta["r2"], checkIfExists: true) ] //reads
-                    ]}
+        .map { meta -> 
+            if ( meta["single_end"].toBoolean() ){
+                //single end reads have only 1 fastq file
+                [ [ "id":meta["id"], "single_end":meta["single_end"].toBoolean() ], //meta
+                  [ file(meta["r1"], checkIfExists: true) ] //reads
+                ]
+            } else {
+                //paired end reads have 2 fastq files 
+                [ [ "id":meta["id"], "single_end":meta["single_end"].toBoolean() ], //meta
+                  [ file(meta["r1"], checkIfExists: true), file(meta["r2"], checkIfExists: true) ] //reads
+                ]
+            }
+        }
         .set { fastq_ch }
-    //Stage the gtf/gff file for STAR aligner
-    Channel.fromPath(file(params.gtf, checkIfExists: true))
-        .collect() //collect converts this to a value channel and used multiple times
-        .set { gtf }
-    //Stage the genome files for RSEQC 
-    Channel.fromPath(file(params.gene_list, checkIfExists: true))
-        .collect()
-        .set { gene_list }
-    Channel.fromPath(file(params.ref_gene_model, checkIfExists: true))
-        .collect()
-        .set { ref_gene_model }
+    }
     // QC on the sequenced reads
     FASTQC(fastq_ch)
     if ( params.trim ) {
@@ -111,16 +118,21 @@ workflow star_index {
 }
 
 workflow sra_fastqs {
+    main: 
+    // stage the sample sheet
     Channel.fromPath(file(params.sample_sheet, checkIfExists: true))
         .splitCsv(header: true, sep: ',')
         .map { meta -> [ "id":meta["id"], "single_end":meta["single_end"].toBoolean() ] } //meta
         .set { accessions_ch }
+    // stage the NCBI sratoolkit config file
     Channel.fromPath(file(params.user_settings, checkIfExists: true))
         .collect()
         .set { user_settings }
     // Run fastq dump 
    SRATOOLS_FASTERQDUMP(accessions_ch, user_settings)
 
+   emit:
+   reads = SRATOOLS_FASTERQDUMP.out.reads
 }
 
 //End with a message to print to standard out on workflow completion. 

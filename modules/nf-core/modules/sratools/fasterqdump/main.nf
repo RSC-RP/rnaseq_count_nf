@@ -9,10 +9,11 @@ process SRATOOLS_FASTERQDUMP {
 
     input:
     val meta
-    path ncbi_settings
+    path user_settings
 
     output:
     tuple val(meta), path(output), emit: reads
+    path "user-settings.mkfg"    , emit: settings
     path "versions.yml"          , emit: versions
 
     when:
@@ -21,15 +22,15 @@ process SRATOOLS_FASTERQDUMP {
     script:
     def args = task.ext.args ?: ''
     def args2 = task.ext.args2 ?: ''
+    ncbi_settings = 'user-settings.mkfg'
     // Paired-end data extracted by fasterq-dump (--split-3 the default) always creates
     // *_1.fastq *_2.fastq files but sometimes also an additional *.fastq file
     // for unpaired reads which we ignore here.
     output = meta.single_end ? '*.fastq.gz' : '*_{1,2}.fastq.gz'
     """
-    #export NCBI_SETTINGS="\$PWD/${ncbi_settings}"
-    mkdir ~/.ncbi
-    printf '/LIBS/GUID = "%s"\n' `uuid` > ~/.ncbi/user-settings.mkfg
-    cat ${ncbi_settings} >> ~/.ncbi/user-settings.mkfg
+    printf '/LIBS/GUID = "%s"\n' `uuid` > ${ncbi_settings}
+    cat ${user_settings} >> ${ncbi_settings}
+    export NCBI_SETTINGS="\$PWD/${ncbi_settings}"
 
     fasterq-dump \\
         $args \\

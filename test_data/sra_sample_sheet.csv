@@ -1,0 +1,6 @@
+# column r1 : the absolute or relative filepath for the read 1 fastq in paired-end RNA-seq, or the single-end fastq file.
+# column id : unique sample ID, no duplicates allowed in the sample sheet.
+# column single_end : boolean [true/false] if the data is single-end or paired-end.
+id,single_end
+SRR013553,true
+SRR013564,true

@@ -1,3 +1,0 @@
-id,single_end
-SRR5146305,true
-SRR5146306,true

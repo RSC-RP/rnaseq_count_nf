@@ -17,8 +17,12 @@ output:
 
 # Set-up 
 
-```{r set-up}
-knitr::opts_knit$set(root.dir = PROJHOME)
+```{r set-up, eval=TRUE, echo=TRUE}
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+
+```{r eval=TRUE}
 knitr::opts_chunk$set(
   tidy.opts = list(width.cutoff = 50),
   tidy = TRUE,
@@ -31,7 +35,7 @@ options(stringsAsFactors = FALSE, max.print = 100)
 table <- function(..., useNA = "ifany") base::table(..., useNA = useNA)
 ```
 
-# Set-up Environment 
+# Set-up  Nextflow Environment 
 
 ```{bash}
 git clone https://childrens-atlassian/bitbucket/projects/RPDEV/repos/rnaseq_count_nf/
@@ -39,30 +43,42 @@ conda env create -f env/nextflow.yaml
 conda activate nextflow
 ```
 
-
 # Define Input Files 
 
 ## Sample Sheet
 
-A tab delimited sample sheet is required for the input samples to be processed. Currently, the pipeline only supports paired-end RNA-seq data, and the creation of the sample sheet file is dependent on the user at this time. 
+A tab delimited sample sheet is required for the input samples to be processed. 
 
 It must have the column names (in any order):
 
-  * r1 - the filepath for the read 1 in paired end RNA-seq
+  * r1 - the filepath for the read 1 fastq in paired-end RNA-seq, or the single-end fastq file
     
-  * r2 - the filepath for the read 2 in paired end RNA-seq
+  * r2 - the filepath for the read 2 fastq in paired-end RNA-seq
     
   * id - unique sample ID, no duplicates allowed in the sample sheet
     
   * single_end - boolean [true/false] if the data is single-end or paired-end 
 
 
-TO DO: A function provided here, but it may not meet the needs of every experiment. 
+**TO DO:** A function provided here, but it may not meet the needs of every experiment. 
 
 ```{r eval=TRUE}
-example_sheet <- read.table("test_data/sample_sheet.txt", header = TRUE)
+example_sheet <- read.csv(here::here("test_data/paired_end_sample_sheet.csv"),
+                            header = TRUE, 
+                            comment.char = "#")
 example_sheet
 ```
+
+If downloading the fastq files directly from the SRA, the sample sheet only requires the `id` and the `single_end` columns. 
+
+```{r eval=TRUE}
+sra_example <- read.csv(here::here("test_data/sra_sample_sheet.csv"),
+                        header = TRUE, 
+                        comment.char = "#")
+
+sra_example
+```
+
 
 ## Nextflow Config
 
@@ -91,14 +107,14 @@ params {
 
     //RSEQC specific parameters
     gene_list                   = 'PATH/TO/RSEQC/rRNA.bed'
-    ref_gene_model              = 'PATH/TO/RSEQC/'
+    ref_gene_model              = 'PATH/TO/RSEQC/gene_model.bed'
 }
 ```
 
-The `gene_list` and `ref_gene_model` can be found at http://rseqc.sourceforge.net/#download-gene-models-update-on-12-14-2021 
-save these to the `/gpfs/shared_data` to share with the RSC team. It also is best practice to save the STAR indexes to `/gpfs/shared_data`. 
+The `gene_list` and `ref_gene_model` can be found at the RSEQC [documentation page](http://rseqc.sourceforge.net/#download-gene-models-update-on-12-14-2021)
+save these to the `/gpfs/shared_data` to share with the RSC team, if needed. It also is best practice to save the STAR indexes to `/gpfs/shared_data`. 
 
-TO DO: add "Advanced Options" section to describe the `ext.args` under the process scope. 
+**TO DO:** add "Advanced Options" section to describe the `ext.args` under the process scope. 
 
 # Run the workflow 
 
@@ -127,10 +143,18 @@ results/
     * collects fastqc, star alignment, and star quantification stats 
     
   * rseqc/
-    * rRNA stats and reads aligned to the rRNA
+    * {sample_id}.rRNA_stats.out
+    * {sample_id}.in.bam - rRNA reads
+    * {sample_id}.Aligned.sortedByCoord.out.summary.txt
+    * {sample_id}.Aligned.sortedByCoord.out.tin.xls
+    * {sample_id}.read_distribution.txt
     
   * samtools/
     * bam index (.bai) file
+  
+  * sratools/
+    * {SRR_RUN_ID}.fastq.gz
+    * sratoolkit config file
     
   * star/
     * {Sample_ID_001}.Aligned.out.bam
