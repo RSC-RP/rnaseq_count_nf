@@ -118,6 +118,10 @@ params {
 The `gene_list` and `ref_gene_model` can be found at the RSEQC [documentation page](http://rseqc.sourceforge.net/#download-gene-models-update-on-12-14-2021)
 save these to the `/gpfs/shared_data` to share with the RSC team, if needed. It also is best practice to save the STAR indexes to `/gpfs/shared_data`. 
 
+However, the ref_gene_model must be in BED12 format and must match the transcript IDs used in the GTF for STAR aligner. The BED12 can be produced from the GFT file using UCSC utilities (Kent tools).
+
+**TO DO** Add a subworkflow for the creation of a BED12 compatible file for RSEQC. 
+
 
 ## Advanced Options
 
@@ -133,7 +137,7 @@ The `main_run.sh` defines the profiles for difference executors in the variable 
 ./main_run.sh "my_analysis"
 ```
 
-Typically, you will not need to change the `.main_run.sh` often. However, if needed for testing or development, the `NFX_PROFILE` can be changed to run locally, or with docker, or with conda. You can also change the entry_point for the workflow to run only the index building step using `NFX_ENTRY` set to `star_index`. 
+Typically, you will not need to change the `main_run.sh` often. However, if needed for testing or development, the `NFX_PROFILE` can be changed to run locally, or with docker, or with conda. You can also change the entry_point for the workflow to run only the index building step using `NFX_ENTRY` set to `star_index`. 
 
 
 # Expected Outputs 
