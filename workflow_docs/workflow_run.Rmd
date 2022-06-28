@@ -51,7 +51,8 @@ conda activate nextflow
 
 ## Sample Sheet
 
-A tab delimited sample sheet is required for the input samples to be processed. 
+A tab delimited sample sheet is required for the input samples to be processed. Please note, ***do not remove*** the comment lines that begin with "#" in the example files.
+Indeed, the 4 comment lines *must* be included in any input sample sheet. 
 
 It must have the column names (in any order):
 
@@ -95,15 +96,16 @@ workDir = "PATH/TO/SCRATCH"
 params {
     // general options
     sample_sheet                = "PATH/TO/SAMPLE_SHEET"
+    download_sra_fqs            = [true/false]
     queue                       = 'NAME OF QUEUE'
     project                     = 'PROJECT CODE'
     outdir                      = "PATH/TO/RESULTS"
 
     //star specific params. Must be full filepaths for files outside the projectDir
-    index                       = 'PATH/TO/STAR_INDEX/ [optional if build_index == true]'
+    index                       = 'PATH/TO/STAR_INDEX/' [optional if build_index == true]
     build_index                 = false
     gtf                         = 'PATH/TO/GTF'
-    fasta                       = 'PATH/TO/FASTA [optional if build_index == false ]'
+    fasta                       = 'PATH/TO/FASTA' [optional if build_index == false ]
     star_ignore_sjdbgtf         = false
 
     //trimgalore module specific parameters
