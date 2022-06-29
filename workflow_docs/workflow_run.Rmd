@@ -42,25 +42,69 @@ library(dplyr)
 # Set-up  Nextflow Environment 
 
 
-First, grab a compute node and activate the conda enviroment. 
+First, grab a compute node and activate the conda environment. It may also be best practice to use tmux or screen to ensure that if at the session is disconnected, then you're nextflow workflow (if running) won't end with SIGKILL error. 
 
 ```{bash}
+#on a terminal on the Cybertron login nodes
+git clone https://childrens-atlassian/bitbucket/projects/RPDEV/repos/rnaseq_count_nf/
+```
+
+```{bash}
+#grab a compute note
 qsub -I -q freeq -l select=1:ncpus=1:mem=8g -l walltime=8:00:00 -P [PROJECT CODE]
 ```
 
 ```{bash}
-git clone https://childrens-atlassian/bitbucket/projects/RPDEV/repos/rnaseq_count_nf/
 conda env create -f env/nextflow.yaml
 conda activate nextflow
 ```
 
 # Test the Workflow 
 
-Determine if the workflow works on your installation of the conda environment by running the following commands. 
+## Paired end
+
+Determine if the workflow works on your installation of the conda environment by running the following command.  
+
+```{bash}
+./main_run.sh "paired_end_test"
+```
+
+## single-end test 
+
+To test the single-end sheet, modify the sample_sheet parameter in the `nextflow.config`,
+
+```
+params {
+    // general options
+    sample_sheet                = "test_data/single_end_sheet.csv"
+<...continues...>
+}
+```
+
+then run the command
+
+```{bash}
+./main_run.sh "single_end_test"
+```
 
 
-```{bahs}
-./main_run "paired_end_test"
+## sra download
+
+To test the sra sample sheet - modify these two lines in the `nextflow.config`.  
+
+```
+params {
+    // general options
+    sample_sheet                = "test_data/sra_sample_sheet.csv"
+    download_sra_fqs            = true
+<...continues...>
+}
+```
+
+then run on the command:
+
+```{bash}
+./main_run "sra_test"
 ```
 
 
