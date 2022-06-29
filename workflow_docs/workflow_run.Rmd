@@ -41,17 +41,34 @@ library(dplyr)
 
 # Set-up  Nextflow Environment 
 
+
+First, grab a compute node and activate the conda enviroment. 
+
+```{bash}
+qsub -I -q freeq -l select=1:ncpus=1:mem=8g -l walltime=8:00:00 -P [PROJECT CODE]
+```
+
 ```{bash}
 git clone https://childrens-atlassian/bitbucket/projects/RPDEV/repos/rnaseq_count_nf/
 conda env create -f env/nextflow.yaml
 conda activate nextflow
 ```
 
+# Test the Workflow 
+
+Determine if the workflow works on your installation of the conda environment by running the following commands. 
+
+
+```{bahs}
+./main_run "paired_end_test"
+```
+
+
 # Define Input Files 
 
 ## Sample Sheet
 
-A tab delimited sample sheet is required for the input samples to be processed. Please note, ***do not remove*** the comment lines that begin with "#" in the example files.
+A comma delimited (csv) sample sheet is required for the input samples to be processed. Please note, ***do not remove*** the comment lines that begin with "#" in the example files.
 Indeed, the 4 comment lines *must* be included in any input sample sheet. 
 
 It must have the column names (in any order):
@@ -67,6 +84,8 @@ It must have the column names (in any order):
 
 **TO DO:** A function provided here, but it may not meet the needs of every experiment. 
 
+
+The two examples are provided here to look at: 
 ```{r eval=TRUE}
 example_sheet <- read.csv(here::here("test_data/paired_end_sample_sheet.csv"),
                             header = TRUE, 
