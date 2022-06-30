@@ -1,0 +1,60 @@
+nf-core-nfpipeline
+├── assets
+│   ├── email_template.html
+│   ├── email_template.txt
+│   ├── multiqc_config.yml
+│   ├── nf-core-nfpipeline_logo_light.png
+│   ├── samplesheet.csv
+│   ├── schema_input.json
+│   └── sendmail_template.txt
+├── bin
+│   └── check_samplesheet.py
+├── conf
+│   ├── base.config
+│   ├── igenomes.config
+│   ├── modules.config
+│   ├── test.config
+│   └── test_full.config
+├── docs
+│   ├── README.md
+│   ├── images
+│   │   ├── mqc_fastqc_adapter.png
+│   │   ├── mqc_fastqc_counts.png
+│   │   ├── mqc_fastqc_quality.png
+│   │   ├── nf-core-nfpipeline_logo_dark.png
+│   │   └── nf-core-nfpipeline_logo_light.png
+│   ├── output.md
+│   └── usage.md
+├── lib
+│   ├── NfcoreSchema.groovy
+│   ├── NfcoreTemplate.groovy
+│   ├── Utils.groovy
+│   ├── WorkflowMain.groovy
+│   ├── WorkflowNfpipeline.groovy
+│   └── nfcore_external_java_deps.jar
+├── main.nf
+├── modules
+│   ├── local
+│   │   └── samplesheet_check.nf
+│   └── nf-core
+│       └── modules
+│           ├── custom
+│           │   └── dumpsoftwareversions
+│           │       ├── main.nf
+│           │       ├── meta.yml
+│           │       └── templates
+│           │           └── dumpsoftwareversions.py
+│           ├── fastqc
+│           │   ├── main.nf
+│           │   └── meta.yml
+│           └── multiqc
+│               ├── main.nf
+│               └── meta.yml
+├── modules.json
+├── nextflow.config
+├── nextflow_schema.json
+├── subworkflows
+│   └── local
+│       └── input_check.nf
+└── workflows
+    └── nfpipeline.nf

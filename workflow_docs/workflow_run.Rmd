@@ -21,7 +21,6 @@ output:
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 ```
 
-
 ```{r eval=TRUE}
 knitr::opts_chunk$set(
   tidy.opts = list(width.cutoff = 50),
@@ -41,7 +40,6 @@ library(dplyr)
 
 # Set-up  Nextflow Environment 
 
-
 First, grab a compute node and activate the conda environment. It may also be best practice to use tmux or screen to ensure that if at the session is disconnected, then you're nextflow workflow (if running) won't end with SIGKILL error. 
 
 ```{bash}
@@ -52,6 +50,7 @@ git clone https://childrens-atlassian/bitbucket/projects/RPDEV/repos/rnaseq_coun
 ```{bash}
 #grab a compute note
 qsub -I -q freeq -l select=1:ncpus=1:mem=8g -l walltime=8:00:00 -P [PROJECT CODE]
+cd /path/to/cloned/rnaseq_count_nf
 ```
 
 ```{bash}

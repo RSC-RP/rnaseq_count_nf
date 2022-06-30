@@ -11,7 +11,7 @@
 
 <meta name="author" content="Jenny L Smith" />
 
-<meta name="date" content="2022-06-28" />
+<meta name="date" content="2022-06-29" />
 
 <title>Nextflow ‘rnaseq_count_nf’ Pipeline Run Instructions</title>
 
@@ -2890,7 +2890,7 @@ div.tocify {
 <h1 class="title toc-ignore">Nextflow ‘rnaseq_count_nf’ Pipeline Run
 Instructions</h1>
 <h4 class="author">Jenny L Smith</h4>
-<h4 class="date">2022-06-28</h4>
+<h4 class="date">2022-06-29</h4>
 
 </div>
 
@@ -2913,18 +2913,61 @@ Instructions</h1>
 <div id="set-up-nextflow-environment" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> Set-up Nextflow
 Environment</h1>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://childrens-atlassian/bitbucket/projects/RPDEV/repos/rnaseq_count_nf/</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> env create <span class="at">-f</span> env/nextflow.yaml</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate nextflow</span></code></pre></div>
+<p>First, grab a compute node and activate the conda environment. It may
+also be best practice to use tmux or screen to ensure that if at the
+session is disconnected, then you’re nextflow workflow (if running)
+won’t end with SIGKILL error.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#on a terminal on the Cybertron login nodes</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://childrens-atlassian/bitbucket/projects/RPDEV/repos/rnaseq_count_nf/</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#grab a compute note</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">qsub</span> <span class="at">-I</span> <span class="at">-q</span> freeq <span class="at">-l</span> select=1:ncpus=1:mem=8g <span class="at">-l</span> walltime=8:00:00 <span class="at">-P</span> [PROJECT CODE]</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /path/to/cloned/rnaseq_count_nf</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> env create <span class="at">-f</span> env/nextflow.yaml</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate nextflow</span></code></pre></div>
 </div>
-<div id="define-input-files" class="section level1" number="3">
-<h1><span class="header-section-number">3</span> Define Input Files</h1>
-<div id="sample-sheet" class="section level2" number="3.1">
-<h2><span class="header-section-number">3.1</span> Sample Sheet</h2>
-<p>A tab delimited sample sheet is required for the input samples to be
-processed. Please note, <strong><em>do not remove</em></strong> the
-comment lines that begin with “#” in the example files. Indeed, the 4
-comment lines <em>must</em> be included in any input sample sheet.</p>
+<div id="test-the-workflow" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Test the Workflow</h1>
+<div id="paired-end" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Paired end</h2>
+<p>Determine if the workflow works on your installation of the conda
+environment by running the following command.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./main_run.sh</span> <span class="st">&quot;paired_end_test&quot;</span></span></code></pre></div>
+</div>
+<div id="single-end-test" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> single-end test</h2>
+<p>To test the single-end sheet, modify the sample_sheet parameter in
+the <code>nextflow.config</code>,</p>
+<pre><code>params {
+    // general options
+    sample_sheet                = &quot;test_data/single_end_sheet.csv&quot;
+&lt;...continues...&gt;
+}</code></pre>
+<p>then run the command</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./main_run.sh</span> <span class="st">&quot;single_end_test&quot;</span></span></code></pre></div>
+</div>
+<div id="sra-download" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> sra download</h2>
+<p>To test the sra sample sheet - modify these two lines in the
+<code>nextflow.config</code>.</p>
+<pre><code>params {
+    // general options
+    sample_sheet                = &quot;test_data/sra_sample_sheet.csv&quot;
+    download_sra_fqs            = true
+&lt;...continues...&gt;
+}</code></pre>
+<p>then run on the command:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./main_run</span> <span class="st">&quot;sra_test&quot;</span></span></code></pre></div>
+</div>
+</div>
+<div id="define-input-files" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Define Input Files</h1>
+<div id="sample-sheet" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> Sample Sheet</h2>
+<p>A comma delimited (csv) sample sheet is required for the input
+samples to be processed. Please note, <strong><em>do not
+remove</em></strong> the comment lines that begin with “#” in the
+example files. Indeed, the 4 comment lines <em>must</em> be included in
+any input sample sheet.</p>
 <p>It must have the column names (in any order):</p>
 <ul>
 <li><p>r1 - the filepath for the read 1 fastq in paired-end RNA-seq, or
@@ -2938,9 +2981,10 @@ paired-end</p></li>
 </ul>
 <p><strong>TO DO:</strong> A function provided here, but it may not meet
 the needs of every experiment.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>example_sheet <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;test_data/paired_end_sample_sheet.csv&quot;</span>),</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">comment.char =</span> <span class="st">&quot;#&quot;</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>example_sheet</span></code></pre></div>
+<p>The two examples are provided here to look at:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>example_sheet <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;test_data/paired_end_sample_sheet.csv&quot;</span>),</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">comment.char =</span> <span class="st">&quot;#&quot;</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>example_sheet</span></code></pre></div>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":["single_end"],"name":[1],"type":["chr"],"align":["left"]},{"label":["r1"],"name":[2],"type":["chr"],"align":["left"]},{"label":["r2"],"name":[3],"type":["chr"],"align":["left"]},{"label":["id"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"false","2":"/active/taylor_s/people/jsmi26/RPDEV/rnaseq_count_nf/test_data/Sample_ID_001_R1.fastq.gz","3":"/active/taylor_s/people/jsmi26/RPDEV/rnaseq_count_nf/test_data/Sample_ID_001_R2.fastq.gz","4":"Sample_ID_001"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
@@ -2949,18 +2993,18 @@ the needs of every experiment.</p>
 <p>If downloading the fastq files directly from the SRA, the sample
 sheet only requires the <code>id</code> and the <code>single_end</code>
 columns.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>sra_example <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;test_data/sra_sample_sheet.csv&quot;</span>),</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">comment.char =</span> <span class="st">&quot;#&quot;</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>sra_example</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>sra_example <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;test_data/sra_sample_sheet.csv&quot;</span>),</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">comment.char =</span> <span class="st">&quot;#&quot;</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>sra_example</span></code></pre></div>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":["id"],"name":[1],"type":["chr"],"align":["left"]},{"label":["single_end"],"name":[2],"type":["chr"],"align":["left"]}],"data":[{"1":"SRR013553","2":"true"},{"1":"SRR013564","2":"true"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
-<div id="nextflow-config" class="section level2" number="3.2">
-<h2><span class="header-section-number">3.2</span> Nextflow Config</h2>
+<div id="nextflow-config" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> Nextflow Config</h2>
 <p>Edit the <code>nextflow.config</code> file to include the appropriate
 filepaths for the samples to be included in the pipeline, and the
 appropriate genome references. The required files are listed here:</p>
@@ -3000,14 +3044,14 @@ produced from the GFT file using UCSC utilities (Kent tools).</p>
 <p><strong>TO DO</strong> Add a subworkflow for the creation of a BED12
 compatible file for RSEQC.</p>
 </div>
-<div id="advanced-options" class="section level2" number="3.3">
-<h2><span class="header-section-number">3.3</span> Advanced Options</h2>
+<div id="advanced-options" class="section level2" number="4.3">
+<h2><span class="header-section-number">4.3</span> Advanced Options</h2>
 <p><strong>TO DO:</strong> add “Advanced Options” section to describe
 the <code>ext.args</code> under the process scope.</p>
 </div>
 </div>
-<div id="run-the-workflow" class="section level1" number="4">
-<h1><span class="header-section-number">4</span> Run the workflow</h1>
+<div id="run-the-workflow" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Run the workflow</h1>
 <p>Then execute a wrapper around the <code>nextflow run main.nf</code>
 command which is in the <code>main_run.sh</code> shell script. Provide a
 descriptive name (string) for your workflow run, in this example we will
@@ -3017,7 +3061,7 @@ executors in the variable <code>NFX_PROFILE</code>. The best choice is
 “PBS_singularity” which executes the jobs on the HPC using the PBS
 scheduler and then will run the job inside singularity containers with
 the appropriate software versions.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./main_run.sh</span> <span class="st">&quot;my_analysis&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./main_run.sh</span> <span class="st">&quot;my_analysis&quot;</span></span></code></pre></div>
 <p>Typically, you will not need to change the <code>main_run.sh</code>
 often. However, if needed for testing or development, the
 <code>NFX_PROFILE</code> can be changed to run locally, or with docker,
@@ -3025,8 +3069,8 @@ or with conda. You can also change the entry_point for the workflow to
 run only the index building step using <code>NFX_ENTRY</code> set to
 <code>star_index</code>.</p>
 </div>
-<div id="expected-outputs" class="section level1" number="5">
-<h1><span class="header-section-number">5</span> Expected Outputs</h1>
+<div id="expected-outputs" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> Expected Outputs</h1>
 <p>Under the path provided in the nextflow config for params “outdir”,
 you will find directories named for each of the modules. Lets say
 “params.outdir = ./results”. There will be the following file
@@ -3086,14 +3130,14 @@ which describes the workflow channels (inputs) and the modules. The DAG
 image will be saved under <code>dag/</code> directory with the name
 “my_analysis_{DATE}_dag.pdf”.</p>
 </div>
-<div id="share-the-data" class="section level1" number="6">
-<h1><span class="header-section-number">6</span> Share the Data</h1>
-<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="va">RESULTS</span><span class="op">=</span><span class="st">&quot;PATH/TO/PIPELINE/RESULTS/&quot;</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="va">OUTDIR</span><span class="op">=</span><span class="st">&quot;path/to/collabs/RSS&quot;</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rsync</span> <span class="at">-av</span> <span class="va">$RESULTS</span> <span class="va">$OUTDIR</span> </span></code></pre></div>
+<div id="share-the-data" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> Share the Data</h1>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="va">RESULTS</span><span class="op">=</span><span class="st">&quot;PATH/TO/PIPELINE/RESULTS/&quot;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="va">OUTDIR</span><span class="op">=</span><span class="st">&quot;path/to/collabs/RSS&quot;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rsync</span> <span class="at">-av</span> <span class="va">$RESULTS</span> <span class="va">$OUTDIR</span> </span></code></pre></div>
 </div>
-<div id="cleaning-up-cached-data" class="section level1" number="7">
-<h1><span class="header-section-number">7</span> Cleaning up Cached
+<div id="cleaning-up-cached-data" class="section level1" number="8">
+<h1><span class="header-section-number">8</span> Cleaning up Cached
 Data</h1>
 <p>Nextflow has an utility to <a href="https://www.nextflow.io/docs/latest/cli.html#clean">clean</a> up
 old work directories and logs that are no longer needed. This can be run
@@ -3101,13 +3145,13 @@ after x amount of time to keep your workdir from getting too large or if
 you’re running out of disk space.</p>
 <p>This requires the session ID or session name, which can found in the
 <code>.nextflow/history</code> file.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> .nextflow/history</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> clean <span class="at">-f</span> high_sinoussi</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> .nextflow/history</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> clean <span class="at">-f</span> high_sinoussi</span></code></pre></div>
 </div>
-<div id="session-information" class="section level1" number="8">
-<h1><span class="header-section-number">8</span> Session
+<div id="session-information" class="section level1" number="9">
+<h1><span class="header-section-number">9</span> Session
 Information</h1>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div>
 </div>
 
 
