@@ -35,7 +35,8 @@ workflow rnaseq_count {
     //Run the index workflow or stage the genome index directory
     if ( params.build_index == true ) {
         star_index()
-        star_index.out.index 
+        star_index.out.index
+            .collect()
             .set { index }
     } else {
         Channel.fromPath(file(params.index, checkIfExists: true))
