@@ -44,7 +44,7 @@ First, grab a compute node and activate the conda environment. It may also be be
 
 ```{bash}
 #on a terminal on the Cybertron login nodes
-git clone https://childrens-atlassian/bitbucket/projects/RPDEV/repos/rnaseq_count_nf/
+git clone ssh://git@childrens-atlassian:7999/rp/rnaseq_count_nf.git
 ```
 
 ```{bash}
