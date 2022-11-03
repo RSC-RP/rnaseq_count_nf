@@ -15,13 +15,10 @@ output:
     df_print: paged
 ---
 
-# Set-up 
 
-```{r set-up, eval=TRUE, echo=TRUE}
-knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
-```
+```{r set-up, eval=TRUE, echo=FALSE,  message=FALSE, warning=FALSE}
+# knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 
-```{r eval=TRUE}
 knitr::opts_chunk$set(
   tidy.opts = list(width.cutoff = 50),
   tidy = TRUE,
@@ -32,11 +29,21 @@ knitr::opts_chunk$set(
 
 options(stringsAsFactors = FALSE, max.print = 100)
 table <- function(..., useNA = "ifany") base::table(..., useNA = useNA)
-```
 
-```{r}
 library(dplyr)
 ```
+
+
+# About the Workflow
+
+This workflow is designed to output gene expression counts from STAR aligner using [`--quantmode`](https://physiology.med.cornell.edu/faculty/skrabanek/lab/angsd/lecture_notes/STARmanual.pdf). It will also perform general QC statistics on the fastqs with [fastqc](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) and the alignment using [rseqc](https://rseqc.sourceforge.net/). Finally, the QC reports are collected into a single file using [multiQC](https://multiqc.info/).
+
+A DAG (directed acyclic graph) of the workflow is show below:
+
+```{r echo=FALSE, eval=TRUE}
+knitr::include_graphics("../images/rseqc_paired_end_samples_2022-06-27_dag.png")
+```
+
 
 # Set-up  Nextflow Environment 
 
@@ -44,7 +51,7 @@ First, grab a compute node and activate the conda environment. It may also be be
 
 ```{bash}
 #on a terminal on the Cybertron login nodes
-git clone ssh://git@childrens-atlassian:7999/rp/rnaseq_count_nf.git
+git clone https://childrens-atlassian/bitbucket/scm/rp/rnaseq_count_nf.git
 ```
 
 ```{bash}
@@ -107,9 +114,10 @@ then run on the command:
 ```
 
 
-# Define Input Files 
+# Modify the Pipeline for Your Data
 
-## Sample Sheet
+
+## Define Input Files 
 
 A comma delimited (csv) sample sheet is required for the input samples to be processed. Please note, ***do not remove*** the comment lines that begin with "#" in the example files.
 Indeed, the 4 comment lines *must* be included in any input sample sheet. 
@@ -129,6 +137,7 @@ It must have the column names (in any order):
 
 
 The two examples are provided here to look at: 
+
 ```{r eval=TRUE}
 example_sheet <- read.csv(here::here("test_data/paired_end_sample_sheet.csv"),
                             header = TRUE, 
