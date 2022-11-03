@@ -23,6 +23,7 @@ resources/
 results/
 test_output/
 reports/test*
+reports/
 dag/test*
 *test_sample_sheet.txt
 workflow_docs/*.txt
