@@ -25,3 +25,4 @@ test_output/
 reports/test*
 dag/test*
 *test_sample_sheet.txt
+workflow_docs/*.txt
