@@ -44,7 +44,6 @@ A DAG (directed acyclic graph) of the workflow is show below:
 knitr::include_graphics("../images/dag.png")
 ```
 
-
 # Set-up  Nextflow Environment 
 
 First, fork the [repository](https://childrens-atlassian/bitbucket/projects/RP/repos/rnaseq_count_nf/browse) from Children’s bitbucket. Do this by clicking the “create fork” symbol from the bitbucket web interface and fork it to your personal bitbucket account, as illustrated below.
@@ -94,7 +93,26 @@ conda activate nextflow
 
 # Test the Workflow 
 
-## Paired end
+## Edit the Config File 
+
+Edit the `nextflow.config` file in any text editor; the example below is in R. You will need to change the project code (use the same one as you used above), and the queue name to be either freeq or paidq. Freeq is sufficient for testing with the workflow's example data provided in the directory `test_data`.
+
+```{r}
+usethis::edit_file("../nextflow.config")
+```
+
+```
+//global parameters
+params {
+    // general options
+    sample_sheet                = "test_data/paired_end_sample_sheet.csv"
+    download_sra_fqs            = false
+    queue                       = 'freeq'
+    project                     = '[PROJECT CODE]'
+<...continues...>
+```
+
+## Paired-end example
 
 Determine if the workflow works on your installation of the conda environment by running the following command.  
 
@@ -102,7 +120,7 @@ Determine if the workflow works on your installation of the conda environment by
 ./main_run.sh "paired_end_test"
 ```
 
-## single-end test 
+## Single-end example 
 
 To test the single-end sheet, modify the sample_sheet parameter in the `nextflow.config`,
 
@@ -121,7 +139,7 @@ then run the command
 ```
 
 
-## sra download
+## sra download example
 
 To test the sra sample sheet - modify these two lines in the `nextflow.config`.  
 

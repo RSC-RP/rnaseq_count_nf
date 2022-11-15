@@ -2953,14 +2953,34 @@ step.</p>
 </div>
 <div id="test-the-workflow" class="section level1" number="3">
 <h1><span class="header-section-number">3</span> Test the Workflow</h1>
-<div id="paired-end" class="section level2" number="3.1">
-<h2><span class="header-section-number">3.1</span> Paired end</h2>
+<div id="edit-the-config-file" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Edit the Config
+File</h2>
+<p>Edit the <code>nextflow.config</code> file in any text editor; the
+example below is in R. You will need to change the project code (use the
+same one as you used above), and the queue name to be either freeq or
+paidq. Freeq is sufficient for testing with the workflow’s example data
+provided in the directory <code>test_data</code>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>usethis<span class="sc">::</span><span class="fu">edit_file</span>(<span class="st">&quot;../nextflow.config&quot;</span>)</span></code></pre></div>
+<pre><code>//global parameters
+params {
+    // general options
+    sample_sheet                = &quot;test_data/paired_end_sample_sheet.csv&quot;
+    download_sra_fqs            = false
+    queue                       = &#39;freeq&#39;
+    project                     = &#39;[PROJECT CODE]&#39;
+&lt;...continues...&gt;</code></pre>
+</div>
+<div id="paired-end-example" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Paired-end
+example</h2>
 <p>Determine if the workflow works on your installation of the conda
 environment by running the following command.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./main_run.sh</span> <span class="st">&quot;paired_end_test&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./main_run.sh</span> <span class="st">&quot;paired_end_test&quot;</span></span></code></pre></div>
 </div>
-<div id="single-end-test" class="section level2" number="3.2">
-<h2><span class="header-section-number">3.2</span> single-end test</h2>
+<div id="single-end-example" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> Single-end
+example</h2>
 <p>To test the single-end sheet, modify the sample_sheet parameter in
 the <code>nextflow.config</code>,</p>
 <pre><code>params {
@@ -2969,10 +2989,11 @@ the <code>nextflow.config</code>,</p>
 &lt;...continues...&gt;
 }</code></pre>
 <p>then run the command</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./main_run.sh</span> <span class="st">&quot;single_end_test&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./main_run.sh</span> <span class="st">&quot;single_end_test&quot;</span></span></code></pre></div>
 </div>
-<div id="sra-download" class="section level2" number="3.3">
-<h2><span class="header-section-number">3.3</span> sra download</h2>
+<div id="sra-download-example" class="section level2" number="3.4">
+<h2><span class="header-section-number">3.4</span> sra download
+example</h2>
 <p>To test the sra sample sheet - modify these two lines in the
 <code>nextflow.config</code>.</p>
 <pre><code>params {
@@ -2982,7 +3003,7 @@ the <code>nextflow.config</code>,</p>
 &lt;...continues...&gt;
 }</code></pre>
 <p>then run on the command:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./main_run</span> <span class="st">&quot;sra_test&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./main_run</span> <span class="st">&quot;sra_test&quot;</span></span></code></pre></div>
 </div>
 </div>
 <div id="modify-the-pipeline-for-your-data" class="section level1" number="4">
@@ -3010,9 +3031,9 @@ paired-end</p></li>
 <p><strong>TO DO:</strong> A function provided here, but it may not meet
 the needs of every experiment.</p>
 <p>The two examples are provided here to look at:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>example_sheet <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;test_data/paired_end_sample_sheet.csv&quot;</span>),</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">comment.char =</span> <span class="st">&quot;#&quot;</span>)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>example_sheet</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>example_sheet <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;test_data/paired_end_sample_sheet.csv&quot;</span>),</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">comment.char =</span> <span class="st">&quot;#&quot;</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>example_sheet</span></code></pre></div>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":["single_end"],"name":[1],"type":["chr"],"align":["left"]},{"label":["r1"],"name":[2],"type":["chr"],"align":["left"]},{"label":["r2"],"name":[3],"type":["chr"],"align":["left"]},{"label":["id"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"false","2":"/active/taylor_s/people/jsmi26/RPDEV/rnaseq_count_nf/test_data/Sample_ID_001_R1.fastq.gz","3":"/active/taylor_s/people/jsmi26/RPDEV/rnaseq_count_nf/test_data/Sample_ID_001_R2.fastq.gz","4":"Sample_ID_001"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
@@ -3021,10 +3042,10 @@ the needs of every experiment.</p>
 <p>If downloading the fastq files directly from the SRA, the sample
 sheet only requires the <code>id</code> and the <code>single_end</code>
 columns.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>sra_example <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;test_data/sra_sample_sheet.csv&quot;</span>),</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">comment.char =</span> <span class="st">&quot;#&quot;</span>)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>sra_example</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>sra_example <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;test_data/sra_sample_sheet.csv&quot;</span>),</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">comment.char =</span> <span class="st">&quot;#&quot;</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>sra_example</span></code></pre></div>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":["id"],"name":[1],"type":["chr"],"align":["left"]},{"label":["single_end"],"name":[2],"type":["chr"],"align":["left"]}],"data":[{"1":"SRR013553","2":"true"},{"1":"SRR013564","2":"true"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
@@ -3089,7 +3110,7 @@ executors in the variable <code>NFX_PROFILE</code>. The best choice is
 “PBS_singularity” which executes the jobs on the HPC using the PBS
 scheduler and then will run the job inside singularity containers with
 the appropriate software versions.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./main_run.sh</span> <span class="st">&quot;my_analysis&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./main_run.sh</span> <span class="st">&quot;my_analysis&quot;</span></span></code></pre></div>
 <p>Typically, you will not need to change the <code>main_run.sh</code>
 often. However, if needed for testing or development, the
 <code>NFX_PROFILE</code> can be changed to run locally, or with docker,
@@ -3160,9 +3181,9 @@ image will be saved under <code>dag/</code> directory with the name
 </div>
 <div id="share-the-data" class="section level1" number="7">
 <h1><span class="header-section-number">7</span> Share the Data</h1>
-<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="va">RESULTS</span><span class="op">=</span><span class="st">&quot;PATH/TO/PIPELINE/RESULTS/&quot;</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="va">OUTDIR</span><span class="op">=</span><span class="st">&quot;path/to/collabs/RSS&quot;</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rsync</span> <span class="at">-av</span> <span class="va">$RESULTS</span> <span class="va">$OUTDIR</span> </span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="va">RESULTS</span><span class="op">=</span><span class="st">&quot;PATH/TO/PIPELINE/RESULTS/&quot;</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="va">OUTDIR</span><span class="op">=</span><span class="st">&quot;path/to/collabs/RSS&quot;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rsync</span> <span class="at">-av</span> <span class="va">$RESULTS</span> <span class="va">$OUTDIR</span> </span></code></pre></div>
 </div>
 <div id="cleaning-up-cached-data" class="section level1" number="8">
 <h1><span class="header-section-number">8</span> Cleaning up Cached
@@ -3173,13 +3194,13 @@ after x amount of time to keep your workdir from getting too large or if
 you’re running out of disk space.</p>
 <p>This requires the session ID or session name, which can found in the
 <code>.nextflow/history</code> file.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> .nextflow/history</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> clean <span class="at">-f</span> high_sinoussi</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> .nextflow/history</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> clean <span class="at">-f</span> high_sinoussi</span></code></pre></div>
 </div>
 <div id="session-information" class="section level1" number="9">
 <h1><span class="header-section-number">9</span> Session
 Information</h1>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div>
 </div>
 
 
