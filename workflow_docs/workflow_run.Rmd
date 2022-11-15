@@ -41,27 +41,46 @@ This workflow is designed to output gene expression counts from STAR aligner usi
 A DAG (directed acyclic graph) of the workflow is show below:
 
 ```{r echo=FALSE, eval=TRUE}
-knitr::include_graphics("../images/rseqc_paired_end_samples_2022-06-27_dag.png")
+knitr::include_graphics("../images/dag.png")
 ```
 
 
 # Set-up  Nextflow Environment 
 
-First, grab a compute node and activate the conda environment. It may also be best practice to use tmux or screen to ensure that if at the session is disconnected, then you're nextflow workflow (if running) won't end with SIGKILL error. 
+First, fork the [repository](https://childrens-atlassian/bitbucket/projects/RP/repos/rnaseq_count_nf/browse) from Children’s bitbucket. Do this by clicking the “create fork” symbol from the bitbucket web interface and fork it to your personal bitbucket account, as illustrated below.
+
+```{r eval=TRUE, echo=FALSE}
+knitr::include_graphics("../images/bitbucket_fork1.png")
+knitr::include_graphics("../images/bitbucket_fork2.png")
+knitr::include_graphics("../images/bitbucket_fork3.png")
+```
+
+Next, you will need to clone your personal repository to your home in Cybertron.
 
 ```{bash}
 #on a terminal on the Cybertron login nodes
-git clone https://childrens-atlassian/bitbucket/scm/rp/rnaseq_count_nf.git
+cd ~
+git clone https://childrens-atlassian/bitbucket/users/jsmi26/repos/rnaseq_count_nf/browse
 ```
 
+Finally, grab a compute node and activate the conda environment. It is also be best practice to use `tmux` or `screen` to ensure that if at the session is disconnected, then you’re nextflow workflow (if running) won’t end with SIGKILL error.
+
 ```{bash}
-#grab a compute note
+#Find your project code by listing all your projects on the Cybertron terminal
+project info
+
+#Grab a compute note
 qsub -I -q freeq -l select=1:ncpus=1:mem=8g -l walltime=8:00:00 -P [PROJECT CODE]
 cd /path/to/cloned/rnaseq_count_nf
 ```
 
+If you don’t have conda installed yet, please follow these [directions](http://pdlets01.childrens.sea.kids/confluence_rsc_docs/general_info.html#setting-up-conda-environments-on-cyberton). You may stop following the directions after the conda deactivate step.
+
 ```{bash}
+#Create the environement only once. Skip this step if you've already created the environment
 conda env create -f env/nextflow.yaml
+
+#Activate the conda environment. 
 conda activate nextflow
 ```
 
