@@ -55,12 +55,20 @@ knitr::include_graphics("../images/bitbucket_fork2.png")
 knitr::include_graphics("../images/bitbucket_fork3.png")
 ```
 
-Next, you will need to clone your personal repository to your home in Cybertron.
+Next, you will need to clone your personal repository to your home in Cybertron. See the image below for where you can find the correct URL on your forked bitbucket repo. 
+
+```{r eval=TRUE, echo=FALSE}
+knitr::include_graphics("../images/bitbucket_clone.png")
+```
+
+Copy that URL to replace `https://childrens-atlassian/bitbucket/scm/~jsmi26/rnaseq_count_nf.git` below. 
 
 ```{bash}
 #on a terminal on the Cybertron login nodes
 cd ~
-git clone https://childrens-atlassian/bitbucket/users/jsmi26/repos/rnaseq_count_nf/browse
+
+# your fork should have your own userID (rather than jsmi26)
+git clone https://childrens-atlassian/bitbucket/scm/~jsmi26/rnaseq_count_nf.git
 ```
 
 Finally, grab a compute node and activate the conda environment. It is also be best practice to use `tmux` or `screen` to ensure that if at the session is disconnected, then you’re nextflow workflow (if running) won’t end with SIGKILL error.
