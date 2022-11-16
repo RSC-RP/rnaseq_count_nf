@@ -61,7 +61,6 @@ knitr::include_graphics("../images/bitbucket_clone.png")
 ```
 
 Copy that URL to replace `https://childrens-atlassian/bitbucket/scm/~jsmi26/rnaseq_count_nf.git` below. 
-
 ```{bash}
 #on a terminal on the Cybertron login nodes
 cd ~
