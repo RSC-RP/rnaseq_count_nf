@@ -11,7 +11,7 @@
 #Microsoft temp files
 ~$*
 
-# Nextflow logs and caches 
+# Nextflow logs and caches
 .nextflow/
 .nextflow.log*
 *.log.*
@@ -20,10 +20,10 @@
 
 # Pipeline specific files
 resources/
-results/
-test_output/
+*results/
 reports/test*
 reports/
 dag/test*
 *test_sample_sheet.txt
 workflow_docs/*.txt
+

@@ -2958,16 +2958,16 @@ step.</p>
 File</h2>
 <p>Edit the <code>nextflow.config</code> file in any text editor; the
 example below is in R. You will need to change the project code (use the
-same one as you used above), and the queue name to be either freeq or
-paidq. Freeq is sufficient for testing with the workflow’s example data
-provided in the directory <code>test_data</code>.</p>
+same one as you used above), and the queue name to be paidq or a tier 3
+queue. Paidq will cost less than $0.01 for testing with the workflow’s
+example data provided in the directory <code>test_data</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>usethis<span class="sc">::</span><span class="fu">edit_file</span>(<span class="st">&quot;../nextflow.config&quot;</span>)</span></code></pre></div>
 <pre><code>//global parameters
 params {
     // general options
     sample_sheet                = &quot;test_data/paired_end_sample_sheet.csv&quot;
     download_sra_fqs            = false
-    queue                       = &#39;freeq&#39;
+    queue                       = &#39;paidq&#39;
     project                     = &#39;[PROJECT CODE]&#39;
 &lt;...continues...&gt;</code></pre>
 </div>
@@ -2982,10 +2982,13 @@ environment by running the following command.</p>
 <h2><span class="header-section-number">3.3</span> Single-end
 example</h2>
 <p>To test the single-end sheet, modify the sample_sheet parameter in
-the <code>nextflow.config</code>,</p>
+the <code>nextflow.config</code> and the output directory
+(<code>outdir</code>).</p>
 <pre><code>params {
     // general options
     sample_sheet                = &quot;test_data/single_end_sheet.csv&quot;
+    [...]
+    outdir                      = &quot;./single_end_results/&quot;
 &lt;...continues...&gt;
 }</code></pre>
 <p>then run the command</p>
@@ -2994,16 +2997,20 @@ the <code>nextflow.config</code>,</p>
 <div id="sra-download-example" class="section level2" number="3.4">
 <h2><span class="header-section-number">3.4</span> sra download
 example</h2>
-<p>To test the sra sample sheet - modify these two lines in the
-<code>nextflow.config</code>.</p>
+<p>To test the sra sample sheet - modify these the sample sheet, and set
+<code>download_sra_fastqs</code> to true in the
+<code>nextflow.config</code> and the output directory
+(<code>outdir</code>).</p>
 <pre><code>params {
     // general options
     sample_sheet                = &quot;test_data/sra_sample_sheet.csv&quot;
     download_sra_fqs            = true
+    [...]
+    outdir                      = &quot;./sra_results/&quot;
 &lt;...continues...&gt;
 }</code></pre>
 <p>then run on the command:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./main_run</span> <span class="st">&quot;sra_test&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./main_run.sh</span> <span class="st">&quot;sra_test&quot;</span></span></code></pre></div>
 </div>
 </div>
 <div id="modify-the-pipeline-for-your-data" class="section level1" number="4">
@@ -3015,8 +3022,9 @@ Files</h2>
 <p>A comma delimited (csv) sample sheet is required for the input
 samples to be processed. Please note, <strong><em>do not
 remove</em></strong> the comment lines that begin with “#” in the
-example files. Indeed, the 4 comment lines <em>must</em> be included in
-any input sample sheet.</p>
+example files. The same number of comment lines <em>must</em> be
+included in any input sample sheet, based on the examples provided
+here.</p>
 <p>It must have the column names (in any order):</p>
 <ul>
 <li><p>r1 - the filepath for the read 1 fastq in paired-end RNA-seq, or
@@ -3036,7 +3044,7 @@ the needs of every experiment.</p>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>example_sheet</span></code></pre></div>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["single_end"],"name":[1],"type":["chr"],"align":["left"]},{"label":["r1"],"name":[2],"type":["chr"],"align":["left"]},{"label":["r2"],"name":[3],"type":["chr"],"align":["left"]},{"label":["id"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"false","2":"/active/taylor_s/people/jsmi26/RPDEV/rnaseq_count_nf/test_data/Sample_ID_001_R1.fastq.gz","3":"/active/taylor_s/people/jsmi26/RPDEV/rnaseq_count_nf/test_data/Sample_ID_001_R2.fastq.gz","4":"Sample_ID_001"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["single_end"],"name":[1],"type":["chr"],"align":["left"]},{"label":["r1"],"name":[2],"type":["chr"],"align":["left"]},{"label":["r2"],"name":[3],"type":["chr"],"align":["left"]},{"label":["id"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"false","2":"test_data/Sample_ID_001_R1.fastq.gz","3":"test_data/Sample_ID_001_R2.fastq.gz","4":"Sample_ID_001"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <p>If downloading the fastq files directly from the SRA, the sample
@@ -3084,14 +3092,11 @@ params {
 }</code></pre>
 <p>The <code>gene_list</code> and <code>ref_gene_model</code> can be
 found at the RSEQC <a href="http://rseqc.sourceforge.net/#download-gene-models-update-on-12-14-2021">documentation
-page</a> save these to the <code>/gpfs/shared_data</code> to share with
-the RSC team, if needed. It also is best practice to save the STAR
-indexes to <code>/gpfs/shared_data</code>.</p>
+page</a> and are located at <code>/gpfs/shared_data</code> to share with
+the SCRI.</p>
 <p>However, the ref_gene_model must be in BED12 format and must match
 the transcript IDs used in the GTF for STAR aligner. The BED12 can be
 produced from the GFT file using UCSC utilities (Kent tools).</p>
-<p><strong>TO DO</strong> Add a subworkflow for the creation of a BED12
-compatible file for RSEQC.</p>
 </div>
 <div id="advanced-options" class="section level2" number="4.3">
 <h2><span class="header-section-number">4.3</span> Advanced Options</h2>
@@ -3105,18 +3110,35 @@ the <code>ext.args</code> under the process scope.</p>
 command which is in the <code>main_run.sh</code> shell script. Provide a
 descriptive name (string) for your workflow run, in this example we will
 use “my_analysis”.</p>
-<p>The <code>main_run.sh</code> defines the profiles for difference
-executors in the variable <code>NFX_PROFILE</code>. The best choice is
-“PBS_singularity” which executes the jobs on the HPC using the PBS
-scheduler and then will run the job inside singularity containers with
-the appropriate software versions.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./main_run.sh</span> <span class="st">&quot;my_analysis&quot;</span></span></code></pre></div>
 <p>Typically, you will not need to change the <code>main_run.sh</code>
-often. However, if needed for testing or development, the
-<code>NFX_PROFILE</code> can be changed to run locally, or with docker,
-or with conda. You can also change the entry_point for the workflow to
-run only the index building step using <code>NFX_ENTRY</code> set to
-<code>star_index</code>.</p>
+often.</p>
+<p>The <code>main_run.sh</code> script defines the profiles for
+different executors in the variable <code>NFX_PROFILE</code>. The
+choices for profiles are:</p>
+<ul>
+<li>PBS_singularity [default]</li>
+<li>local_singularity</li>
+<li>PBS_conda</li>
+</ul>
+<p>“PBS_singularity” is recommended. This profiles executes the jobs on
+the HPC using the PBS scheduler and then will run the job inside
+singularity containers with the appropriate scientific software
+versions.</p>
+<p>“local_singularity” is good for workflow development if you’re making
+a lot of changes. This will use singularity on Cybertron, but run the
+jobs on the interactive compute node that you’ve requested during
+“Set-up Nextflow Environment” steps above.</p>
+<p>“PBS_conda” is generally not recommended.This profiles executes the
+jobs on the HPC using the PBS scheduler. Then nextflow will coordinate
+the creation of conda environments for each step in the workflow and
+active those environments in the scheduled compute nodes for job.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./main_run.sh</span> <span class="st">&quot;my_analysis&quot;</span></span></code></pre></div>
+<p>You can also change the <a href="https://www.nextflow.io/docs/latest/dsl2.html#workflow-entrypoint"><code>entry_point</code></a>
+for the workflow to run only the index building step using
+<code>NFX_ENTRY=&#39;star_index&#39;</code>. You can run only the download step
+for SRA files by setting <code>NFX_ENTRY=&#39;sra_fastqs&#39;</code>. Keep the
+default <code>NFX_ENTRY=&#39;rnaseq_count&#39;</code> to run the complete
+pipeline.</p>
 </div>
 <div id="expected-outputs" class="section level1" number="6">
 <h1><span class="header-section-number">6</span> Expected Outputs</h1>
@@ -3190,12 +3212,12 @@ image will be saved under <code>dag/</code> directory with the name
 Data</h1>
 <p>Nextflow has an utility to <a href="https://www.nextflow.io/docs/latest/cli.html#clean">clean</a> up
 old work directories and logs that are no longer needed. This can be run
-after x amount of time to keep your workdir from getting too large or if
-you’re running out of disk space.</p>
+after any amount of time to keep your workdir from getting too large or
+if you’re running out of disk space.</p>
 <p>This requires the session ID or session name, which can found in the
 <code>.nextflow/history</code> file.</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> .nextflow/history</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> clean <span class="at">-f</span> high_sinoussi</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> log</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> clean <span class="at">-f</span> [RUN NAME]</span></code></pre></div>
 </div>
 <div id="session-information" class="section level1" number="9">
 <h1><span class="header-section-number">9</span> Session

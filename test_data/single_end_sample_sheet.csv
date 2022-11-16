@@ -3,4 +3,4 @@
 # column id : unique sample ID, no duplicates allowed in the sample sheet.
 # column single_end : boolean [true/false] if the data is single-end or paired-end.
 single_end,r1,id
-true,/active/taylor_s/people/jsmi26/RPDEV/rnaseq_count_nf/test_data/SRR013553.fastq.gz,SRR013553
+true,test_data/SRR013553.fastq.gz,SRR013553
