@@ -1,14 +1,17 @@
 process MULTIQC {
-    label 'process_medium'
+    label 'process_single'
 
-    conda (params.enable_conda ? 'bioconda::multiqc=1.12' : null)
+    conda "bioconda::multiqc=1.14"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/multiqc:1.12--pyhdfd78af_0' :
-        'quay.io/biocontainers/multiqc:1.12--pyhdfd78af_0' }"
+        'https://depot.galaxyproject.org/singularity/multiqc:1.14--pyhdfd78af_0' :
+        'quay.io/biocontainers/multiqc:1.14--pyhdfd78af_0' }"
 
     input:
-    path multiqc_files
+    path  multiqc_files, stageAs: "?/*"
+    path(multiqc_config)
+    path(extra_multiqc_config)
     val sample_sheet
+    //path(multiqc_logo) //unclear why they want a logo
 
     output:
     path "*multiqc_report.html", emit: report
@@ -21,8 +24,16 @@ process MULTIQC {
 
     script:
     def args = task.ext.args ?: ''
+    def config = multiqc_config ? "--config $multiqc_config" : ''
+    def extra_config = extra_multiqc_config ? "--config $extra_multiqc_config" : ''
     """
-    multiqc -v --filename "${sample_sheet}_multiqc_report.html" -f $args ${multiqc_files}
+    multiqc \\
+        --force \\
+        $args \\
+        $config \\
+        $extra_config \\
+        --filename "${sample_sheet}_multiqc_report.html" \\
+        .
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

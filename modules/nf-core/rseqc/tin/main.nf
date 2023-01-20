@@ -1,8 +1,8 @@
 process RSEQC_TIN {
     tag "$meta.id"
-    label 'RSEQC'
+    label 'process_high'
 
-    conda (params.enable_conda ? "bioconda::rseqc=3.0.1 'conda-forge::r-base>=3.5'" : null)
+    conda "bioconda::rseqc=3.0.1 'conda-forge::r-base>=3.5'"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/rseqc:3.0.1--py37h516909a_1' :
         'quay.io/biocontainers/rseqc:3.0.1--py37h516909a_1' }"
@@ -12,8 +12,8 @@ process RSEQC_TIN {
     path  bed
 
     output:
+    tuple val(meta), path("*.txt"), emit: txt
     tuple val(meta), path("*.xls"), emit: xls
-    path "*.txt"                  , emit: txt
     path "versions.yml"           , emit: versions
 
     when:
