@@ -10,7 +10,8 @@ process MULTIQC {
     path  multiqc_files, stageAs: "?/*"
     path(multiqc_config)
     path(extra_multiqc_config)
-    path(multiqc_logo)
+    val sample_sheet
+    //path(multiqc_logo) //unclear why they want a logo
 
     output:
     path "*multiqc_report.html", emit: report
@@ -31,6 +32,7 @@ process MULTIQC {
         $args \\
         $config \\
         $extra_config \\
+        --filename "${sample_sheet}_multiqc_report.html" \\
         .
 
     cat <<-END_VERSIONS > versions.yml

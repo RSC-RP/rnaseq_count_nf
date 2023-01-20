@@ -1,18 +1,18 @@
 nextflow.enable.dsl = 2
 
 //QC modules
-include { FASTQC } from './modules/nf-core/modules/fastqc/main.nf'
-include { MULTIQC } from './modules/nf-core/modules/multiqc/main.nf'
+include { FASTQC } from './modules/nf-core/fastqc/main.nf'
+include { MULTIQC } from './modules/nf-core/multiqc/main.nf'
 include { RSEQC_SPLITBAM } from './modules/local/rseqc/splitbam.nf'
-include { RSEQC_READDISTRIBUTION } from './modules/nf-core/modules/rseqc/readdistribution/main.nf'
-include { RSEQC_TIN } from './modules/nf-core/modules/rseqc/tin/main.nf'
+include { RSEQC_READDISTRIBUTION } from './modules/nf-core/rseqc/readdistribution/main.nf'
+include { RSEQC_TIN } from './modules/nf-core/rseqc/tin/main.nf'
 
 // Alignment and quantification modules
-include { TRIMGALORE } from './modules/nf-core/modules/trimgalore/main.nf'
-include { STAR_ALIGN } from './modules/nf-core/modules/star/align/main.nf'
-include { STAR_GENOMEGENERATE } from './modules/nf-core/modules/star/genomegenerate/main.nf'
-include { SAMTOOLS_INDEX } from './modules/nf-core/modules/samtools/index/main.nf'
-include { SRATOOLS_FASTERQDUMP } from './modules/nf-core/modules/sratools/fasterqdump/main.nf'
+include { TRIMGALORE } from './modules/nf-core/trimgalore/main.nf'
+include { STAR_ALIGN } from './modules/nf-core/star/align/main.nf'
+include { STAR_GENOMEGENERATE } from './modules/nf-core/star/genomegenerate/main.nf'
+include { SAMTOOLS_INDEX } from './modules/nf-core/samtools/index/main.nf'
+include { SRATOOLS_FASTERQDUMP } from './modules/nf-core/sratools/fasterqdump/main.nf'
 
 //Sample manifest (params.sample_sheet) validation step to ensure appropriate formatting. 
 //See bin/check_samplesheet.py from NF-CORE 
@@ -84,8 +84,13 @@ workflow rnaseq_count {
     if ( params.trim ) {
         //Adapter and Quality trimming of the fastq files 
         TRIMGALORE(fastq_ch)
+        TRIMGALORE.out.log
+            .set { trim_report }
         TRIMGALORE.out.reads
             .set { fastq_ch }
+    }else{
+        Channel.empty()
+            .set { trim_report }
     }
     //align reads to genome 
     STAR_ALIGN(fastq_ch, index, gtf,
@@ -102,15 +107,39 @@ workflow rnaseq_count {
     RSEQC_SPLITBAM(rseqc_ch, gene_list)
     RSEQC_READDISTRIBUTION(rseqc_ch, ref_gene_model)
     RSEQC_TIN(rseqc_ch, ref_gene_model)
-    //Combine the fastqc, star-aligner QC, and RSEQC output into a single channel
-    sample_sheet=file(params.sample_sheet)
-    multiqc_ch = FASTQC.out.fastqc.collect()
-        .combine(STAR_ALIGN.out.log_final.collect())
-        .combine(STAR_ALIGN.out.read_counts.collect())
-        .combine(RSEQC_READDISTRIBUTION.out.txt.collect())
-        .combine(RSEQC_TIN.out.txt.collect())
+
+    //
+    //
+    // MultiQC
+    //
+    sample_sheet = file(params.sample_sheet)
+    Channel.empty().set { multiqc_config }
+    if (params.multiqc_config){
+        Channel.fromPath(file(params.multiqc_config, checkIfExists: true))
+            .set { multiqc_config }
+    }
+    Channel.empty().set { extra_multiqc_config }
+    if (params.extra_multiqc_config){
+        Channel.fromPath(file(params.extra_multiqc_config, checkIfExists: true))
+            .set { extra_multiqc_config }
+    }
+    multiqc_config.view()
+    extra_multiqc_config.view()
+
+    FASTQC.out.fastqc
+        .concat(trim_report)
+        // .concat(FASTQC_TRIM.out.fastqc)
+        .concat(STAR_ALIGN.out.log_final)
+        .concat(STAR_ALIGN.out.read_counts)
+        // .concat(PICARD_MARKDUPLICATES.out.metrics)
+        .concat(RSEQC_READDISTRIBUTION.out.txt)
+        .concat(RSEQC_TIN.out.txt)
+        .map { row -> row[1]}
+        .collect()
+        .set { multiqc_ch }
+
     //Using MultiQC for a single QC report
-    MULTIQC(multiqc_ch, sample_sheet.simpleName)
+    MULTIQC(multiqc_ch, multiqc_config,extra_multiqc_config, sample_sheet.simpleName)
 }
 
 //Generate the index file 

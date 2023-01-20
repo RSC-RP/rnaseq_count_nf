@@ -29,6 +29,7 @@ process STAR_ALIGN {
     tuple val(meta), path('*.tab')                   , optional:true, emit: tab
     tuple val(meta), path('*.out.junction')          , optional:true, emit: junction
     tuple val(meta), path('*.out.sam')               , optional:true, emit: sam
+    tuple val(meta), path('*ReadsPerGene.out.tab')   , optional:true, emit: read_counts
 
     when:
     task.ext.when == null || task.ext.when
