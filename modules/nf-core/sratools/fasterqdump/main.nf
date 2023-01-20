@@ -8,8 +8,8 @@ process SRATOOLS_FASTERQDUMP {
         'quay.io/biocontainers/mulled-v2-5f89fe0cd045cb1d615630b9261a1d17943a9b6a:6a9ff0e76ec016c3d0d27e0c0d362339f2d787e6-0' }"
 
     input:
-    tuple val(meta), path(sra)
-    path ncbi_settings
+    val meta
+    path user_settings
 
     output:
     tuple val(meta), path(fastq), emit: reads
@@ -22,20 +22,23 @@ process SRATOOLS_FASTERQDUMP {
     def args = task.ext.args ?: ''
     def args2 = task.ext.args2 ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-
+    ncbi_settings = 'user-settings.mkfg'
     // WARNING: Paired-end data extracted by fasterq-dump (--split-3 the default)
     // always creates *_1.fastq *_2.fastq files but sometimes also
     // an additional *.fastq file for unpaired reads which we ignore here.
     fastq = meta.single_end ? '*.fastq.gz' : '*_{1,2}.fastq.gz'
     def outfile = meta.single_end ? "${prefix}.fastq" : prefix
     """
+    #export NCBI_SETTINGS="\$PWD/${ncbi_settings}"
+    printf '/LIBS/GUID = "%s"\n' `uuid` > ${ncbi_settings}
+    cat ${user_settings} >> ${ncbi_settings}
     export NCBI_SETTINGS="\$PWD/${ncbi_settings}"
 
     fasterq-dump \\
         $args \\
         --threads $task.cpus \\
         --outfile $outfile \\
-        ${sra.name}
+        ${meta.id}
 
     pigz \\
         $args2 \\

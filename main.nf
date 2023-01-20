@@ -113,18 +113,20 @@ workflow rnaseq_count {
     // MultiQC
     //
     sample_sheet = file(params.sample_sheet)
-    Channel.empty().set { multiqc_config }
     if (params.multiqc_config){
         Channel.fromPath(file(params.multiqc_config, checkIfExists: true))
             .set { multiqc_config }
+    } else {
+        Channel.of([])
+            .set { multiqc_config }
     }
-    Channel.empty().set { extra_multiqc_config }
     if (params.extra_multiqc_config){
         Channel.fromPath(file(params.extra_multiqc_config, checkIfExists: true))
             .set { extra_multiqc_config }
+    } else {
+        Channel.of([])
+            .set { extra_multiqc_config }
     }
-    multiqc_config.view()
-    extra_multiqc_config.view()
 
     FASTQC.out.fastqc
         .concat(trim_report)
@@ -139,7 +141,7 @@ workflow rnaseq_count {
         .set { multiqc_ch }
 
     //Using MultiQC for a single QC report
-    MULTIQC(multiqc_ch, multiqc_config,extra_multiqc_config, sample_sheet.simpleName)
+    MULTIQC(multiqc_ch, multiqc_config, extra_multiqc_config, sample_sheet.simpleName)
 }
 
 //Generate the index file 
@@ -165,6 +167,7 @@ workflow sra_fastqs {
         .splitCsv(header: true, sep: ',', skip: 2)
         .map { meta -> [ "id":meta["id"], "single_end":meta["single_end"].toBoolean() ] } //meta
         .set { accessions_ch }
+
     // stage the NCBI sratoolkit config file
     Channel.fromPath(file(params.user_settings, checkIfExists: true))
         .collect()
