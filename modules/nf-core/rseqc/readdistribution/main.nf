@@ -1,20 +1,19 @@
-process RSEQC_TIN {
+process RSEQC_READDISTRIBUTION {
     tag "$meta.id"
-    label 'RSEQC'
+    label 'process_medium'
 
-    conda (params.enable_conda ? "bioconda::rseqc=3.0.1 'conda-forge::r-base>=3.5'" : null)
+    conda "bioconda::rseqc=3.0.1 'conda-forge::r-base>=3.5'"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/rseqc:3.0.1--py37h516909a_1' :
         'quay.io/biocontainers/rseqc:3.0.1--py37h516909a_1' }"
 
     input:
-    tuple val(meta), path(bam), path(bai)
+    tuple val(meta), path(bam)
     path  bed
 
     output:
-    tuple val(meta), path("*.xls"), emit: xls
-    path "*.txt"                  , emit: txt
-    path "versions.yml"           , emit: versions
+    tuple val(meta), path("*.read_distribution.txt"), emit: txt
+    path  "versions.yml"                            , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -23,14 +22,14 @@ process RSEQC_TIN {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    tin.py \\
+    read_distribution.py \\
         -i $bam \\
         -r $bed \\
-        $args
+        > ${prefix}.read_distribution.txt
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        rseqc: \$(tin.py --version | sed -e "s/tin.py //g")
+        rseqc: \$(read_distribution.py --version | sed -e "s/read_distribution.py //g")
     END_VERSIONS
     """
 }
