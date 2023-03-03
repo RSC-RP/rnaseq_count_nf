@@ -82,6 +82,13 @@ cd /path/to/cloned/rnaseq_count_nf
 
 If you don’t have conda installed yet, please follow these [directions](http://pdlets01.childrens.sea.kids/confluence_rsc_docs/general_info.html#setting-up-conda-environments-on-cyberton). You may stop following the directions after the conda deactivate step.
 
+Next, for the conda environment to be solved, you will need to set channel_priority to flexible in your conda configs as well. To read more about conda environments and thier configurations, check out the [documentation](https://docs.conda.io/projects/conda/en/latest/commands/config.html#conda-config). 
+
+```{bash, eval=FALSE}
+conda config --describe channel_priority # print your current conda settings
+conda config --set channel_priority flexible # set to flexible if not already done
+```
+
 ```{bash}
 #Create the environement only once. Skip this step if you've already created the environment
 conda env create -f env/nextflow.yaml
