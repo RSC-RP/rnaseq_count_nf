@@ -46,6 +46,8 @@ knitr::include_graphics("../images/dag.png")
 
 # Set-up  Nextflow Environment 
 
+## Code Repository
+
 First, fork the [repository](https://childrens-atlassian/bitbucket/projects/RP/repos/rnaseq_count_nf/browse) from Children’s bitbucket. Do this by clicking the “create fork” symbol from the bitbucket web interface and fork it to your personal bitbucket account, as illustrated below.
 
 ```{r eval=TRUE, echo=FALSE}
@@ -67,7 +69,42 @@ cd ~
 
 # your fork should have your own userID (rather than jsmi26)
 git clone https://childrens-atlassian/bitbucket/scm/~jsmi26/rnaseq_count_nf.git
+
+cd ~/rnaseq_count_nf
 ```
+
+Once inside the code repository, use the latest release branch or make sure you're using the same release as prior analysis by using `git`.
+
+```{bash}
+git fetch
+git branch -a
+```
+
+The git branch command will show all available remote branches, including remote branches, like:
+
+```
+* main
+  remotes/origin/HEAD -> origin/main
+  remotes/origin/dev
+  remotes/origin/main
+  remotes/origin/release/1.0.0
+ ```
+
+Checkout the release branch using this command:
+
+```{bash}
+git checkout release/1.0.0
+```
+
+Which will state that you are now on `release/1.0.0` branch and that it is tracking the release branch in your personal repository. 
+
+```
+Checking out files: 100% (55/55), done.
+Branch release/1.0.0 set up to track remote branch release/1.0.0 from origin.
+Switched to a new branch 'release/1.0.0'
+```
+
+## Conda Environment
 
 Finally, grab a compute node and activate the conda environment. It is also be best practice to use `tmux` or `screen` to ensure that if at the session is disconnected, then you’re nextflow workflow (if running) won’t end with SIGKILL error.
 
@@ -101,11 +138,14 @@ conda activate nextflow
 
 ## Edit the Config File 
 
-Edit the `nextflow.config` file in any text editor; the example below is in R. You will need to change the project code (use the same one as you used above), and the queue name to be paidq or a tier 3 queue. Paidq will cost less than $0.01 for testing with the workflow's example data provided in the directory `test_data`.
+Edit the `nextflow.config` file in any text editor; the example below is in R. 
 
-```{r}
-usethis::edit_file("../nextflow.config")
-```
+You will need to change the:
+
+ * project code (use the same one as you used above), 
+ * the queue name to be paidq or a tier 3 queue.
+ 
+ Paidq will cost less than $0.01 for testing with the workflow's example data provided in the directory `test_data`.
 
 ```
 //global parameters
@@ -117,6 +157,11 @@ params {
     project                     = '[PROJECT CODE]'
 <...continues...>
 ```
+
+```{r}
+usethis::edit_file("../nextflow.config")
+```
+
 
 ## Paired-end example
 
