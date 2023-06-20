@@ -3,8 +3,8 @@
 set -eu
 DATE=$(date +%F)
 NFX_CONFIG=./nextflow.config
-#Options: local_singularity, PBS_singularity, and PBS_conda
-NFX_PROFILE='PBS_singularity'
+#Options: PBS_apptainer, PBS_singularity,local_singularity, and PBS_conda
+NFX_PROFILE='PBS_apptainer'
 #Options: star_index or rnaseq_count or sra_fastqs
 NFX_ENTRY='rnaseq_count'
 #The output prefix on filenames for reports/logs
@@ -15,6 +15,9 @@ REPORT=${1:-"pipeline_report"}
 if [[ $NFX_PROFILE =~ "singularity" ]]
 then
     module load singularity
+elif [[ $NFX_PROFILE =~ "apptainer" ]]
+then
+    module load apptainer
 fi
 
 # Nextflow run to execute the workflow
