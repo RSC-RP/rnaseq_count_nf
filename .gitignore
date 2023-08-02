@@ -13,7 +13,7 @@
 
 # Nextflow logs and caches
 .nextflow/
-.nextflow.log*
+.nextflow*
 *.log.*
 *.run
 *dag.pdf.*
