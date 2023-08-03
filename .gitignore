@@ -25,4 +25,4 @@ reports/
 dag/
 *test_sample_sheet.txt
 workflow_docs/*.txt
-update_modules_01.20.2023.txt
+sample_sheet_val/
