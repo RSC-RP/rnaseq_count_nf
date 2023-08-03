@@ -24,7 +24,7 @@ fi
 # TO DO: --singularity_module $SINGULARITY #the in nextflow.config could access this as params.SINGULARITY
 #https://unix.stackexchange.com/questions/351901/how-can-i-get-the-positional-parameters-starting-from-two-or-more-generally
 PREFIX="${REPORT}_${DATE}"
-nextflow -bg -c ${NFX_CONFIG} \
+nextflow -c ${NFX_CONFIG} \
     -log reports/${PREFIX}_nextflow.log \
     run main.nf \
     -entry ${NFX_ENTRY} \
