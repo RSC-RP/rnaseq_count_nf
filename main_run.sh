@@ -3,8 +3,8 @@
 set -eu
 DATE=$(date +%F)
 NFX_CONFIG=./nextflow.config
-#Options: PBS_apptainer, PBS_singularity,local_singularity
-NFX_PROFILE='PBS_apptainer'
+#Options: PBS_apptainer, local_apptainer, PBS_singularity,local_singularity
+NFX_PROFILE='local_apptainer'
 #Options: star_index or rnaseq_count or sra_fastqs
 NFX_ENTRY='rnaseq_count'
 #The output prefix on filenames for reports/logs
@@ -24,7 +24,7 @@ fi
 # TO DO: --singularity_module $SINGULARITY #the in nextflow.config could access this as params.SINGULARITY
 #https://unix.stackexchange.com/questions/351901/how-can-i-get-the-positional-parameters-starting-from-two-or-more-generally
 PREFIX="${REPORT}_${DATE}"
-nextflow -bg -c ${NFX_CONFIG} \
+nextflow -c ${NFX_CONFIG} \
     -log reports/${PREFIX}_nextflow.log \
     run main.nf \
     -entry ${NFX_ENTRY} \
