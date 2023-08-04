@@ -13,7 +13,7 @@
 
 # Nextflow logs and caches
 .nextflow/
-.nextflow.log*
+.nextflow*
 *.log.*
 *.run
 *dag.pdf.*
@@ -26,3 +26,5 @@ dag/
 *test_sample_sheet.txt
 workflow_docs/*.txt
 sample_sheet_val/
+notes.txt
+*patches
