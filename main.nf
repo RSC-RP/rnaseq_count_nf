@@ -78,18 +78,12 @@ workflow rnaseq_count {
         .set { gtf_ch }
 
     Channel.of(params.rRNA_biotypes)
-        // .splitCsv()
-        // .map { row -> [row] }
-        // .reduce { a,b -> println "a: $a b: $b"; return [a+b] }
-        .view { "results = $it" }
-
-    Channel
-        .of( 1, 2, 3, 4, 5 )
-        .reduce { a, b -> println "a: $a b: $b"; return a+b }
-        .view { "result = $it" }
+        .splitCsv() // convert string to list by splitting by commas
+        .map { row -> row.join('$|')+'$' } // join items of the list and convert into regex
+        .set { rRNA_biotypes }
 
     //Stage the genome files for RSEQC 
-    // genome_refs(gtf_ch, rRNA_biotypes)
+    genome_refs(gtf_ch, rRNA_biotypes)
     // Channel.fromPath(file(params.gene_list, checkIfExists: true))
     //     .collect()
     //     .set { gene_list }

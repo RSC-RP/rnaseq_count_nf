@@ -12,8 +12,9 @@ process UCSC_GENEPREDTOBED {
     val rRNA_biotypes
 
     output:
-    tuple val(meta), path("*.sort.bed") , emit: bed
-    path "versions.yml"                 , emit: versions
+    tuple val(meta), path("*.sort.bed")     , emit: bed
+    tuple val(meta), path("*rRNA.bed") , emit: rRNA
+    path "versions.yml"                             , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -25,8 +26,10 @@ process UCSC_GENEPREDTOBED {
     """
     genePredToBed ${genepred} ${prefix}.bed 
     sort -k1,1 -k2,2n ${prefix}.bed  > ${prefix}.sort.bed
-
-    echo "${rRNA_biotypes}"
+    
+    echo "filter for rRNA biotypes $rRNA_biotypes"
+    #touch ${prefix}_rRNA.bed
+    #grep -E "$rRNA_biotypes" ${prefix}.sort.bed > ${prefix}_rRNA.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
