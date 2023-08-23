@@ -2,7 +2,7 @@ process RSEQC_SPLITBAM {
     tag "$meta.id"
     label 'RSEQC'
 
-    conda (params.enable_conda ? "bioconda::rseqc=4.0.0" : null)
+    conda "bioconda::rseqc=4.0.0"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/rseqc:4.0.0--py39hbf8eff0_2':
         'quay.io/biocontainers/rseqc:4.0.0--py38h4a8c8d9_1' }"
