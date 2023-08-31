@@ -14,7 +14,9 @@ workflow genome_refs {
     ch_versions = Channel.empty()
     ch_versions = ch_versions.mix(UCSC_GTFTOGENEPRED.out.versions)
 
-    UCSC_GENEPREDTOBED( UCSC_GTFTOGENEPRED.out.genepred, rRNA_biotypes )
+    UCSC_GENEPREDTOBED( UCSC_GTFTOGENEPRED.out.genepred,
+                        UCSC_GTFTOGENEPRED.out.tx_info, 
+                        rRNA_biotypes )
     ch_versions = ch_versions.mix(UCSC_GENEPREDTOBED.out.versions)
 
     // gtf_ch.

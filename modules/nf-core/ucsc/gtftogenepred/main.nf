@@ -12,7 +12,7 @@ process UCSC_GTFTOGENEPRED {
 
     output:
     tuple val(meta), path("*.genepred") , emit: genepred
-    tuple val(meta), path("*infoOut.txt"), emit: info_out
+    tuple val(meta), path("*infoOut.txt"), emit: tx_info
     tuple val(meta), path("*.refflat")  , emit: refflat , optional: true
     path "versions.yml"                 , emit: versions
 
