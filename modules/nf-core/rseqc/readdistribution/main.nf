@@ -9,7 +9,7 @@ process RSEQC_READDISTRIBUTION {
 
     input:
     tuple val(meta), path(bam), path(bai)
-    path  bed
+    tuple val(meta2), path(bed)
 
     output:
     tuple val(meta), path("*.read_distribution.txt"), emit: txt

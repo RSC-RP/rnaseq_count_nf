@@ -9,7 +9,7 @@ process RSEQC_SPLITBAM {
 
     input:
     tuple val(meta), path(bam), path(bai)
-    path gene_list
+    tuple val(meta2), path(gene_list)
 
     output:
     tuple val(meta), path("*in.bam"), emit: splitbam

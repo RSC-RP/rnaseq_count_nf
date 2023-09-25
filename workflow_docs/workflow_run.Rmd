@@ -90,7 +90,9 @@ The git branch command will show all available remote branches, including remote
   remotes/origin/release/1.0.0
  ```
 
-Checkout the release branch using this command:
+Checkout the **most current release branch**, which will be the largest value (eg use `release/1.2.0` if avaiable).
+
+You can use the most up-to-date branch by using this command:
 
 ```{bash}
 git checkout release/1.0.0
@@ -178,7 +180,7 @@ To test the single-end sheet, modify the sample_sheet parameter in the `nextflow
 ```
 params {
     // general options
-    sample_sheet                = "test_data/single_end_sheet.csv"
+    sample_sheet                = "test_data/single_end_sample_sheet.csv"
     [...]
     outdir                      = "./single_end_results/"
 <...continues...>
@@ -271,10 +273,24 @@ config_file %>%
     cat(.,sep = "\n")
 ```
 
-The `gene_list` and `ref_gene_model` can be found at the RSEQC [documentation page](http://rseqc.sourceforge.net/#download-gene-models-update-on-12-14-2021)
-and are located at `/gpfs/shared_data` to share with the SCRI. 
+## Genome References 
 
-However, the ref_gene_model must be in BED12 format and must match the transcript IDs used in the GTF for STAR aligner. The BED12 can be produced from the GFT file using UCSC utilities (Kent tools).
+Rseqc reference bed files are generated using the provided GTF file in params section of the `nextflow.config` file. The ref_gene_model is generated in BED12 format using UCSC utilities (Kent tools). This allows the Rseqc references to match the transcript IDs used in the GTF for STAR aligner. The pipeline does require the user to provide a list of rRNA transcript IDs that match the transcript ID format in the provided GTF. 
+
+The easiest way to find the rRNA transcripts is to use [Ensembl Biomart](http://useast.ensembl.org/biomart/martview/d3ad0d42cda078c0acc2a4b2c18a9164) or [UCSC table browser](https://genome.ucsc.edu/cgi-bin/hgTables). For Ensembl, use a filter based on the rRNA biotypes you would like to quantify (eg Mt_rRNA , rRNA , rRNA_pseudogene) and then select "Transcript stable ID" as the Attribute to save to file. 
+
+In R, this could be accomplished with:
+```
+library(biomaRt)
+species <- "Homo_sapiens"
+mart <- useEnsembl('ensembl', dataset = 'Homo_sapiens_gene_ensembl')
+biomaRt::getBM(values="rRNA", 
+               filters="biotype", 
+               attributes=c("ensembl_transcript_id"), 
+               mart = mart)
+```
+
+An example of the gene models and rRNA bed files can be found at the RSEQC [documentation page](http://rseqc.sourceforge.net/#download-gene-models-update-on-12-14-2021) and are located at `/gpfs/shared_data/rseqc` to share with the SCRI. 
 
 ## Advanced Options
 

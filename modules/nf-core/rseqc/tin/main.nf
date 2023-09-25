@@ -9,7 +9,7 @@ process RSEQC_TIN {
 
     input:
     tuple val(meta), path(bam), path(bai)
-    path  bed
+    tuple val(meta2), path(bed)
 
     output:
     tuple val(meta), path("*.txt"), emit: txt

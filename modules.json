@@ -19,6 +19,13 @@
                             "modules"
                         ]
                     },
+                    "picard/markduplicates": {
+                        "branch": "master",
+                        "git_sha": "2ee934606f1fdf7fc1cb05d6e8abc13bec8ab448",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
                     "rseqc/readdistribution": {
                         "branch": "master",
                         "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
@@ -29,6 +36,13 @@
                     "rseqc/tin": {
                         "branch": "master",
                         "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
+                    "samtools/faidx": {
+                        "branch": "master",
+                        "git_sha": "fd742419940e01ba1c5ecb172c3e32ec840662fe",
                         "installed_by": [
                             "modules"
                         ]
@@ -64,6 +78,13 @@
                     "trimgalore": {
                         "branch": "master",
                         "git_sha": "72ffbd7128015a1d4b65b95ff8d37be8fee2f981",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
+                    "ucsc/gtftogenepred": {
+                        "branch": "master",
+                        "git_sha": "66290981ab6038ea86177ade40b9449bc790b0ce",
                         "installed_by": [
                             "modules"
                         ]
