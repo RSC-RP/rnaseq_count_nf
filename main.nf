@@ -144,6 +144,28 @@ workflow rnaseq_count {
     MULTIQC(multiqc_ch, multiqc_config, extra_multiqc_config, sample_sheet.simpleName)
 }
 
+workflow sra_download {
+
+    main:
+    def sample_sheet = params.sample_sheet
+    def user_settings = params.user_settings
+    //Download the fastqs directly from the SRA 
+    sra_fastqs(sample_sheet, user_settings)
+    sra_fastqs.out.reads
+        .set { fastq_ch }
+
+}
+
+workflow prep_genome {
+
+    main:
+    //Reformat and stage the genome files for STAR and RSEQC
+    def fasta_file = params.fasta
+    def gtf_file = params.gtf
+    def rRNA_file = params.rRNA_transcripts
+    genome_refs(fasta_file, gtf_file, rRNA_file)
+
+}
 
 //End with a message to print to standard out on workflow completion. 
 workflow.onComplete {

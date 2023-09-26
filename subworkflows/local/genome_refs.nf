@@ -15,13 +15,16 @@ workflow genome_refs {
     //Stage the genome fasta files for the index building step
     Channel.fromPath(file(fasta_file, checkIfExists: true))
         .map { fasta ->  [ ["id": "${fasta.baseName}" ] ,  fasta ] }
+        .collect()
         .set{ fasta_ch }
     //Stage the gtf/gff file for STAR aligner
     Channel.fromPath(file(gtf_file, checkIfExists: true))
         .map { gtf ->  [ ["id": "${gtf.baseName}" ] ,  gtf ] }
+        .collect()
         .set { gtf_ch }
     // Read in the file of rRNA transcript IDs to use for rRNA contamination fraction
     Channel.fromPath(file(rRNA_file, checkIfExists: true))
+        .collect()
         .set { rRNA_transcripts }
 
     // initialize channel 

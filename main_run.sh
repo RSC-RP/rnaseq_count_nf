@@ -5,8 +5,8 @@ DATE=$(date +%F)
 NFX_CONFIG=./nextflow.config
 #Options: PBS_apptainer, local_apptainer, PBS_singularity,local_singularity
 NFX_PROFILE='PBS_apptainer'
-#Options: star_index or rnaseq_count or sra_fastqs
-NFX_ENTRY='rnaseq_count'
+#Options:  rnaseq_count, prep_genome, or sra_download
+NFX_ENTRY='sra_download'
 #The output prefix on filenames for reports/logs
 REPORT=${1:-"pipeline_report"}
 

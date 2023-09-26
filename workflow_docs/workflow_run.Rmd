@@ -284,7 +284,7 @@ In R, this could be accomplished with:
 library(biomaRt)
 species <- "Homo_sapiens"
 mart <- useEnsembl('ensembl', dataset = 'Homo_sapiens_gene_ensembl')
-biomaRt::getBM(values="rRNA", 
+biomaRt::getBM(values=c("rRNA", "rRNA_pseudogene","Mt_rRNA"),
                filters="biotype", 
                attributes=c("ensembl_transcript_id"), 
                mart = mart)
@@ -378,8 +378,13 @@ results/
   * multiqc/
     * {sample_sheet_basename}_multiqc_report_data/ 
     * collects fastqc, star alignment, and star quantification stats 
-    
+
+  * picard/
+    * {sample_id}.bam
+    * {sample_id}.MarkDuplicates.metrics.txt
+
   * rseqc/
+    * {gft_basename}.sort.rRNA.bed
     * {sample_id}.rRNA_stats.out
     * {sample_id}.in.bam - rRNA reads
     * {sample_id}.Aligned.sortedByCoord.out.summary.txt
@@ -387,6 +392,7 @@ results/
     * {sample_id}.read_distribution.txt
     
   * samtools/
+    * fasta index (.fai) file
     * bam index (.bai) file
   
   * sratools/
@@ -394,12 +400,19 @@ results/
     * sratoolkit config file
     
   * star/
-    * {Sample_ID_001}.Aligned.out.bam
-    * {Sample_ID_001}.Log.final.out
-    * {Sample_ID_001}.Log.out
-    * {Sample_ID_001}.Log.progress.out
-    * {Sample_ID_001}.ReadsPerGene.out.tab
-    * {Sample_ID_001}.SJ.out.tab
+    * star/[SA, SAindex, etc] - optional star index files if build_index = true
+    * {sample_id}.Aligned.out.bam
+    * {sample_id}.Log.final.out
+    * {sample_id}.Log.out
+    * {sample_id}.Log.progress.out
+    * {sample_id}.ReadsPerGene.out.tab
+    * {sample_id}.SJ.out.tab
+  
+  * ucsc/
+    * {gft_basename}.genepred
+    * {gft_basename}.sort.bed
+    * {gft_basename}.refflat
+    * {gft_basename}_transcript.infoOut.txt
 
 In addition, there will be an HTML report with information on where the temp data is stored in the `workDir` path, and general run statistics such as resource utilized  versus requested, which helps with optimization. It will also provide information on how much walltime was used per sample, total CPU hours, etc. 
 
