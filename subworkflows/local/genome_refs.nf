@@ -2,22 +2,26 @@ include { UCSC_GTFTOGENEPRED } from '../../modules/nf-core/ucsc/gtftogenepred/ma
 include { UCSC_GENEPREDTOBED } from '../../modules/local/ucsc/genepredtobed.nf'
 include { RSEQC_RIBOSOMALRNA } from '../../modules/local/rseqc/ribosomalrna.nf'
 include { SAMTOOLS_FAIDX } from '../../modules/nf-core/samtools/faidx/main'
+include { STAR_GENOMEGENERATE } from '../../modules/nf-core/star/genomegenerate/main.nf'
 
 //Stage the genome files for RSEQC 
 workflow genome_refs {
+    take: 
+    fasta_file
+    gtf_file
+    rRNA_file 
 
     main:
-    //Stage the gtf/gff file for STAR aligner
-    Channel.fromPath(file(params.gtf, checkIfExists: true))
-        .map { gtf ->  [ ["id": "${gtf.baseName}" ] ,  gtf ] }
-        // .collect() //collect converts this to a value channel and used multiple times
-        .set { gtf_ch }
     //Stage the genome fasta files for the index building step
-    Channel.fromPath(file(params.fasta, checkIfExists: true))
+    Channel.fromPath(file(fasta_file, checkIfExists: true))
         .map { fasta ->  [ ["id": "${fasta.baseName}" ] ,  fasta ] }
         .set{ fasta_ch }
+    //Stage the gtf/gff file for STAR aligner
+    Channel.fromPath(file(gtf_file, checkIfExists: true))
+        .map { gtf ->  [ ["id": "${gtf.baseName}" ] ,  gtf ] }
+        .set { gtf_ch }
     // Read in the file of rRNA transcript IDs to use for rRNA contamination fraction
-    Channel.fromPath(file(params.rRNA_transcripts, checkIfExists: true))
+    Channel.fromPath(file(rRNA_file, checkIfExists: true))
         .set { rRNA_transcripts }
 
     // initialize channel 
@@ -25,6 +29,19 @@ workflow genome_refs {
 
     // Index fasta file 
     SAMTOOLS_FAIDX(fasta_ch)
+
+    //Optionally, Run the index workflow or stage the genome index directory
+    if ( params.build_index == true ) {
+        STAR_GENOMEGENERATE(fasta_ch, gtf_ch)
+        ch_versions = ch_versions.mix(STAR_GENOMEGENERATE.out.versions)
+        STAR_GENOMEGENERATE.out.index
+            .collect()
+            .set { index_ch }
+    } else {
+        Channel.fromPath(file(params.index, checkIfExists: true))
+            .collect() 
+            .set { index_ch }
+    }
 
     // convert GTF to genepred file format
     UCSC_GTFTOGENEPRED( gtf_ch )
@@ -41,6 +58,7 @@ workflow genome_refs {
     fasta           = fasta_ch                    // channel: [ val(meta), fasta ]
     fai             = SAMTOOLS_FAIDX.out.fai      // channel: [ val(meta), fasta ]
     gtf             = gtf_ch                      // channel: [ val(meta), gtf ]
+    index           = index_ch                    // channel: [ index ]
     ref_gene_model  = UCSC_GENEPREDTOBED.out.bed  // channel: [ val(meta), [ bam ] ]
     rRNA_bed        = RSEQC_RIBOSOMALRNA.out.rRNA // channel: [ val(meta), [ rRNA_bed ] ]
     versions        = ch_versions                 // channel: [ versions.yml ]

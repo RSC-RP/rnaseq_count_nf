@@ -4,7 +4,7 @@ set -eu
 DATE=$(date +%F)
 NFX_CONFIG=./nextflow.config
 #Options: PBS_apptainer, local_apptainer, PBS_singularity,local_singularity
-NFX_PROFILE='local_apptainer'
+NFX_PROFILE='PBS_apptainer'
 #Options: star_index or rnaseq_count or sra_fastqs
 NFX_ENTRY='rnaseq_count'
 #The output prefix on filenames for reports/logs

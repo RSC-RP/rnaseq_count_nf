@@ -2,7 +2,6 @@ nextflow.enable.dsl = 2
 
 //Genome and input files prep
 include { genome_refs } from './subworkflows/local/genome_refs.nf'
-include { star_index } from './subworkflows/local/star_index.nf'
 include { sra_fastqs } from './subworkflows/local/sra_fastqs.nf'
 
 //QC modules
@@ -37,20 +36,11 @@ log.info """\
 //run the workflow for star-aligner to generate counts plus perform QC
 workflow rnaseq_count {
 
-    //Reformat and stage the genome files for STAR and RSEQC 
-    genome_refs()
-
-    //Optionally, Run the index workflow or stage the genome index directory
-    if ( params.build_index == true ) {
-        star_index(genome_refs.out.fasta, genome_refs.out.gtf)
-        star_index.out.index
-            .collect()
-            .set { index }
-    } else {
-        Channel.fromPath(file(params.index, checkIfExists: true))
-            .collect() 
-            .set { index }
-    }
+    //Reformat and stage the genome files for STAR and RSEQC
+    def fasta_file = params.fasta
+    def gtf_file = params.gtf
+    def rRNA_file = params.rRNA_transcripts
+    genome_refs(fasta_file, gtf_file, rRNA_file)
 
     if ( params.download_sra_fqs ){
         //Download the fastqs directly from the SRA 
@@ -95,7 +85,8 @@ workflow rnaseq_count {
     // Alignment and Quantification
     //
     //align reads to genome 
-    STAR_ALIGN(fastq_ch, index, 
+    STAR_ALIGN(fastq_ch, 
+              genome_refs.out.index, 
               genome_refs.out.gtf,
               params.star_ignore_sjdbgtf, 
               params.seq_platform,
