@@ -10,11 +10,9 @@ This workflow is designed to output gene expression counts from STAR aligner usi
 
 A DAG (directed acyclic graph) of the workflow is show below:
 
-
 ![](images/dag.png)
 
-
-# Set-up  Nextflow Environment 
+# Set-up the Environment 
 
 ## Code Repository
 
@@ -35,16 +33,15 @@ Next, you will need to clone your personal repository to your home in Cybertron.
 Copy that URL to replace `https://childrens-atlassian/bitbucket/scm/~jsmi26/rnaseq_count_nf.git` below. 
 
 ```
-#on a terminal on the Cybertron login nodes
+# on a terminal on the Cybertron login nodes
 cd ~
 
 # your fork should have your own userID (rather than jsmi26)
 git clone https://childrens-atlassian/bitbucket/scm/~MY_USERID/rnaseq_count_nf.git
-
 cd ~/rnaseq_count_nf
 ```
 
-Once inside the code repository, use the latest release branch or make sure you're using the same release as prior analysis by using `git`.
+Once inside the code repository directory, use the latest release branch or make sure you're using the same release as prior analysis by using `git`.
 
 ```
 git fetch
@@ -75,18 +72,21 @@ Which will state that you are now on `release/1.0.0` branch and that it is track
 
 ## Conda Environment
 
-Finally, grab a compute node and activate the conda environment. It is also be best practice to use `tmux` or `screen` to ensure that if at the session is disconnected, then you’re nextflow workflow (if running) won’t end with SIGKILL error.
-
 Find your project code by listing all your projects on the Cybertron terminal.
 
 ```
 project info
 ```
 
+Grab an interactive session compute node and activate the conda environment. It is also be best practice to use `tmux` or `screen` to ensure that if at the session is disconnected, then you’re nextflow workflow (if running) won’t end with SIGKILL error.
+
 ```
-# Grab a compute note
-qsub -I -q freeq -l select=1:ncpus=1:mem=8g -l walltime=8:00:00 -P [PROJECT CODE]
-cd /path/to/rnaseq_count_nf
+tmux new-session -s nextflow
+# the variable 'NAME' will be an HPC project that you have access to
+NAME="RSC_adhoc"
+QUEUE="paidq"
+qsub -I -q $QUEUE -P $(project code $NAME) -l select=1:ncpus=1:mem=8g -l walltime=8:00:00
+cd ~/rnaseq_count_nf
 ```
 
 If you don’t have conda installed yet, please follow these [directions](http://gonzo/confluence_rsc_docs/general_info.html#setting-up-conda-environments-on-cyberton). You may stop following the directions after the conda deactivate step.
@@ -106,3 +106,31 @@ conda env create -f env/nextflow.yaml
 # Activate the conda environment. 
 conda activate nextflow
 ```
+
+### Optional: Conda/Mamba at SCRI
+
+SCRI uses a TLS and/or SSL Certificate to inspect web traffic and its specific to SCRI. Nextflow itself orchestrates many types of downloads such as genomic references, scientific software images from public repositories, and conda packages. 
+
+If you are running into SSL errors, you will need to configure your conda installation to use SCRI certificates. 
+
+Please see Research Scientific Computing for more help in getting set-up and this [bitbucket repo](https://childrens-atlassian/bitbucket/projects/EC/repos/) for the current certificates. 
+
+# Run the pipeline 
+
+Open the step-by-step instructions to run the workflow in **[`workflow_docs/workflow_run.md`](workflow_docs/run_workflow.md)**. 
+
+## Authors
+
+- [Jenny L. Smith](https://github.com/jennylsmith)
+
+## Acknowledgements
+
+This pipeline was generated using `nf-core tools` CLI suite and publically available modules from [`nf-core`](https://nf-co.re/about). 
+
+> The nf-core project came about at the start of 2018. Phil Ewels (@ewels) was the head of the development facility at NGI Stockholm (National Genomics Infrastructure), part of SciLifeLab in Sweden.
+
+> The NGI had been developing analysis pipelines for use with it’s genomics data for several years and started using a set of standards for each pipeline created. This helped other people run the pipelines on their own systems; typically Swedish research groups at first, but later on other groups and core genomics facilities too such as QBIC in Tübingen.
+
+> As the number of users and contributors grew, the pipelines began to outgrow the SciLifeLab and NGI branding. To try to open up the effort into a truly collaborative project, nf-core was created and all relevant pipelines moved to this new GitHub Organisation.
+
+> The early days of nf-core were greatly shaped by Alex Peltzer (@apeltzer), Sven Fillinger (@sven1103) and Andreas Wilm (@andreas-wilm). Without them, the project would not exist.
