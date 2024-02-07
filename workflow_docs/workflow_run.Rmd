@@ -2,30 +2,29 @@
 title: "Nextflow 'rnaseq_count_nf' Pipeline Run Instructions"
 author: "Jenny L Smith"
 date: "`r Sys.Date()`"
-always_allow_html: true
 params:
   outdir:
     value: ""
     input: text
 output:
-  html_document:
-    theme: yeti
-    highlight: breezedark
-    toc: true
-    toc_float: true
-    toc_depth: 3
-    number_sections: true
-    fig_caption: true
-    df_print: paged
-      github_document:
-  html_preview: false
-    toc: true
-    fig_width: 5
-    fig_height: 5
-    toc_depth: 3
+    github_document:
+        html_preview: false
+        toc: true
+        fig_width: 5
+        fig_height: 5
+        toc_depth: 3
+    html_document:
+        theme: yeti
+        highlight: breezedark
+        toc: true
+        toc_float: true
+        toc_depth: 3
+        number_sections: true
+        fig_caption: true
+        df_print: paged
 editor_options: 
-  markdown: 
-    wrap: 72
+    markdown: 
+        wrap: 72
 ---
 
 
