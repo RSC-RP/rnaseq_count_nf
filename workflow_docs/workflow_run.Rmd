@@ -312,8 +312,6 @@ The `main_run.sh` script defines the profiles for different executors in the var
 
 "local_singularity" is good for workflow development if you're making a lot of changes. This will use singularity on Cybertron, but run the jobs on the interactive compute node that you've requested during "Set-up  Nextflow Environment" steps above. 
 
-"PBS_conda" is generally not recommended.This profiles executes the jobs on the HPC using the PBS scheduler. Then nextflow will coordinate the creation of conda environments for each step in the workflow and active those environments in the scheduled compute nodes for job. 
-
 ```{r eval=TRUE, echo=FALSE}
 main_run %>% 
     head(.,  n=10) %>% 
