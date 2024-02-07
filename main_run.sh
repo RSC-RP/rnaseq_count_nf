@@ -3,8 +3,8 @@
 set -eu
 DATE=$(date +%F)
 NFX_CONFIG=./nextflow.config
-#Options: PBS_apptainer, local_apptainer, PBS_singularity,local_singularity
-NFX_PROFILE='PBS_apptainer'
+#Options: PBS_singularity,local_singularity
+NFX_PROFILE='PBS_singularity'
 #Options:  rnaseq_count, prep_genome, or sra_download
 NFX_ENTRY='sra_download'
 #The output prefix on filenames for reports/logs
@@ -15,14 +15,9 @@ REPORT=${1:-"pipeline_report"}
 if [[ $NFX_PROFILE =~ "singularity" ]]
 then
     module load singularity
-elif [[ $NFX_PROFILE =~ "apptainer" ]]
-then
-    module load apptainer
 fi
 
 # Nextflow run to execute the workflow
-# TO DO: --singularity_module $SINGULARITY #the in nextflow.config could access this as params.SINGULARITY
-#https://unix.stackexchange.com/questions/351901/how-can-i-get-the-positional-parameters-starting-from-two-or-more-generally
 PREFIX="${REPORT}_${DATE}"
 nextflow -c ${NFX_CONFIG} \
     -log reports/${PREFIX}_nextflow.log \
