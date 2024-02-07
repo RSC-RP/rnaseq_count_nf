@@ -75,10 +75,13 @@ Which will state that you are now on `release/1.0.0` branch and that it is track
 Find your project code by listing all your projects on the Cybertron terminal.
 
 ```
+# lists all HPC project names that you have access to use
 project info
 ```
 
 Grab an interactive session compute node and activate the conda environment. It is also be best practice to use `tmux` or `screen` to ensure that if at the session is disconnected, then you’re nextflow workflow (if running) won’t end with SIGKILL error.
+
+Change the `QUEUE` and `NAME` variables in the code chunk below to be accurate for your Cybertron projects. 
 
 ```
 tmux new-session -s nextflow
