@@ -3,6 +3,10 @@ title: "Nextflow 'rnaseq_count_nf' Pipeline Run Instructions"
 author: "Jenny L Smith"
 date: "`r Sys.Date()`"
 always_allow_html: true
+params:
+  outdir:
+    value: ""
+    input: text
 output:
   html_document:
     theme: yeti
@@ -13,6 +17,15 @@ output:
     number_sections: true
     fig_caption: true
     df_print: paged
+      github_document:
+  html_preview: false
+    toc: true
+    fig_width: 5
+    fig_height: 5
+    toc_depth: 3
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 
@@ -44,95 +57,54 @@ A DAG (directed acyclic graph) of the workflow is show below:
 knitr::include_graphics("../images/dag.png")
 ```
 
-# Set-up  Nextflow Environment 
+# Activate the Environment on HPC
 
-## Code Repository
+The directions to set-up the Nextflow workflow requirements are found in
+the [README.md](../README.md). Ensure that you have followed the steps
+to fork and clone the repository and created the conda nextflow
+environment before starting with this document.
 
-First, fork the [repository](https://childrens-atlassian/bitbucket/projects/RP/repos/rnaseq_count_nf/browse) from Children’s bitbucket. Do this by clicking the “create fork” symbol from the bitbucket web interface and fork it to your personal bitbucket account, as illustrated below.
+### 1) Interactive Session
 
-```{r eval=TRUE, echo=FALSE}
-knitr::include_graphics("../images/bitbucket_fork1.png")
-knitr::include_graphics("../images/bitbucket_fork2.png")
-knitr::include_graphics("../images/bitbucket_fork3.png")
-```
+Optional but recommended: use `tmux` on the cybertron login nodes. Name
+the session nextflow and then request an interactive session, then
+activate the nextflow conda environment. The project codes can be found
+with `project info` command. Change the `$QUEUE` and `$NAME` variables
+in the code chunk below to be accurate for your Cybertron projects.
 
-Next, you will need to clone your personal repository to your home in Cybertron. See the image below for where you can find the correct URL on your forked bitbucket repo. 
-
-```{r eval=TRUE, echo=FALSE}
-knitr::include_graphics("../images/bitbucket_clone.png")
-```
-
-Copy that URL to replace `https://childrens-atlassian/bitbucket/scm/~jsmi26/rnaseq_count_nf.git` below. 
-```{bash}
-#on a terminal on the Cybertron login nodes
-cd ~
-
-# your fork should have your own userID (rather than jsmi26)
-git clone https://childrens-atlassian/bitbucket/scm/~jsmi26/rnaseq_count_nf.git
-
-cd ~/rnaseq_count_nf
-```
-
-Once inside the code repository, use the latest release branch or make sure you're using the same release as prior analysis by using `git`.
-
-```{bash}
-git fetch
-git branch -a
-```
-
-The git branch command will show all available remote branches, including remote branches, like:
-
-```
-* main
-  remotes/origin/HEAD -> origin/main
-  remotes/origin/dev
-  remotes/origin/main
-  remotes/origin/release/1.0.0
- ```
-
-Checkout the **most current release branch**, which will be the largest value (eg use `release/1.2.0` if avaiable).
-
-You can use the most up-to-date branch by using this command:
-
-```{bash}
-git checkout release/1.0.0
-```
-
-Which will state that you are now on `release/1.0.0` branch and that it is tracking the release branch in your personal repository. 
-
-```
-Checking out files: 100% (55/55), done.
-Branch release/1.0.0 set up to track remote branch release/1.0.0 from origin.
-Switched to a new branch 'release/1.0.0'
-```
-
-## Conda Environment
-
-Finally, grab a compute node and activate the conda environment. It is also be best practice to use `tmux` or `screen` to ensure that if at the session is disconnected, then you’re nextflow workflow (if running) won’t end with SIGKILL error.
-
-```{bash}
-#Find your project code by listing all your projects on the Cybertron terminal
+```{bash optional, eval=FALSE}
+tmux new-session -s nextflow
 project info
-
-#Grab a compute note
-qsub -I -q freeq -l select=1:ncpus=1:mem=8g -l walltime=8:00:00 -P [PROJECT CODE]
-cd /path/to/cloned/rnaseq_count_nf
+NAME="RSC_adhoc"
+QUEUE="paidq"
+qsub -I -q $QUEUE -P $(project code $NAME) -l select=1:ncpus=1:mem=8g -l walltime=8:00:00
 ```
 
-If you don’t have conda installed yet, please follow these [directions](http://pdlets01.childrens.sea.kids/confluence_rsc_docs/general_info.html#setting-up-conda-environments-on-cyberton). You may stop following the directions after the conda deactivate step.
+### 2) Open CutandRun workflow folder
 
-Next, for the conda environment to be solved, you will need to set channel_priority to flexible in your conda configs as well. To read more about conda environments and thier configurations, check out the [documentation](https://docs.conda.io/projects/conda/en/latest/commands/config.html#conda-config). 
+Navigate to where you place the cloned (copied) cutandrun_nf directory,
+and then checkout the latest release branch.
 
-```{bash, eval=FALSE}
-conda config --describe channel_priority # print your current conda settings
-conda config --set channel_priority flexible # set to flexible if not already done
+```{bash eval=FALSE}
+cd /path/to/my/rnaseq_count_nf
+git fetch
+
+# this will list all branches of the repository. Find the release branch with the latest version in red text, which means you don't yet have a local copy of that branch. 
+git branch -a
+
+# then select the latest version, for example 2.0.0. This downloads the stable version of pipeline locally. 
+git checkout release/2.0.0
+
+# Now the * indicates that you're on the release branch and its no longer red text. 
+git branch
 ```
 
-```{bash}
-#Create the environement only once. Skip this step if you've already created the environment
+### 3) Activate conda environement
+
+Activate the Nextflow conda environment.
+
+```{bash required, eval=FALSE}
 conda env create -f env/nextflow.yaml
-
-#Activate the conda environment. 
 conda activate nextflow
 ```
 
@@ -233,10 +205,6 @@ It must have the column names (in any order):
     
   * single_end - boolean [true/false] if the data is single-end or paired-end 
 
-
-**TO DO:** A function provided here, but it may not meet the needs of every experiment. 
-
-
 The two examples are provided here to look at: 
 
 ```{r eval=TRUE}
@@ -331,7 +299,6 @@ Then execute a wrapper around the `nextflow run main.nf` command which is in the
 
 ```{r eval=TRUE, echo=FALSE}
 main_run <- readLines(here::here("main_run.sh"))
-# main_run
 ```
 
 Typically, you will not need to change the `main_run.sh` often. 
@@ -340,7 +307,6 @@ The `main_run.sh` script defines the profiles for different executors in the var
 
 * PBS_singularity [default]
 * local_singularity
-* PBS_conda
 
 "PBS_singularity" is recommended. This profiles executes the jobs on the HPC using the PBS scheduler and then will run the job inside singularity containers with the appropriate scientific software versions. 
 
