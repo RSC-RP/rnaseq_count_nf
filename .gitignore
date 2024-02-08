@@ -17,6 +17,7 @@
 *.log.*
 *.run
 *dag.pdf.*
+notes.txt
 
 # Pipeline specific files
 resources/
