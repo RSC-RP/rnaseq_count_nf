@@ -1,5 +1,9 @@
 nextflow.enable.dsl = 2
 
+//Genome and input files prep
+include { genome_refs } from './subworkflows/local/genome_refs.nf'
+include { sra_fastqs } from './subworkflows/local/sra_fastqs.nf'
+
 //QC modules
 include { FASTQC } from './modules/nf-core/fastqc/main.nf'
 include { MULTIQC } from './modules/nf-core/multiqc/main.nf'
@@ -9,10 +13,9 @@ include { RSEQC_TIN } from './modules/nf-core/rseqc/tin/main.nf'
 
 // Alignment and quantification modules
 include { TRIMGALORE } from './modules/nf-core/trimgalore/main.nf'
+include { PICARD_MARKDUPLICATES } from './modules/nf-core/picard/markduplicates/main'
 include { STAR_ALIGN } from './modules/nf-core/star/align/main.nf'
-include { STAR_GENOMEGENERATE } from './modules/nf-core/star/genomegenerate/main.nf'
 include { SAMTOOLS_INDEX } from './modules/nf-core/samtools/index/main.nf'
-include { SRATOOLS_FASTERQDUMP } from './modules/nf-core/sratools/fasterqdump/main.nf'
 
 //Sample manifest (params.sample_sheet) validation step to ensure appropriate formatting. 
 //See bin/check_samplesheet.py from NF-CORE 
@@ -32,17 +35,12 @@ log.info """\
 
 //run the workflow for star-aligner to generate counts plus perform QC
 workflow rnaseq_count {
-    //Run the index workflow or stage the genome index directory
-    if ( params.build_index == true ) {
-        star_index()
-        star_index.out.index
-            .collect()
-            .set { index }
-    } else {
-        Channel.fromPath(file(params.index, checkIfExists: true))
-            .collect() 
-            .set { index }
-    }
+
+    //Reformat and stage the genome files for STAR and RSEQC
+    def fasta_file = params.fasta
+    def gtf_file = params.gtf
+    def rRNA_file = params.rRNA_transcripts
+    genome_refs(fasta_file, gtf_file, rRNA_file)
 
     if ( params.download_sra_fqs ){
         //Download the fastqs directly from the SRA 
@@ -68,17 +66,7 @@ workflow rnaseq_count {
         }
         .set { fastq_ch }
     }
-    //Stage the gtf/gff file for STAR aligner
-    Channel.fromPath(file(params.gtf, checkIfExists: true))
-        .collect() //collect converts this to a value channel and used multiple times
-        .set { gtf }
-    //Stage the genome files for RSEQC 
-    Channel.fromPath(file(params.gene_list, checkIfExists: true))
-        .collect()
-        .set { gene_list }
-    Channel.fromPath(file(params.ref_gene_model, checkIfExists: true))
-        .collect()
-        .set { ref_gene_model }
+
     // QC on the sequenced reads
     FASTQC(fastq_ch)
     if ( params.trim ) {
@@ -92,21 +80,33 @@ workflow rnaseq_count {
         Channel.empty()
             .set { trim_report }
     }
+
+    //
+    // Alignment and Quantification
+    //
     //align reads to genome 
-    STAR_ALIGN(fastq_ch, index, gtf,
+    STAR_ALIGN(fastq_ch, 
+              genome_refs.out.index, 
+              genome_refs.out.gtf,
               params.star_ignore_sjdbgtf, 
               params.seq_platform,
               params.seq_center)
     //Samtools index the sorted BAM file
     SAMTOOLS_INDEX(STAR_ALIGN.out.bam)
-    //RSEQC on the aligned reads 
+
+    //
+    // QC 
+    //
+    // Mark duplicates 
+    PICARD_MARKDUPLICATES(STAR_ALIGN.out.bam, genome_refs.out.fasta, genome_refs.out.fai)
+    // RSEQC on the aligned reads 
     STAR_ALIGN.out.bam
         .cross(SAMTOOLS_INDEX.out.bai) { it -> it[0].id }
         .map { meta -> [ meta[0][0], meta[0][1], meta[1][1] ] }
         .set { rseqc_ch }
-    RSEQC_SPLITBAM(rseqc_ch, gene_list)
-    RSEQC_READDISTRIBUTION(rseqc_ch, ref_gene_model)
-    RSEQC_TIN(rseqc_ch, ref_gene_model)
+    RSEQC_SPLITBAM(rseqc_ch, genome_refs.out.rRNA_bed)
+    RSEQC_READDISTRIBUTION(rseqc_ch, genome_refs.out.ref_gene_model)
+    RSEQC_TIN(rseqc_ch, genome_refs.out.ref_gene_model)
 
     //
     //
@@ -133,7 +133,7 @@ workflow rnaseq_count {
         // .concat(FASTQC_TRIM.out.fastqc)
         .concat(STAR_ALIGN.out.log_final)
         .concat(STAR_ALIGN.out.read_counts)
-        // .concat(PICARD_MARKDUPLICATES.out.metrics)
+        .concat(PICARD_MARKDUPLICATES.out.metrics)
         .concat(RSEQC_READDISTRIBUTION.out.txt)
         .concat(RSEQC_TIN.out.txt)
         .map { row -> row[1]}
@@ -144,39 +144,27 @@ workflow rnaseq_count {
     MULTIQC(multiqc_ch, multiqc_config, extra_multiqc_config, sample_sheet.simpleName)
 }
 
-//Generate the index file 
-workflow star_index {
-    main: 
-    //Stage the gtf file
-    Channel.fromPath(file(params.gtf, checkIfExists: true))
-        .set{ gtf }  
-    //Stage the genome fasta files for the index building step
-    Channel.fromPath(file(params.fasta, checkIfExists: true))
-        .set{ fasta }
-    //execute the STAR genome index process
-    STAR_GENOMEGENERATE(fasta, gtf)
+workflow sra_download {
 
-    emit:
-    index = STAR_GENOMEGENERATE.out.index
+    main:
+    def sample_sheet = params.sample_sheet
+    def user_settings = params.user_settings
+    //Download the fastqs directly from the SRA 
+    sra_fastqs(sample_sheet, user_settings)
+    sra_fastqs.out.reads
+        .set { fastq_ch }
+
 }
 
-workflow sra_fastqs {
-    main: 
-    // stage the sample sheet
-    Channel.fromPath(file(params.sample_sheet, checkIfExists: true))
-        .splitCsv(header: true, sep: ',', skip: 2)
-        .map { meta -> [ "id":meta["id"], "single_end":meta["single_end"].toBoolean() ] } //meta
-        .set { accessions_ch }
+workflow prep_genome {
 
-    // stage the NCBI sratoolkit config file
-    Channel.fromPath(file(params.user_settings, checkIfExists: true))
-        .collect()
-        .set { user_settings }
-    // Run fastq dump 
-   SRATOOLS_FASTERQDUMP(accessions_ch, user_settings)
+    main:
+    //Reformat and stage the genome files for STAR and RSEQC
+    def fasta_file = params.fasta
+    def gtf_file = params.gtf
+    def rRNA_file = params.rRNA_transcripts
+    genome_refs(fasta_file, gtf_file, rRNA_file)
 
-   emit:
-   reads = SRATOOLS_FASTERQDUMP.out.reads
 }
 
 //End with a message to print to standard out on workflow completion. 

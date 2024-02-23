@@ -10,7 +10,7 @@ process STAR_ALIGN {
     input:
     tuple val(meta), path(reads)
     path index
-    path gtf
+    tuple val(meta2), path(gtf)
     val star_ignore_sjdbgtf
     val seq_platform
     val seq_center
