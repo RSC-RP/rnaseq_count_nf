@@ -120,7 +120,7 @@ Please see Research Scientific Computing for more help in getting set-up and thi
 
 # Run the pipeline 
 
-Open the step-by-step instructions to run the workflow in **[`workflow_docs/workflow_run.md`](workflow_docs/run_workflow.md)**. 
+Open the step-by-step instructions to run the workflow in **[`workflow_docs/workflow_run.md`](workflow_docs/workflow_run.md)**. 
 
 ## Authors
 

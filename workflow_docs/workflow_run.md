@@ -1,30 +1,54 @@
-Nextflow ‘rnaseq_count_nf’ Pipeline Run Instructions
+‘rnaseq_count_nf’ Nextflow Pipeline Instructions
 ================
 Jenny L Smith
-2024-02-07
+2024-02-23
 
-- [About the Workflow](#about-the-workflow)
-- [Activate the Environment on HPC](#activate-the-environment-on-hpc)
-  - [1) Interactive Session](#1-interactive-session)
-  - [2) Open CutandRun workflow
-    folder](#2-open-cutandrun-workflow-folder)
-  - [3) Activate conda environement](#3-activate-conda-environement)
-- [Test the Workflow](#test-the-workflow)
-  - [Edit the Config File](#edit-the-config-file)
-  - [Paired-end example](#paired-end-example)
-  - [Single-end example](#single-end-example)
-  - [sra download example](#sra-download-example)
-- [Modify the Pipeline for Your
-  Data](#modify-the-pipeline-for-your-data)
-  - [Define Input Files](#define-input-files)
-  - [Nextflow Config](#nextflow-config)
-  - [Genome References](#genome-references)
-  - [Advanced Options](#advanced-options)
-- [Run the workflow](#run-the-workflow)
-- [Expected Outputs](#expected-outputs)
-- [Share the Data](#share-the-data)
-- [Cleaning up Cached Data](#cleaning-up-cached-data)
-- [Session Information](#session-information)
+-   <a href="#about-the-workflow" id="toc-about-the-workflow">About the
+    Workflow</a>
+-   <a href="#activate-the-environment-on-hpc"
+    id="toc-activate-the-environment-on-hpc">Activate the Environment on
+    HPC</a>
+    -   <a href="#1-interactive-session" id="toc-1-interactive-session">1)
+        Interactive Session</a>
+    -   <a href="#2-open-rnaseq_count_nf-workflow-folder"
+        id="toc-2-open-rnaseq_count_nf-workflow-folder">2) Open
+        <code>rnaseq_count_nf</code> workflow folder</a>
+    -   <a href="#3-activate-conda-environement"
+        id="toc-3-activate-conda-environement">3) Activate conda
+        environement</a>
+-   <a href="#test-the-workflow" id="toc-test-the-workflow">Test the
+    Workflow</a>
+    -   <a href="#edit-the-config-file" id="toc-edit-the-config-file">Edit the
+        Config File</a>
+    -   <a href="#paired-end-example" id="toc-paired-end-example">Paired-end
+        example</a>
+    -   <a href="#single-end-example" id="toc-single-end-example">Single-end
+        example</a>
+    -   <a href="#sra-download-example" id="toc-sra-download-example">sra
+        download example</a>
+-   <a href="#modify-the-pipeline-for-your-data"
+    id="toc-modify-the-pipeline-for-your-data">Modify the Pipeline for Your
+    Data</a>
+    -   <a href="#define-input-files" id="toc-define-input-files">Define Input
+        Files</a>
+    -   <a href="#nextflow-config" id="toc-nextflow-config">Nextflow Config</a>
+    -   <a href="#genome-references" id="toc-genome-references">Genome
+        References</a>
+    -   <a href="#advanced-options" id="toc-advanced-options">Advanced
+        Options</a>
+-   <a href="#run-the-workflow" id="toc-run-the-workflow">Run the
+    workflow</a>
+-   <a href="#expected-outputs" id="toc-expected-outputs">Expected
+    Outputs</a>
+    -   <a href="#complete-file-structure"
+        id="toc-complete-file-structure">Complete File Structure</a>
+    -   <a href="#detailed-file-structure"
+        id="toc-detailed-file-structure">Detailed File Structure</a>
+-   <a href="#share-the-data" id="toc-share-the-data">Share the Data</a>
+-   <a href="#cleaning-up-cached-data"
+    id="toc-cleaning-up-cached-data">Cleaning up Cached Data</a>
+-   <a href="#session-information" id="toc-session-information">Session
+    Information</a>
 
 # About the Workflow
 
@@ -64,7 +88,7 @@ QUEUE="paidq"
 qsub -I -q $QUEUE -P $(project code $NAME) -l select=1:ncpus=1:mem=8g -l walltime=8:00:00
 ```
 
-### 2) Open CutandRun workflow folder
+### 2) Open `rnaseq_count_nf` workflow folder
 
 Navigate to where you place the cloned (copied) cutandrun_nf directory,
 and then checkout the latest release branch.
@@ -101,8 +125,8 @@ in R.
 
 You will need to change the:
 
-- project code (use the same one as you used above),
-- the queue name to be paidq or a tier 3 queue.
+-   project code (use the same one as you used above),
+-   the queue name to be paidq or a tier 3 queue.
 
 Paidq will cost less than \$0.01 for testing with the workflow’s example
 data provided in the directory `test_data`.
@@ -181,15 +205,15 @@ provided here.
 
 It must have the column names (in any order):
 
-- r1 - the filepath for the read 1 fastq in paired-end RNA-seq, or the
-  single-end fastq file
+-   r1 - the filepath for the read 1 fastq in paired-end RNA-seq, or the
+    single-end fastq file
 
-- r2 - the filepath for the read 2 fastq in paired-end RNA-seq
+-   r2 - the filepath for the read 2 fastq in paired-end RNA-seq
 
-- id - unique sample ID, no duplicates allowed in the sample sheet
+-   id - unique sample ID, no duplicates allowed in the sample sheet
 
-- single_end - boolean \[true/false\] if the data is single-end or
-  paired-end
+-   single_end - boolean \[true/false\] if the data is single-end or
+    paired-end
 
 The two examples are provided here to look at:
 
@@ -342,8 +366,8 @@ Typically, you will not need to change the `main_run.sh` often.
 The `main_run.sh` script defines the profiles for different executors in
 the variable `NFX_PROFILE`. The choices for profiles are:
 
-- PBS_singularity \[default\]
-- local_singularity
+-   PBS_singularity \[default\]
+-   local_singularity
 
 “PBS_singularity” is recommended. This profiles executes the jobs on the
 HPC using the PBS scheduler and then will run the job inside singularity
@@ -370,11 +394,11 @@ You can also change the
 [`entry_point`](https://www.nextflow.io/docs/latest/dsl2.html#workflow-entrypoint)
 for the workflow.
 
-- Run only the index building step using `NFX_ENTRY='star_index'`.
-- Run only the download step for SRA files by setting
-  `NFX_ENTRY='sra_fastqs'`.
-- Keep the default `NFX_ENTRY='rnaseq_count'` to run the complete
-  pipeline.
+-   Run only the index building step using `NFX_ENTRY='star_index'`.
+-   Run only the download step for SRA files by setting
+    `NFX_ENTRY='sra_fastqs'`.
+-   Keep the default `NFX_ENTRY='rnaseq_count'` to run the complete
+    pipeline.
 
 ``` bash
 ./main_run.sh "my_analysis"
@@ -382,47 +406,9 @@ for the workflow.
 
 # Expected Outputs
 
-Under the path provided in the nextflow config for params “outdir”, you
-will find directories named for each of the modules. Lets say
-“params.outdir = ./results”. There will be the following file structure:
-
-results/
-
-- fastqc/
-  - fastqc\_{sample_id}\_/
-- multiqc/
-  - {sample_sheet_basename}\_multiqc_report_data/
-  - collects fastqc, star alignment, and star quantification stats
-- picard/
-  - {sample_id}.bam
-  - {sample_id}.MarkDuplicates.metrics.txt
-- rseqc/
-  - {gft_basename}.sort.rRNA.bed
-  - {sample_id}.rRNA_stats.out
-  - {sample_id}.in.bam - rRNA reads
-  - {sample_id}.Aligned.sortedByCoord.out.summary.txt
-  - {sample_id}.Aligned.sortedByCoord.out.tin.xls
-  - {sample_id}.read_distribution.txt
-- samtools/
-  - fasta index (.fai) file
-  - bam index (.bai) file
-- sratools/
-  - {SRR_RUN_ID}.fastq.gz
-  - sratoolkit config file
-- star/
-  - star/\[SA, SAindex, etc\] - optional star index files if build_index
-    = true
-  - {sample_id}.Aligned.out.bam
-  - {sample_id}.Log.final.out
-  - {sample_id}.Log.out
-  - {sample_id}.Log.progress.out
-  - {sample_id}.ReadsPerGene.out.tab
-  - {sample_id}.SJ.out.tab
-- ucsc/
-  - {gft_basename}.genepred
-  - {gft_basename}.sort.bed
-  - {gft_basename}.refflat
-  - {gft_basename}\_transcript.infoOut.txt
+Under the path provided in the nextflow config for params “outdir”, lets
+say `paired_end_results/`, you will find directories named for each of
+the modules.
 
 In addition, there will be an HTML report with information on where the
 temp data is stored in the `workDir` path, and general run statistics
@@ -447,6 +433,79 @@ will be saved under `dag/` directory with the name
 “my_analysis\_{DATE}\_dag.pdf”.
 
 <img src="../images/dag.png" width="4722" style="display: block; margin: auto;" />
+
+### Complete File Structure
+
+There will be the following file structure:
+
+    ## ../paired_end_results/
+    ## ├── fastqc
+    ## │   └── fastqc_Sample_ID_001
+    ## ├── multiqc
+    ## │   ├── paired_end_sample_sheet_multiqc_report.html
+    ## │   ├── paired_end_sample_sheet_multiqc_report_data
+    ## │   └── paired_end_sample_sheet_multiqc_report_plots
+    ## ├── picard
+    ## │   ├── Sample_ID_001.MarkDuplicates.metrics.txt
+    ## │   └── Sample_ID_001.bam
+    ## ├── rseqc
+    ## │   ├── Homo_sapiens.GRCh38.106.sort.rRNA.bed
+    ## │   ├── Sample_ID_001.Aligned.sortedByCoord.out.summary.txt
+    ## │   ├── Sample_ID_001.Aligned.sortedByCoord.out.tin.xls
+    ## │   ├── Sample_ID_001.in.bam
+    ## │   ├── Sample_ID_001.read_distribution.txt
+    ## │   └── Sample_ID_001_rRNA_stats.out
+    ## ├── samtools
+    ## │   ├── Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai
+    ## │   └── Sample_ID_001.Aligned.sortedByCoord.out.bam.bai
+    ## ├── star
+    ## │   ├── Sample_ID_001.Aligned.sortedByCoord.out.bam
+    ## │   ├── Sample_ID_001.Log.final.out
+    ## │   ├── Sample_ID_001.Log.out
+    ## │   ├── Sample_ID_001.Log.progress.out
+    ## │   ├── Sample_ID_001.ReadsPerGene.out.tab
+    ## │   └── Sample_ID_001.SJ.out.tab
+    ## └── ucsc
+    ##     ├── Homo_sapiens.GRCh38.106.genepred
+    ##     ├── Homo_sapiens.GRCh38.106.refflat
+    ##     ├── Homo_sapiens.GRCh38.106.sort.bed
+    ##     └── Homo_sapiens.GRCh38.106_transcript.infoOut.txt
+
+### Detailed File Structure
+
+Within each directory you will find the following files (top 5 files per
+directory are shown):
+
+| path                                                                            | type      | process                     | filename                                            |
+|:--------------------------------------------------------------------------------|:----------|:----------------------------|:----------------------------------------------------|
+| ../paired_end_results/fastqc                                                    | directory | fastqc                      |                                                     |
+| ../paired_end_results/fastqc/fastqc_Sample_ID_001/Sample_ID_001_1\_fastqc.html  | file      | fastqc                      | Sample_ID_001_1\_fastqc.html                        |
+| ../paired_end_results/fastqc/fastqc_Sample_ID_001/Sample_ID_001_1\_fastqc.zip   | file      | fastqc                      | Sample_ID_001_1\_fastqc.zip                         |
+| ../paired_end_results/fastqc/fastqc_Sample_ID_001/Sample_ID_001_2\_fastqc.html  | file      | fastqc                      | Sample_ID_001_2\_fastqc.html                        |
+| ../paired_end_results/fastqc/fastqc_Sample_ID_001/Sample_ID_001_2\_fastqc.zip   | file      | fastqc                      | Sample_ID_001_2\_fastqc.zip                         |
+| ../paired_end_results/fastqc/fastqc_Sample_ID_001                               | directory | fastqc/fastqc_Sample_ID_001 |                                                     |
+| ../paired_end_results/multiqc                                                   | directory | multiqc                     |                                                     |
+| ../paired_end_results/picard                                                    | directory | picard                      |                                                     |
+| ../paired_end_results/picard/Sample_ID_001.MarkDuplicates.metrics.txt           | file      | picard                      | Sample_ID_001.MarkDuplicates.metrics.txt            |
+| ../paired_end_results/picard/Sample_ID_001.bam                                  | file      | picard                      | Sample_ID_001.bam                                   |
+| ../paired_end_results/rseqc                                                     | directory | rseqc                       |                                                     |
+| ../paired_end_results/rseqc/Homo_sapiens.GRCh38.106.sort.rRNA.bed               | file      | rseqc                       | Homo_sapiens.GRCh38.106.sort.rRNA.bed               |
+| ../paired_end_results/rseqc/Sample_ID_001.Aligned.sortedByCoord.out.summary.txt | file      | rseqc                       | Sample_ID_001.Aligned.sortedByCoord.out.summary.txt |
+| ../paired_end_results/rseqc/Sample_ID_001.Aligned.sortedByCoord.out.tin.xls     | file      | rseqc                       | Sample_ID_001.Aligned.sortedByCoord.out.tin.xls     |
+| ../paired_end_results/rseqc/Sample_ID_001.in.bam                                | file      | rseqc                       | Sample_ID_001.in.bam                                |
+| ../paired_end_results/samtools                                                  | directory | samtools                    |                                                     |
+| ../paired_end_results/samtools/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai  | file      | samtools                    | Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai     |
+| ../paired_end_results/samtools/Sample_ID_001.Aligned.sortedByCoord.out.bam.bai  | file      | samtools                    | Sample_ID_001.Aligned.sortedByCoord.out.bam.bai     |
+| ../paired_end_results/star                                                      | directory | star                        |                                                     |
+| ../paired_end_results/star/Sample_ID_001.Aligned.sortedByCoord.out.bam          | file      | star                        | Sample_ID_001.Aligned.sortedByCoord.out.bam         |
+| ../paired_end_results/star/Sample_ID_001.Log.final.out                          | file      | star                        | Sample_ID_001.Log.final.out                         |
+| ../paired_end_results/star/Sample_ID_001.Log.out                                | file      | star                        | Sample_ID_001.Log.out                               |
+| ../paired_end_results/star/Sample_ID_001.Log.progress.out                       | file      | star                        | Sample_ID_001.Log.progress.out                      |
+| ../paired_end_results/ucsc                                                      | directory | ucsc                        |                                                     |
+| ../paired_end_results/ucsc/Homo_sapiens.GRCh38.106.genepred                     | file      | ucsc                        | Homo_sapiens.GRCh38.106.genepred                    |
+| ../paired_end_results/ucsc/Homo_sapiens.GRCh38.106.refflat                      | file      | ucsc                        | Homo_sapiens.GRCh38.106.refflat                     |
+| ../paired_end_results/ucsc/Homo_sapiens.GRCh38.106.sort.bed                     | file      | ucsc                        | Homo_sapiens.GRCh38.106.sort.bed                    |
+| ../paired_end_results/ucsc/Homo_sapiens.GRCh38.106_transcript.infoOut.txt       | file      | ucsc                        | Homo_sapiens.GRCh38.106_transcript.infoOut.txt      |
 
 # Share the Data
 

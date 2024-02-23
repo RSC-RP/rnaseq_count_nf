@@ -1,5 +1,5 @@
 ---
-title: "Nextflow 'rnaseq_count_nf' Pipeline Run Instructions"
+title: "'rnaseq_count_nf' Nextflow Pipeline Instructions"
 author: "Jenny L Smith"
 date: "`r Sys.Date()`"
 params:
@@ -7,12 +7,6 @@ params:
     value: ""
     input: text
 output:
-    github_document:
-        html_preview: false
-        toc: true
-        fig_width: 5
-        fig_height: 5
-        toc_depth: 3
     html_document:
         theme: yeti
         highlight: breezedark
@@ -22,6 +16,12 @@ output:
         number_sections: true
         fig_caption: true
         df_print: paged
+    github_document:
+        html_preview: false
+        toc: true
+        fig_width: 5
+        fig_height: 5
+        toc_depth: 3
 editor_options: 
     markdown: 
         wrap: 72
@@ -43,6 +43,7 @@ options(stringsAsFactors = FALSE, max.print = 100)
 table <- function(..., useNA = "ifany") base::table(..., useNA = useNA)
 
 library(dplyr)
+library(stringr)
 ```
 
 
@@ -79,10 +80,9 @@ QUEUE="paidq"
 qsub -I -q $QUEUE -P $(project code $NAME) -l select=1:ncpus=1:mem=8g -l walltime=8:00:00
 ```
 
-### 2) Open CutandRun workflow folder
+### 2) Open `rnaseq_count_nf` workflow folder
 
-Navigate to where you place the cloned (copied) cutandrun_nf directory,
-and then checkout the latest release branch.
+Navigate to where you place the cloned (copied) cutandrun_nf directory, and then checkout the latest release branch.
 
 ```{bash eval=FALSE}
 cd /path/to/my/rnaseq_count_nf
@@ -331,51 +331,8 @@ main_run %>%
 
 # Expected Outputs 
 
-Under the path provided in the nextflow config for params "outdir", you will find directories named for each of the modules. Lets say "params.outdir = ./results". There will be the following file structure:
-
-results/
-
-  * fastqc/ 
-    * fastqc_{sample_id}_/
-    
-  * multiqc/
-    * {sample_sheet_basename}_multiqc_report_data/ 
-    * collects fastqc, star alignment, and star quantification stats 
-
-  * picard/
-    * {sample_id}.bam
-    * {sample_id}.MarkDuplicates.metrics.txt
-
-  * rseqc/
-    * {gft_basename}.sort.rRNA.bed
-    * {sample_id}.rRNA_stats.out
-    * {sample_id}.in.bam - rRNA reads
-    * {sample_id}.Aligned.sortedByCoord.out.summary.txt
-    * {sample_id}.Aligned.sortedByCoord.out.tin.xls
-    * {sample_id}.read_distribution.txt
-    
-  * samtools/
-    * fasta index (.fai) file
-    * bam index (.bai) file
-  
-  * sratools/
-    * {SRR_RUN_ID}.fastq.gz
-    * sratoolkit config file
-    
-  * star/
-    * star/[SA, SAindex, etc] - optional star index files if build_index = true
-    * {sample_id}.Aligned.out.bam
-    * {sample_id}.Log.final.out
-    * {sample_id}.Log.out
-    * {sample_id}.Log.progress.out
-    * {sample_id}.ReadsPerGene.out.tab
-    * {sample_id}.SJ.out.tab
-  
-  * ucsc/
-    * {gft_basename}.genepred
-    * {gft_basename}.sort.bed
-    * {gft_basename}.refflat
-    * {gft_basename}_transcript.infoOut.txt
+Under the path provided in the nextflow config for params "outdir", lets say `paired_end_results/`, you
+will find directories named for each of the modules.
 
 In addition, there will be an HTML report with information on where the temp data is stored in the `workDir` path, and general run statistics such as resource utilized  versus requested, which helps with optimization. It will also provide information on how much walltime was used per sample, total CPU hours, etc. 
 
@@ -393,6 +350,47 @@ Finally, the pipeline will produce a DAG - Directed acyclic graph which describe
 knitr::include_graphics("../images/dag.png")
 ```
 
+### Complete File Structure
+
+There will be the following file structure:
+
+```{r eval=TRUE, echo = FALSE}
+outdir <- params$outdir
+
+if ( outdir == "" ) {
+    outdir <- config_file[grep("\\soutdir.+\ = (.+)$", config_file)] %>% 
+        str_split_fixed(., pattern = ' = ', n = 2) %>% 
+        .[,2] %>% 
+        gsub('\\"', "", . ) %>% 
+        gsub("\\.", "..", .)
+}
+
+fs::dir_tree(outdir, recurse = 1)
+```
+
+### Detailed File Structure
+
+Within each directory you will find the following files (top 5 files per
+directory are shown):
+
+```{r eval=TRUE, echo = FALSE}
+results_dirs <- fs::dir_info(outdir, recurse = TRUE)
+
+results_dirs %>% 
+    select(path, type) %>% 
+    mutate(process = gsub(outdir,"", path), 
+           filename = ifelse(type == 'file', basename(path), "")) %>%
+    filter(!grepl("multiqc_report|params[2-9]", process)) %>% 
+    mutate_at(vars(process), ~ case_when(
+                   type == 'file' & grepl("fastqc", .) ~ dirname(dirname(.)),
+                   grepl("FASTQC", .) ~ dirname(.),
+                   type == 'file' ~ dirname(.),
+                   TRUE ~ .)) %>%
+    group_by(process) %>%
+    dplyr::slice(1:5) %>% 
+    ungroup() %>% 
+    knitr::kable()
+```
 
 # Share the Data
 
