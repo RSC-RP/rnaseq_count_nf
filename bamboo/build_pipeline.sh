@@ -41,7 +41,9 @@ bash ./bamboo/bamboo_main_run.sh $(basename $REPORT1) \
     --outdir "$REPORT1" \
     -work-dir "$WORK_DIR"
 # render the markdown file
-Rscript -e "rmarkdown::render('workflow_docs/workflow_run.Rmd', encoding = 'UTF-8', params = list(outdir = Sys.getenv('REPORT1')), output_format = 'all')"
+# since `workflow_run.Rmd` is in a subdirectory, must make REPORT1 a relative path pointing up one directory (eg ../artifacts/paired_end_test)
+export REPORT1_RMD_PATH=".$OUTDIR/paired_end_test"
+Rscript -e "rmarkdown::render('workflow_docs/workflow_run.Rmd', encoding = 'UTF-8', params = list(outdir = Sys.getenv('REPORT1_RMD_PATH')), output_format = 'all')"
 cp -r workflow_docs $REPORT1
 
 # run the pipeline using the default parameters and building the bowtie indexes
