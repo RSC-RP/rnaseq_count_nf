@@ -36,7 +36,7 @@ echo $WORK_DIR
 
 echo "create artifacts"
 # run the pipeline using the default parameters
-REPORT1="$OUTDIR/paired_end_test"
+export REPORT1="$OUTDIR/paired_end_test"
 bash ./bamboo/bamboo_main_run.sh $(basename $REPORT1) \
     --outdir "$REPORT1" \
     -work-dir "$WORK_DIR"

@@ -27,6 +27,7 @@ log.info """\
          ===================================
          Project           : $workflow.projectDir
          Project workDir   : $workflow.workDir
+         Project outdir    : ${params.outdir}
          Container Engine  : $workflow.containerEngine
          Genome            : ${idx_or_fasta}
          Samples           : ${params.sample_sheet}
