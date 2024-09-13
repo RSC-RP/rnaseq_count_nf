@@ -4,7 +4,7 @@ process UCSC_GTFTOGENEPRED {
 
     conda "bioconda::ucsc-gtftogenepred=447"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/ucsc-gtftogenepred:377--h446ed27_3':
+        'https://depot.galaxyproject.org/singularity/ucsc-gtftogenepred:447--h954228d_0':
         'biocontainers/ucsc-gtftogenepred:447--h954228d_0' }"
 
     input:
