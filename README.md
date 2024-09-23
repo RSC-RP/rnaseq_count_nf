@@ -1,6 +1,6 @@
 # Experienced user quick start guide:
 Please read full document if this is your first time running this pipeline. 
-If you have already forked the repository and created your mamba environmnet, follow the instructions below in a tmux session to immedately get started. 
+If you have already forked the repository and created your conda environment, follow the instructions below in a tmux session to immedately get started. 
 
 Executing script: 
 
@@ -9,7 +9,7 @@ Executing script:
 
     srun --account={accountinfo} --partition=cpu-core-sponsored --nodes 1 --ntasks 4 --cpus-per-task 1 --pty --mem=32G --time=15:00:00 /bin/bash
 
-# activate mamba environment:
+# activate conda environment:
 
     mamba activate nextflow 
 
@@ -63,12 +63,12 @@ Copy that URL to replace `https://childrens-atlassian/bitbucket/scm/~jsmi26/rnas
 
 ```
 # on a terminal on the Sasquatch login nodes and cd into association 
-# Modfy ASSOC and YOURUSERNAME 
-cd /data/hps/assoc/private/{ASSOC}/user/{YOURUSERNAME}
+# Modfy ASSOC and MY_USERID 
+cd /data/hps/assoc/private/{ASSOC}/user/~{MY_USERID}
 
 # your fork should have your own userID (rather than jsmi26)
-git clone https://childrens-atlassian/bitbucket/scm/~MY_USERID/rnaseq_count_nf.git
-cd /data/hps/assoc/private/{ASSOC}/user/{YOURUSERNAME}/rnaseq_count_nf
+git clone https://childrens-atlassian/bitbucket/scm/~{MY_USERID}/rnaseq_count_nf.git
+cd /data/hps/assoc/private/{ASSOC}/user/{MY_USERID}/rnaseq_count_nf
 ```
 
 Once inside the code repository directory, use the latest release branch or make sure you're using the same release as prior analysis by using `git`.
@@ -118,7 +118,7 @@ tmux new-session -s nextflow
 
 srun --account=$ACCOUNT --partition=$PARTITION --nodes 1 --ntasks 4 --cpus-per-task 1 --pty --mem=32G --time=15:00:00 /bin/bash
 
-cd /data/hps/assoc/private/{ASSOC}/user/{YOURUSERNAME}/rnaseq_count_nf
+cd /data/hps/assoc/private/{ASSOC}/user/{MY_USERID}/rnaseq_count_nf
 ```
 
 If you don’t have conda installed yet, please follow these [directions](http://gonzo/hpcGuide/InstallingSoftware.html#mamba-conda). 
