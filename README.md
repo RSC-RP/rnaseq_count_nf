@@ -1,6 +1,33 @@
+# Experienced user quick start guide:
+Please read full document if this is your first time running this pipeline. 
+If you have already forked the repository and created your mamba environmnet, follow the instructions below in a tmux session to immedately get started. 
+
+Executing script: 
+
+``` bash
+# Start interactive session on sasquatch (edit with appropriate account info):
+
+    srun --account={accountinfo} --partition=cpu-core-sponsored --nodes 1 --ntasks 4 --cpus-per-task 1 --pty --mem=32G --time=15:00:00 /bin/bash
+
+# activate mamba environment:
+
+    mamba activate nextflow 
+
+# Change to your user directory in the appropriate association where your script is saved and run:
+
+     nextflow    \
+     -c nextflow.config  \
+     run main.nf \
+     -entry rnaseq_count  \
+     -profile sasquatch_apptainer  \
+     -resume
+
+```
+
+
 # RNA-seq Alignment, QC, and Quantification Nextflow Pipeline 
 
-This pipeline uses publically available modules from [nf-core](https://nf-co.re/) with some locally created modules. The primary functionality is to run a workflow on 10s - 1000s of samples in parallel on the Seattle Children's Cybertron HPC using the PBS job scheduler and containerized scientific software.
+This pipeline uses publically available modules from [nf-core](https://nf-co.re/) with some locally created modules. The primary functionality is to run a workflow on 10s - 1000s of samples in parallel on the Seattle Children's Sasquatch HPC using the SLURM scheduler and containerized scientific software.
 
 First, follow the steps on this page to make a personal copy of this repository. Then, the **step-by-step instructions to run the workflow: [`workflow_docs/workflow_run.md`](workflow_docs/workflow_run.md)** can be used. 
 
@@ -24,7 +51,9 @@ First, fork the [repository](https://childrens-atlassian/bitbucket/projects/RP/r
 ![](images/bitbucket_fork3.png)
 
 
-Next, you will need to clone your personal repository to your home in Cybertron. See the image below for where you can find the correct URL on your forked bitbucket repo. 
+Next, you will need to clone your personal repository to the appropriate association on Sasquatch. Ideally, you will locate the association that is tied to the project grant, identify your userfolder, and clone it there. 
+
+See the image below for where you can find the correct URL on your forked bitbucket repo. 
 
 
 ![](images/bitbucket_clone.png)
@@ -33,12 +62,13 @@ Next, you will need to clone your personal repository to your home in Cybertron.
 Copy that URL to replace `https://childrens-atlassian/bitbucket/scm/~jsmi26/rnaseq_count_nf.git` below. 
 
 ```
-# on a terminal on the Cybertron login nodes
-cd ~
+# on a terminal on the Sasquatch login nodes and cd into association 
+# Modfy ASSOC and YOURUSERNAME 
+cd /data/hps/assoc/private/{ASSOC}/user/{YOURUSERNAME}
 
 # your fork should have your own userID (rather than jsmi26)
 git clone https://childrens-atlassian/bitbucket/scm/~MY_USERID/rnaseq_count_nf.git
-cd ~/rnaseq_count_nf
+cd /data/hps/assoc/private/{ASSOC}/user/{YOURUSERNAME}/rnaseq_count_nf
 ```
 
 Once inside the code repository directory, use the latest release branch or make sure you're using the same release as prior analysis by using `git`.
@@ -72,29 +102,27 @@ Which will state that you are now on `release/1.0.0` branch and that it is track
 
 ## Conda Environment
 
-Find your project code by listing all your projects on the Cybertron terminal.
+Find your Account code and partition.
 
 ```
 # lists all HPC project names that you have access to use
-project info
+sshare -o "Account,Partition%20"
 ```
 
-Grab an interactive session compute node and activate the conda environment. It is also be best practice to use `tmux` or `screen` to ensure that if at the session is disconnected, then you’re nextflow workflow (if running) won’t end with SIGKILL error.
+Grab an interactive session compute node and activate the mamba environment. It is also be best practice to use `tmux` or `screen` to ensure that if at the session is disconnected, then you’re nextflow workflow (if running) won’t end with SIGKILL error.
 
-Change the `QUEUE` and `NAME` variables in the code chunk below to be accurate for your Cybertron projects. 
+Change the `ACCOUNT` and `PARTITION` variables in the code chunk below to be accurate for your Sasquatch projects. 
 
 ```
 tmux new-session -s nextflow
-# the variable 'NAME' will be an HPC project that you have access to
-NAME="RSC_adhoc"
-QUEUE="paidq"
-qsub -I -q $QUEUE -P $(project code $NAME) -l select=1:ncpus=1:mem=8g -l walltime=8:00:00
-cd ~/rnaseq_count_nf
+
+srun --account=$ACCOUNT --partition=$PARTITION --nodes 1 --ntasks 4 --cpus-per-task 1 --pty --mem=32G --time=15:00:00 /bin/bash
+
+cd /data/hps/assoc/private/{ASSOC}/user/{YOURUSERNAME}/rnaseq_count_nf
 ```
 
-If you don’t have conda installed yet, please follow these [directions](http://gonzo/confluence_rsc_docs/general_info.html#setting-up-conda-environments-on-cyberton). You may stop following the directions after the conda deactivate step.
+If you don’t have conda installed yet, please follow these [directions](http://gonzo/hpcGuide/InstallingSoftware.html#mamba-conda). 
 
-Next, for the conda environment to be solved, you will need to set channel_priority to flexible in your conda configs as well. To read more about conda environments and thier configurations, check out the [documentation](https://docs.conda.io/projects/conda/en/latest/commands/config.html#conda-config). 
 
 ```
 # check config settings

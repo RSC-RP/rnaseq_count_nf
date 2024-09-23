@@ -76,16 +76,19 @@ environment before starting with this document.
 
 Optional but recommended: use `tmux` on the cybertron login nodes. Name
 the session nextflow and then request an interactive session, then
-activate the nextflow conda environment. The project codes can be found
-with `project info` command. Change the `$QUEUE` and `$NAME` variables
+activate the nextflow conda environment. The account codes can be found
+with `sshare` command. Change the `$ACCOUNT` and `$PARTITION` variables
 in the code chunk below to be accurate for your Cybertron projects.
 
 ``` bash
 tmux new-session -s nextflow
-project info
-NAME="RSC_adhoc"
-QUEUE="paidq"
-qsub -I -q $QUEUE -P $(project code $NAME) -l select=1:ncpus=1:mem=8g -l walltime=8:00:00
+
+#List available accounts and partitions
+sshare -o "Account,Partition%20"
+
+#Identify appropriate account and partition and modify $ACCOUNT and $PARTITION variables
+srun --account=$ACCOUNT --partition=$PARTITION --nodes 1 --ntasks 4 --cpus-per-task 1 --pty --mem=32G --time=15:00:00 /bin/bash
+cd ~/rnaseq_count_nf
 ```
 
 ### 2) Open `rnaseq_count_nf` workflow folder
