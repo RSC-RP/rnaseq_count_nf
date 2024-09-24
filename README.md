@@ -1,29 +1,3 @@
-# Experienced user quick start guide:
-Please read full document if this is your first time running this pipeline. 
-If you have already forked the repository and created your conda environment, follow the instructions below in a tmux session to immedately get started. 
-
-Executing script: 
-
-``` bash
-# Start interactive session on sasquatch (edit with appropriate account info):
-
-    srun --account={accountinfo} --partition=cpu-core-sponsored --nodes 1 --ntasks 4 --cpus-per-task 1 --pty --mem=32G --time=15:00:00 /bin/bash
-
-# activate conda environment:
-
-    mamba activate nextflow 
-
-# Change to your user directory in the appropriate association where your script is saved and run:
-
-     nextflow    \
-     -c nextflow.config  \
-     run main.nf \
-     -entry rnaseq_count  \
-     -profile sasquatch_apptainer  \
-     -resume
-
-```
-
 
 # RNA-seq Alignment, QC, and Quantification Nextflow Pipeline 
 
