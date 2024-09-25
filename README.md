@@ -38,7 +38,7 @@ Copy that URL to replace `https://childrens-atlassian/bitbucket/scm/~jsmi26/rnas
 ```
 # on a terminal on the Sasquatch login nodes and cd into association 
 # Modfy ASSOC and MY_USERID 
-cd /data/hps/assoc/private/{ASSOC}/user/~{MY_USERID}
+cd /data/hps/assoc/private/{ASSOC}/user/{MY_USERID}
 
 # your fork should have your own userID (rather than jsmi26)
 git clone https://childrens-atlassian/bitbucket/scm/~{MY_USERID}/rnaseq_count_nf.git
