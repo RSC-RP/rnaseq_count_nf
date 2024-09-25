@@ -80,14 +80,14 @@ activate the nextflow conda environment. The account codes can be found
 with `sshare` command. Change the `ACCOUNT` and `PARTITION` variables
 in the code chunk below to be accurate for your Cybertron projects.
 
-#``` bash
-#tmux new-session -s nextflow
+``` bash
+tmux new-session -s nextflow
 
-##List available accounts and partitions
-#sshare -o "Account%30,Partition%30"
+#List available accounts and partitions
+sshare -o "Account%30,Partition%30"
 
-##Identify appropriate account and partition and modify $ACCOUNT and $PARTITION variables
-#srun --account={ACCOUNT} --partition={PARTITION} --nodes 1 --ntasks 4 --cpus-per-task 1 --pty --mem=32G --time=15:00:00 /bin/bash
+#Identify appropriate account and partition and modify $ACCOUNT and $PARTITION variables
+srun --account={ACCOUNT} --partition={PARTITION} --nodes 1 --ntasks 4 --cpus-per-task 1 --pty --mem=32G --time=15:00:00 /bin/bash
 
 ```
 
@@ -117,6 +117,18 @@ Activate the Nextflow conda environment.
 ``` bash
 conda env create -f env/nextflow.yaml
 conda activate nextflow
+```
+#### 4) Copy containers into directory 
+
+Some of the containers in this workflow need to be pulled manually, so you 
+will need to copy them over from the shared resources directory.
+
+From the rnaseq_count_nf directory, execute the following commands:
+
+``` bash 
+cp /data/hps/assoc/public/bioinformatics/container/rnaseq/rseqc_3.0.1--py37h516909a_1.sif ./
+cp /data/hps/assoc/public/bioinformatics/container/rnaseq/samtools_1.17--h00cdaf9_0.sif ./
+
 ```
 
 # Test the Workflow
