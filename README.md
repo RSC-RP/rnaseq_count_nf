@@ -83,7 +83,7 @@ Find your Account code and partition.
 sshare -o "Account,Partition%20"
 ```
 
-Grab an interactive session compute node and activate the mamba environment. It is also be best practice to use `tmux` or `screen` to ensure that if at the session is disconnected, then you’re nextflow workflow (if running) won’t end with SIGKILL error.
+Grab an interactive session compute node and activate the conda environment. It is also be best practice to use `tmux` or `screen` to ensure that if at the session is disconnected, then you’re nextflow workflow (if running) won’t end with SIGKILL error.
 
 Change the `ACCOUNT` and `PARTITION` variables in the code chunk below to be accurate for your Sasquatch projects. 
 
