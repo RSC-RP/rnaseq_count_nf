@@ -87,7 +87,7 @@ tmux new-session -s nextflow
 sshare -o "Account%30,Partition%30"
 
 #Identify appropriate account and partition and modify $ACCOUNT and $PARTITION variables
-srun --account={ACCOUNT} --partition={PARTITION} --nodes 1 --ntasks 4 --cpus-per-task 1 --pty --mem=32G --time=15:00:00 /bin/bash
+srun --account={ACCOUNT} --partition={PARTITION} --nodes 1 --ntasks 1 --cpus-per-task 1 --pty --mem=7500MB --time=15:00:00 /bin/bash
 
 ```
 
