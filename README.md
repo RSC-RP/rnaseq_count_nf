@@ -90,7 +90,7 @@ Change the `ACCOUNT` and `PARTITION` variables in the code chunk below to be acc
 ```
 tmux new-session -s nextflow
 
-srun --account={ACCOUNT} --partition={PARTITION} --nodes 1 --ntasks 1 --cpus-per-task 1 --pty --mem=7500MB --time=15:00:00 /bin/bash
+srun --account={ACCOUNT} --partition={PARTITION} --nodes 1 --ntasks 1 --cpus-per-task 1 --pty --mem=7500MB --time=8:00:00 /bin/bash
 
 cd /data/hps/assoc/private/{ASSOC}/user/{MY_USERID}/rnaseq_count_nf
 ```
