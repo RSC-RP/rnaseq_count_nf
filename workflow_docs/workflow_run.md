@@ -136,13 +136,12 @@ cp /data/hps/assoc/public/bioinformatics/container/rnaseq/samtools_1.17--h00cdaf
 
 ## Edit the Config File
 
-Edit the `nextflow.config` file in any text editor; the example below is
-in R.
+Edit the `nextflow.config` and `sasquatch.config` file in any text editor:
 
-You will need to change the:
+You will need to change the assoc to your current association. The examples below 
+use the "rsc" association. 
 
--   assoc- this will be the name of the association you are working in
-
+In `nextflow.config`:
 
     //global parameters
     params {
@@ -152,6 +151,13 @@ You will need to change the:
         assoc                       = 'rsc'
 
     <...continues...>
+
+In `sasquatch.config`:
+
+    params {
+    assoc = "rsc"
+    }
+
 
 ``` r
 usethis::edit_file("../nextflow.config")
