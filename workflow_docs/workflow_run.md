@@ -121,11 +121,12 @@ conda activate nextflow
 #### 4) Copy containers into directory 
 
 Some of the containers in this workflow need to be pulled manually, so you 
-will need to copy them over from the shared resources directory.
+will need to copy them to your container cache directory from the shared resources directory.
 
-From the rnaseq_count_nf directory, execute the following commands:
+Modify the ASSOC parameter and execute the following command to copy them over:
 
 ``` bash 
+cd /data/hps/assoc/private/{ASSOC}/container
 cp /data/hps/assoc/public/bioinformatics/container/rnaseq/rseqc_3.0.1--py37h516909a_1.sif ./
 cp /data/hps/assoc/public/bioinformatics/container/rnaseq/samtools_1.17--h00cdaf9_0.sif ./
 
