@@ -171,3 +171,4 @@ workflow.onComplete {
     println "Execution status: ${ workflow.success ? 'OK' : 'failed' }"
 }
 
+}
