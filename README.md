@@ -109,7 +109,7 @@ conda env create -f env/nextflow.yaml
 
 ```
 # Activate the conda environment. 
-conda activate nextflow
+conda activate rnaseqNextflow
 ```
 
 ### Optional: Conda/Mamba at SCRI

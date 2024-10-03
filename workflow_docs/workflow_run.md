@@ -116,7 +116,7 @@ Activate the Nextflow conda environment.
 
 ``` bash
 conda env create -f env/nextflow.yaml
-conda activate nextflow
+conda activate rnaseqNextflow
 ```
 #### 4) Copy containers into directory 
 
