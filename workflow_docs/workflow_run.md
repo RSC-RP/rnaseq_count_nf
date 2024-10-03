@@ -126,7 +126,8 @@ will need to copy them to your container cache directory from the shared resourc
 Modify the ASSOC parameter and execute the following command to copy them over:
 
 ``` bash 
-cd /data/hps/assoc/private/{ASSOC}/container
+mkdir -p /data/hps/assoc/private/{ASSOC}/container/rnaseq
+cd /data/hps/assoc/private/{ASSOC}/container/rnaseq
 cp /data/hps/assoc/public/bioinformatics/container/rnaseq/rseqc_3.0.1--py37h516909a_1.sif ./
 cp /data/hps/assoc/public/bioinformatics/container/rnaseq/samtools_1.17--h00cdaf9_0.sif ./
 
@@ -136,32 +137,21 @@ cp /data/hps/assoc/public/bioinformatics/container/rnaseq/samtools_1.17--h00cdaf
 
 ## Edit the Config File
 
-Edit the `nextflow.config` and `sasquatch.config` file in any text editor:
+Edit the `sasquatch.config` file in any text editor:
 
-You will need to change the assoc to your current association. The examples below 
-use the "rsc" association. 
+You will need to change: 
+    workDir: Edit {ASSOC} and {MY_USERID} to set working directory.
+    params: Edit {ASSOC} to your association
 
-In `nextflow.config`:
-
-    //global parameters
-    params {
-        // general options
-        sample_sheet                = "test_data/paired_end_sample_sheet.csv"
-        download_sra_fqs            = false
-        assoc                       = 'rsc'
-
-    <...continues...>
 
 In `sasquatch.config`:
 
+    // Settings to run the workflow on Sasquatch
+    workDir = "/data/hps/assoc/private/{ASSOC}/user/{MY_USERID}/temp"
+
     params {
-    assoc = "rsc"
+    assoc = "{ASSOC}"
     }
-
-
-``` r
-usethis::edit_file("../nextflow.config")
-```
 
 ## Paired-end example
 
