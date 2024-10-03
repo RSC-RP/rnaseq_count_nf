@@ -8,8 +8,7 @@ params:
     input: text
 output:
     html_document:
-        theme: yeti
-        highlight: breezedark
+        theme: readable
         toc: true
         toc_float: true
         toc_depth: 3

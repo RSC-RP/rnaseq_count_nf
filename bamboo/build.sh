@@ -67,6 +67,9 @@ LOG_ROOT=$bamboo_log_root
 BUILD_SERVER=$bamboo_build_server
 SVC_USER=$bamboo_svc_user
 SVC_PASS=$bamboo_svc_pass
+# positional argument from build stage script
+PLAN_NAME=$1
+ASSOC_DIR=$2
 
 echo "TEST_SERVER=$TEST_SERVER"
 echo "WEB_SERVER=$WEB_SERVER"
@@ -76,13 +79,19 @@ echo "SVC_USER=$SVC_USER"
 echo "SVC_PASS=$SVC_PASS"
 
 echo "create working dir on build machine"
-TEMP_DIR=$(sshpass -f $SVC_PASS ssh $SVC_USER@$BUILD_SERVER "mktemp -d -p /home/$SVC_USER/bamboo_tmp")
+PREFIX=$ASSOC_DIR/nextflow_outs/$PLAN_NAME
+TEMP_DIR=$(sshpass -f $SVC_PASS ssh $SVC_USER@$BUILD_SERVER "mkdir -p $PREFIX; mktemp -d -p $PREFIX")
 if [[ $(sshpass -f $SVC_PASS ssh $SVC_USER@$BUILD_SERVER "if [[ -d $TEMP_DIR ]]; then { echo "exists"; } fi") ]]; then
     echo "SUCCESS: created $BUILD_SERVER:TEMP_DIR=$TEMP_DIR"
 else 
     echo "ERROR: failed to create $BUILD_SERVER:TEMP_DIR=$TEMP_DIR"
     exit 1
 fi
+
+echo "create cache dir for container images"
+IMAGE_CACHE=/home/$SVC_USER/bamboo_tmp/$(basename $TEMP_DIR)
+sshpass -f $SVC_PASS ssh $SVC_USER@$BUILD_SERVER "mkdir -p $IMAGE_CACHE"
+echo "created cache dir $IMAGE_CACHE on $BUILD_SERVER"
 
 echo "copy repo to build machine tmp"
 sshpass -f $SVC_PASS scp -r * $SVC_USER@$BUILD_SERVER:$TEMP_DIR || { echo "ERROR: couldn't copy repo to $BUILD_SERVER:$TEMP_DIR"; exit 1; }
@@ -92,11 +101,12 @@ echo "schedule the build remotely"
 # artifacts/html    - to web server
 # artifacts/app     - installed somewhere
 # artifacts/shared  - shared data, code, envs or containers
-sshpass -f $SVC_PASS ssh $SVC_USER@$BUILD_SERVER "$TEMP_DIR/bamboo/pbs_remote.sh $TEMP_DIR/bamboo/build.pbs $TEMP_DIR" &
+# sshpass -f $SVC_PASS ssh $SVC_USER@$BUILD_SERVER "$TEMP_DIR/bamboo/pbs_remote.sh $TEMP_DIR/bamboo/build.pbs $TEMP_DIR" &
+WORK_DIR=$ASSOC_DIR/nextflow_temp/$PLAN_NAME
+sshpass -f $SVC_PASS ssh $SVC_USER@$BUILD_SERVER "TEMP_DIR=$TEMP_DIR IMAGE_CACHE=$IMAGE_CACHE WORK_DIR=$WORK_DIR $TEMP_DIR/bamboo/build_pipeline.sh" &
 PIDS+=($!)
-PID_NAMES+=("build")
-echo "remote job scheduled"
-
+PID_NAMES+=("pipeline")
+echo "remote job scheduled on $BUILD_SERVER"
 echo "wait for pbs job(s) to finish running and store the exit status"
 # see the follow link for details on getting exit code from background processes
 # https://stackoverflow.com/questions/1570262/get-exit-code-of-a-background-process/46212640#46212640
