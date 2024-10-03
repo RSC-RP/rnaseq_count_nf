@@ -19,7 +19,6 @@
 *dag.pdf.*
 
 # Pipeline specific files
-resources/
 *results/
 reports/
 dag/

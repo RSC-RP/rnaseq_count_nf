@@ -74,18 +74,21 @@ environment before starting with this document.
 
 ### 1) Interactive Session
 
-Optional but recommended: use `tmux` on the cybertron login nodes. Name
+Optional but recommended: use `tmux` on the Sasquatch login nodes. Name
 the session nextflow and then request an interactive session, then
-activate the nextflow conda environment. The project codes can be found
-with `project info` command. Change the `$QUEUE` and `$NAME` variables
-in the code chunk below to be accurate for your Cybertron projects.
+activate the nextflow conda environment. The account codes can be found
+with `sshare` command. Change the `ACCOUNT` and `PARTITION` variables
+in the code chunk below to be accurate for your Sasquatch projects.
 
 ``` bash
 tmux new-session -s nextflow
-project info
-NAME="RSC_adhoc"
-QUEUE="paidq"
-qsub -I -q $QUEUE -P $(project code $NAME) -l select=1:ncpus=1:mem=8g -l walltime=8:00:00
+
+#List available accounts and partitions
+sshare -o "Account%30,Partition%30"
+
+#Identify appropriate account and partition and modify $ACCOUNT and $PARTITION variables
+srun --account={ACCOUNT} --partition={PARTITION} --nodes 1 --ntasks 1 --cpus-per-task 1 --pty --mem=7500MB --time=8:00:00 /bin/bash
+
 ```
 
 ### 2) Open `rnaseq_count_nf` workflow folder
@@ -113,36 +116,42 @@ Activate the Nextflow conda environment.
 
 ``` bash
 conda env create -f env/nextflow.yaml
-conda activate nextflow
+conda activate rnaseqNextflow
+```
+#### 4) Copy containers into directory 
+
+Some of the containers in this workflow need to be pulled manually, so you 
+will need to copy them to your container cache directory from the shared resources directory.
+
+Modify the ASSOC parameter and execute the following command to copy them over:
+
+``` bash 
+mkdir -p /data/hps/assoc/private/{ASSOC}/container/rnaseq
+cd /data/hps/assoc/private/{ASSOC}/container/rnaseq
+cp /data/hps/assoc/public/bioinformatics/container/rnaseq/rseqc_3.0.1--py37h516909a_1.sif ./
+cp /data/hps/assoc/public/bioinformatics/container/rnaseq/samtools_1.17--h00cdaf9_0.sif ./
+
 ```
 
 # Test the Workflow
 
 ## Edit the Config File
 
-Edit the `nextflow.config` file in any text editor; the example below is
-in R.
+Edit the `sasquatch.config` file in any text editor:
 
-You will need to change the:
+You will need to change: 
+    workDir: Edit {ASSOC} and {MY_USERID} to set working directory.
+    params: Edit {ASSOC} to your association
 
--   project code (use the same one as you used above),
--   the queue name to be paidq or a tier 3 queue.
 
-Paidq will cost less than \$0.01 for testing with the workflow’s example
-data provided in the directory `test_data`.
+In `sasquatch.config`:
 
-    //global parameters
+    // Settings to run the workflow on Sasquatch
+    workDir = "/data/hps/assoc/private/{ASSOC}/user/{MY_USERID}/temp"
+
     params {
-        // general options
-        sample_sheet                = "test_data/paired_end_sample_sheet.csv"
-        download_sra_fqs            = false
-        queue                       = 'paidq'
-        project                     = '[PROJECT CODE]'
-    <...continues...>
-
-``` r
-usethis::edit_file("../nextflow.config")
-```
+    assoc = "{ASSOC}"
+    }
 
 ## Paired-end example
 
@@ -255,19 +264,20 @@ references. The required files are listed here:
     ## params {
     ##     // general options
     ##     sample_sheet                = "test_data/paired_end_sample_sheet.csv"
-    ##     queue                       = 'paidq'
-    ##     project                     = '207f23bf-acb6-4835-8bfe-142436acb58c'
+    ##     assoc                       = 'rsc'
     ## 
     ##     // Input and output options
     ##     download_sra_fqs            = false
     ##     outdir                      = "./paired_end_results/"
     ##     publish_dir_mode            = 'copy'
     ## 
-    ##     // STAR specific params
-    ##     index                       = '/gpfs/shared_data/STAR/human_GRCh38_ensembl_v106/star'
-    ##     build_index                 = false
-    ##     gtf                         = '/gpfs/shared_data/STAR/human_GRCh38_ensembl_v106/Homo_sapiens.GRCh38.106.gtf' // required
-    ##     fasta                       = '/gpfs/shared_data/STAR/human_GRCh38_ensembl_v106/Homo_sapiens.GRCh38.dna.primary_assembly.fa' // required
+    ## // STAR specific params
+    ## index                       = '/data/hps/assoc/public/bioinformatics/annotations/Homo_sapiens/Ensembl/GRCh38/Sequence/STAR'
+    ## build_index                 = false
+    ##
+    ## //This path uses a symlink, so if there are issues try a direct path 
+    ## gtf                         = '/data/hps/assoc/public/bioinformatics/annotations/Homo_sapiens/Ensembl/GRCh38/Annotation/Genes.ensembl' // required
+    ## fasta                       = '/data/hps/assoc/public/bioinformatics/annotations/Homo_sapiens/Ensembl/GRCh38/Sequence/WholeGenomeFasta/Homo_sapiens.GRCh38.dna.primary_assembly.fa' // required
     ## <...>
 
 ## Genome References
@@ -366,29 +376,11 @@ Typically, you will not need to change the `main_run.sh` often.
 The `main_run.sh` script defines the profiles for different executors in
 the variable `NFX_PROFILE`. The choices for profiles are:
 
--   PBS_singularity \[default\]
--   local_singularity
+-   sasquatch_apptainer \[default\]
 
-“PBS_singularity” is recommended. This profiles executes the jobs on the
-HPC using the PBS scheduler and then will run the job inside singularity
-containers with the appropriate scientific software versions.
-
-“local_singularity” is good for workflow development if you’re making a
-lot of changes. This will use singularity on Cybertron, but run the jobs
-on the interactive compute node that you’ve requested during “Set-up
-Nextflow Environment” steps above.
-
-    ## #!/bin/bash
-    ## 
-    ## set -eu
-    ## DATE=$(date +%F)
-    ## NFX_CONFIG=./nextflow.config
-    ## #Options: PBS_singularity,local_singularity
-    ## NFX_PROFILE='PBS_singularity'
-    ## #Options:  rnaseq_count, prep_genome, or sra_download
-    ## NFX_ENTRY='rnaseq_count'
-    ## #The output prefix on filenames for reports/logs
-    ## <...>
+This profile executes the jobs on the HPC using the SLURM scheduler and then will 
+run the job inside singularityncontainers with the appropriate scientific 
+software versions.
 
 You can also change the
 [`entry_point`](https://www.nextflow.io/docs/latest/dsl2.html#workflow-entrypoint)

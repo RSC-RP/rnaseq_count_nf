@@ -1,0 +1,4 @@
+#Ignore all contents of folder with the exception of the rRNA transcripts file
+*
+!.gitignore
+!GRCh38_rRNA_transcripts.txt
