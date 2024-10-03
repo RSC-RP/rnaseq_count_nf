@@ -15,7 +15,7 @@ Executing script:
      -c nextflow.config  \
      run main.nf \
      -entry rnaseq_count  \
-     -profile slurm_apptainer  \
+     -profile sasquatch_apptainer  \
      -resume
 
 ```
@@ -26,3 +26,8 @@ Troubleshooting:
         apptainer pull docker://quay.io/biocontainers/rseqc:3.0.1--py37h516909a_1
 
     
+Notes on Running Pipeline:
+    Currently Jenny has it set up to open an interactive session and then run a PBS script. 
+    When you submit the nextflow job, it's going to run with the resources allocated in the .config file- so we really don't need to open an interactive session here, unless we want to override the .config file. 
+
+    Tried running this with just the .sh and it worked! So, that's good. It looks like we don't need to change the resources part of the config.
