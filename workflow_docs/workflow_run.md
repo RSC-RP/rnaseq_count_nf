@@ -74,11 +74,11 @@ environment before starting with this document.
 
 ### 1) Interactive Session
 
-Optional but recommended: use `tmux` on the cybertron login nodes. Name
+Optional but recommended: use `tmux` on the Sasquatch login nodes. Name
 the session nextflow and then request an interactive session, then
 activate the nextflow conda environment. The account codes can be found
 with `sshare` command. Change the `ACCOUNT` and `PARTITION` variables
-in the code chunk below to be accurate for your Cybertron projects.
+in the code chunk below to be accurate for your Sasquatch projects.
 
 ``` bash
 tmux new-session -s nextflow
