@@ -158,6 +158,25 @@ In `sasquatch.config`:
 Determine if the workflow works on your installation of the conda
 environment by running the following command.
 
+To test the paired-end sheet, modify the sample_sheet parameter in the
+`nextflow.config` and the output directory (`outdir`).
+
+    params {
+        // general options
+        sample_sheet                = "test_data/paired_end_sample_sheet.csv"
+        [...]
+        outdir                      = "./paired_end_results/"
+    <...continues...>
+    }
+
+Ensure that the NFX_ENTRY is set to `rnaseq_count` in `main_run.sh`
+
+    #Options:  rnaseq_count, prep_genome, or sra_download
+    NFX_ENTRY='rnaseq_count'
+
+
+then run the command
+
 ``` bash
 ./main_run.sh "paired_end_test"
 ```
@@ -174,6 +193,12 @@ To test the single-end sheet, modify the sample_sheet parameter in the
         outdir                      = "./single_end_results/"
     <...continues...>
     }
+
+Ensure that the NFX_ENTRY is set to `rnaseq_count` in `main_run.sh`
+
+    #Options:  rnaseq_count, prep_genome, or sra_download
+    NFX_ENTRY='rnaseq_count'
+
 
 then run the command
 
