@@ -133,7 +133,10 @@ cp /data/hps/assoc/public/bioinformatics/container/rnaseq/samtools_1.17--h00cdaf
 
 ```
 
-# Test the Workflow
+# Test the Workflow 
+
+Note: When running the workflow `rnaseq_count` the `STAR_ALIGN` module will fail on it's first pass, 
+but should pass on the second attempt. 
 
 ## Edit the Config File
 
@@ -158,8 +161,8 @@ In `sasquatch.config`:
 Determine if the workflow works on your installation of the conda
 environment by running the following command.
 
-To test the paired-end sheet, modify the sample_sheet parameter in the
-`nextflow.config` and the output directory (`outdir`).
+To test the paired-end sheet, ensure the sample_sheet parameter in the
+`nextflow.config` and the output directory (`outdir`) are as follows:
 
     params {
         // general options
@@ -183,8 +186,8 @@ then run the command
 
 ## Single-end example
 
-To test the single-end sheet, modify the sample_sheet parameter in the
-`nextflow.config` and the output directory (`outdir`).
+To test the single-end sheet, ensure the sample_sheet parameter in the
+`nextflow.config` and the output directory (`outdir`) are as follows:
 
     params {
         // general options
@@ -211,18 +214,18 @@ then run the command
 To test the sra sample sheet - set`download_sra_fastqs` to true in the `nextflow.config` 
 and modify the output (`outdir`) and sample sheet location (`sample_sheet`) as follows.
 
-arams {
-    // general options
-    sample_sheet                = "test_data/sra_sample_sheet.csv"
+    params {
+        // general options
+        sample_sheet                = "test_data/sra_sample_sheet.csv"
 
-    // Input and output options
-    download_sra_fqs            = true
-    outdir                      = "./sra_results/"
-    publish_dir_mode            = 'copy'
-    <...continues...>
-    }
+        // Input and output options
+        download_sra_fqs            = true
+        outdir                      = "./sra_results/"
+        publish_dir_mode            = 'copy'
+        <...continues...>
+        }
 
-In the workflow_run.md, set the NFX_ENTRY to "sra_download": 
+In workflow_run.md, set `NFX_ENTRY` to `sra_download`: 
 
     #Options:  rnaseq_count, prep_genome, or sra_download
     NFX_ENTRY='sra_download'
