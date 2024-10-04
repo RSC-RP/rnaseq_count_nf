@@ -3,7 +3,6 @@
 set -eu
 DATE=$(date +%F)
 NFX_CONFIG=./nextflow.config
-#Options: sasquatch,local_singularity
 NFX_PROFILE='sasquatch'
 #Options:  rnaseq_count, prep_genome, or sra_download
 NFX_ENTRY='rnaseq_count'
