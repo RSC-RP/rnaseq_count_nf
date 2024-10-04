@@ -183,18 +183,24 @@ then run the command
 
 ## sra download example
 
-To test the sra sample sheet - modify these the sample sheet, and set
-`download_sra_fastqs` to true in the `nextflow.config` and the output
-directory (`outdir`).
+To test the sra sample sheet - set`download_sra_fastqs` to true in the `nextflow.config` 
+and modify the output (`outdir`) and sample sheet location (`sample_sheet`) as follows.
 
-    params {
-        // general options
-        sample_sheet                = "test_data/sra_sample_sheet.csv"
-        download_sra_fqs            = true
-        [...]
-        outdir                      = "./sra_results/"
+arams {
+    // general options
+    sample_sheet                = "test_data/sra_sample_sheet.csv"
+
+    // Input and output options
+    download_sra_fqs            = true
+    outdir                      = "./sra_results/"
+    publish_dir_mode            = 'copy'
     <...continues...>
     }
+
+In the workflow_run.md, set the NFX_ENTRY to "sra_download": 
+
+    #Options:  rnaseq_count, prep_genome, or sra_download
+    NFX_ENTRY='sra_download'
 
 then run on the command:
 
