@@ -10,13 +10,6 @@ NFX_ENTRY='rnaseq_count'
 #The output prefix on filenames for reports/logs
 REPORT=${1:-"pipeline_report"}
 
-# Load the modules
-# TO DO: make the module version a variable that the user can change eg SINGULARITY="singularity/3.9.9"; module load $SINGULARITY
-# if [[ $NFX_PROFILE =~ "singularity" ]]
-# then
-#    module load singularity
-# fi
-
 # Nextflow run to execute the workflow
 PREFIX="${REPORT}_${DATE}"
 nextflow -c ${NFX_CONFIG} \
