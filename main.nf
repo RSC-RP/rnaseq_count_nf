@@ -166,10 +166,9 @@ workflow prep_genome {
     def rRNA_file = params.rRNA_transcripts
     genome_refs(fasta_file, gtf_file, rRNA_file)
 
+}
 //End with a message to print to standard out on workflow completion. 
 workflow.onComplete {
     println "Pipeline completed at: $workflow.complete"
     println "Execution status: ${ workflow.success ? 'OK' : 'failed' }"
-}
-
 }
