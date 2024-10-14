@@ -27,6 +27,7 @@ log.info """\
          ===================================
          Project           : $workflow.projectDir
          Project workDir   : $workflow.workDir
+         Project outdir    : ${params.outdir}
          Container Engine  : $workflow.containerEngine
          Genome            : ${idx_or_fasta}
          Samples           : ${params.sample_sheet}
@@ -166,10 +167,8 @@ workflow prep_genome {
     genome_refs(fasta_file, gtf_file, rRNA_file)
 
 }
-
 //End with a message to print to standard out on workflow completion. 
 workflow.onComplete {
     println "Pipeline completed at: $workflow.complete"
     println "Execution status: ${ workflow.success ? 'OK' : 'failed' }"
 }
-

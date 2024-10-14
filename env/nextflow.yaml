@@ -1,4 +1,4 @@
-name: nextflow
+name: rnaseqNextflow
 channels:
   - bioconda
   - conda-forge
