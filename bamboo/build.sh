@@ -54,44 +54,44 @@ echo USER=$USER
 
 echo "bamboo project variables"
 echo "bamboo_test_server=$bamboo_test_server"
+echo "bamboo_test_home=$bamboo_test_home"
 echo "bamboo_web_server=$bamboo_web_server"
-echo "bamboo_log_root=$bamboo_log_root"
+echo "bamboo_web_home=$bamboo_web_home"
 echo "bamboo_build_server=$bamboo_build_server"
+echo "bamboo_build_home=$bamboo_build_home"
+echo "bamboo_log_root=$bamboo_log_root"
 echo "bamboo_svc_user=$bamboo_svc_user"
 echo "bamboo_svc_pass=$bamboo_svc_pass"
 
 echo "local variable assignment"
 TEST_SERVER=$bamboo_test_server
+TEST_HOME=$bamboo_test_home
 WEB_SERVER=$bamboo_web_server
-LOG_ROOT=$bamboo_log_root
+WEB_HOME=$bamboo_web_home
 BUILD_SERVER=$bamboo_build_server
+BUILD_HOME=$bamboo_build_home
+LOG_ROOT=$bamboo_log_root
 SVC_USER=$bamboo_svc_user
 SVC_PASS=$bamboo_svc_pass
-# positional argument from build stage script
-PLAN_NAME=$1
-ASSOC_DIR=$2
 
 echo "TEST_SERVER=$TEST_SERVER"
+echo "TEST_HOME=$TEST_HOME"
 echo "WEB_SERVER=$WEB_SERVER"
-echo "LOG_ROOT=$LOG_ROOT"
+echo "WEB_HOME=$WEB_HOME"
 echo "BUILD_SERVER=$BUILD_SERVER"
+echo "BUILD_HOME=$BUILD_HOME"
+echo "LOG_ROOT=$LOG_ROOT"
 echo "SVC_USER=$SVC_USER"
 echo "SVC_PASS=$SVC_PASS"
 
 echo "create working dir on build machine"
-PREFIX=$ASSOC_DIR/nextflow_outs/$PLAN_NAME
-TEMP_DIR=$(sshpass -f $SVC_PASS ssh $SVC_USER@$BUILD_SERVER "mkdir -p $PREFIX; mktemp -d -p $PREFIX")
+TEMP_DIR=$(sshpass -f $SVC_PASS ssh $SVC_USER@$BUILD_SERVER "mktemp -d -p $BUILD_HOME/bamboo_tmp")
 if [[ $(sshpass -f $SVC_PASS ssh $SVC_USER@$BUILD_SERVER "if [[ -d $TEMP_DIR ]]; then { echo "exists"; } fi") ]]; then
     echo "SUCCESS: created $BUILD_SERVER:TEMP_DIR=$TEMP_DIR"
 else 
     echo "ERROR: failed to create $BUILD_SERVER:TEMP_DIR=$TEMP_DIR"
     exit 1
 fi
-
-echo "create cache dir for container images"
-IMAGE_CACHE=/home/$SVC_USER/bamboo_tmp/$(basename $TEMP_DIR)
-sshpass -f $SVC_PASS ssh $SVC_USER@$BUILD_SERVER "mkdir -p $IMAGE_CACHE"
-echo "created cache dir $IMAGE_CACHE on $BUILD_SERVER"
 
 echo "copy repo to build machine tmp"
 sshpass -f $SVC_PASS scp -r * $SVC_USER@$BUILD_SERVER:$TEMP_DIR || { echo "ERROR: couldn't copy repo to $BUILD_SERVER:$TEMP_DIR"; exit 1; }
@@ -101,36 +101,7 @@ echo "schedule the build remotely"
 # artifacts/html    - to web server
 # artifacts/app     - installed somewhere
 # artifacts/shared  - shared data, code, envs or containers
-# sshpass -f $SVC_PASS ssh $SVC_USER@$BUILD_SERVER "$TEMP_DIR/bamboo/pbs_remote.sh $TEMP_DIR/bamboo/build.pbs $TEMP_DIR" &
-WORK_DIR=$ASSOC_DIR/nextflow_temp/$PLAN_NAME
-sshpass -f $SVC_PASS ssh $SVC_USER@$BUILD_SERVER "TEMP_DIR=$TEMP_DIR IMAGE_CACHE=$IMAGE_CACHE WORK_DIR=$WORK_DIR $TEMP_DIR/bamboo/build_pipeline.sh" &
-PIDS+=($!)
-PID_NAMES+=("pipeline")
-echo "remote job scheduled on $BUILD_SERVER"
-echo "wait for pbs job(s) to finish running and store the exit status"
-# see the follow link for details on getting exit code from background processes
-# https://stackoverflow.com/questions/1570262/get-exit-code-of-a-background-process/46212640#46212640
-set +e # allow false-like commands in these blocks
-i=0
-for pid in ${PIDS[@]}; do
-    echo "waiting on ${PID_NAMES[$i]}: pid=$pid"
-    wait $pid
-    STATUS+=($?)
-    ((i+=1))
-done
-
-echo "check exit status for errors and exit on error"
-i=0
-for st in ${STATUS[@]}; do
-  if [[ ${st} -ne 0 ]]; then
-    echo "ERROR: ${PID_NAMES[$i]}, PID: ${PIDS[$i]}, EXIT: $st"
-    exit $st
-  else
-    echo "SUCCESS: ${PID_NAMES[$i]}, PID: ${PIDS[$i]}, EXIT: $st"
-  fi
-  ((i+=1))
-done
-set -e
+sshpass -f $SVC_PASS ssh $SVC_USER@$BUILD_SERVER "$TEMP_DIR/bamboo/slurm_remote.sh $TEMP_DIR/bamboo/build.slurm $TEMP_DIR"
 
 ART_DIR=artifacts
 echo "ART_DIR=$ART_DIR"
