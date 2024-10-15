@@ -3,7 +3,7 @@ process UCSC_GTFTOGENEPRED {
     label 'process_low'
 
     conda "bioconda::ucsc-gtftogenepred=447"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity','apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/ucsc-gtftogenepred:447--h954228d_0':
         'biocontainers/ucsc-gtftogenepred:447--h954228d_0' }"
 
