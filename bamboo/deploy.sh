@@ -47,7 +47,7 @@ if [[ -d $ART_DIR ]]; then
 #     exit 1
 fi
 
-DEPLOY_DIR_LOG=$LOG_ROOT/RP/bamboo_template/deploy
+DEPLOY_DIR_LOG=$LOG_ROOT/RP/rnaseq_count_nf/deploy
 echo "DEPLOY_DIR_LOG=$DEPLOY_DIR_LOG"
 
 echo "clean out deploy_dir_log"
