@@ -8,9 +8,9 @@
 #SBATCH --time=0-00:01:00
 #SBATCH --mail-type=FAIL,INVALID_DEPEND,TIME_LIMIT
 #SBATCH --mail-user=RSCCoreApp@seattlechildrens.org
-#SBATCH --chdir=/data/hps/assoc/private/rsc/user/svc_rsc_hpc_auto/bamboo_logs/RP/bamboo_template/logs
+#SBATCH --chdir=/data/hps/assoc/private/rsc/user/svc_rsc_hpc_auto/bamboo_logs/RP/rnaseq_count_nf/logs
 
-# --chdir=/active/taylor_s/build/RP/bamboo_template/logs/
+# --chdir=/active/taylor_s/build/RP/rnaseq_count_nf/logs/
 #should we use --output to explicitly specify the output/error log file?
 
 set -eou pipefail
