@@ -45,7 +45,7 @@ workflow rnaseq_count {
 
     if ( params.download_sra_fqs ){
         //Download the fastqs directly from the SRA 
-        sra_fastqs()
+        sra_fastqs( params.sample_sheet, params.user_settings )
         sra_fastqs.out.reads
             .set { fastq_ch }
     }else{
