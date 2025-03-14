@@ -124,23 +124,9 @@ conda activate rnaseqNextflow
 Note: When running the workflow `rnaseq_count` the `STAR_ALIGN` module will fail on it's first pass, 
 but should pass on the second attempt. 
 
-## Edit the Config File
+## Set your association
 
-Edit the `sasquatch.config` file in any text editor:
-
-You will need to change: 
-    workDir: Edit {ASSOC} and {MY_USERID} to set working directory.
-    params: Edit {ASSOC} to your association
-
-
-In `sasquatch.config`:
-
-    // Settings to run the workflow on Sasquatch
-    workDir = "/data/hps/assoc/private/{ASSOC}/user/{MY_USERID}/temp"
-
-    params {
-    assoc = "{ASSOC}"
-    }
+In `main_run.sh`, set the `ASSOC` variable to be the name of your association on Sasquatch. You can also adjust `WORKDIR` to be the location for temporary files, although the default should work if you have put in a valid association name.
 
 ## Paired-end example
 
@@ -277,9 +263,6 @@ Edit the `nextflow.config` file to include the appropriate filepaths for
 the samples to be included in the pipeline, and the appropriate genome
 references. The required files are listed here:
 
-    ## //working directory for temporary/intermediate files produced in the workflow processes
-    ## workDir = "$HOME/temp"
-    ## 
     ## //global parameters
     ## params {
     ##     // general options
