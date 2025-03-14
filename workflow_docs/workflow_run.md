@@ -93,7 +93,7 @@ srun --account={ACCOUNT} --partition={PARTITION} --nodes 1 --ntasks 1 --cpus-per
 
 ### 2) Open `rnaseq_count_nf` workflow folder
 
-Navigate to where you place the cloned (copied) cutandrun_nf directory,
+Navigate to where you place the cloned (copied) rnaseq_count_nf directory,
 and then checkout the latest release branch.
 
 ``` bash
@@ -117,20 +117,6 @@ Activate the Nextflow conda environment.
 ``` bash
 conda env create -f env/nextflow.yaml
 conda activate rnaseqNextflow
-```
-#### 4) Copy containers into directory 
-
-Some of the containers in this workflow need to be pulled manually, so you 
-will need to copy them to your container cache directory from the shared resources directory.
-
-Modify the ASSOC parameter and execute the following command to copy them over:
-
-``` bash 
-mkdir -p /data/hps/assoc/private/{ASSOC}/container/rnaseq
-cd /data/hps/assoc/private/{ASSOC}/container/rnaseq
-cp /data/hps/assoc/public/bioinformatics/container/rnaseq/rseqc_3.0.1--py37h516909a_1.sif ./
-cp /data/hps/assoc/public/bioinformatics/container/rnaseq/samtools_1.17--h00cdaf9_0.sif ./
-
 ```
 
 # Test the Workflow 
