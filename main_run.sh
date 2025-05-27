@@ -19,7 +19,7 @@ nextflow -c ${NFX_CONFIG} \
     -log reports/${PREFIX}_nextflow.log \
     run main.nf \
     --assoc ${ASSOC} \
-    -workDir ${WORKDIR} \
+    -work-dir ${WORKDIR} \
     -entry ${NFX_ENTRY} \
     -profile ${NFX_PROFILE} \
     -with-report reports/${PREFIX}.html \

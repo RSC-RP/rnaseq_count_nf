@@ -1,0 +1,30 @@
+# general options
+sample_sheet: "test_data/paired_end_sample_sheet.csv"
+
+# Input and output options
+download_sra_fqs: false
+outdir: "./paired_end_results/"
+publish_dir_mode: 'copy'
+
+# STAR-specific params
+index: '/data/hps/assoc/public/bioinformatics/annotations/Homo_sapiens/Ensembl/GRCh38/Sequence/STAR'
+build_index: false
+gtf: '/data/hps/assoc/public/bioinformatics/annotations/Homo_sapiens/Ensembl/GRCh38/Annotation/Genes.ensembl'
+fasta: '/data/hps/assoc/public/bioinformatics/annotations/Homo_sapiens/Ensembl/GRCh38/Sequence/WholeGenomeFasta/Homo_sapiens.GRCh38.dna.primary_assembly.fa'
+star_ignore_sjdbgtf: false
+seq_platform: ''
+seq_center: ''
+
+# trimgalore-specific parameters
+trim: false
+
+# RSEQC
+rRNA_transcripts: './resources/GRCh38_rRNA_transcripts.txt'
+
+# fasterq-dump params
+user_settings: './ncbi-user-settings.mkfg'
+
+# MultiQC params
+multiqc_config: ''
+extra_multiqc_config: ''
+multiqc_logo: ''
